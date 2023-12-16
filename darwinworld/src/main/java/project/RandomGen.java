@@ -1,5 +1,8 @@
 package project;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class RandomGen {
 
     public static double random() {
@@ -14,5 +17,12 @@ public class RandomGen {
         return (int)(Math.random() * (maxVal - minVal + 1) + minVal);
     }
 
+    public static List<Integer> randIntList(int minVal, int maxVal, int size) {
+        List<Integer> list = new ArrayList<>();
+        for (int i = 0; i < size; i++) {
+            list.add(randInt(minVal, maxVal));
+        }
+        return list;
+    }
 
 }

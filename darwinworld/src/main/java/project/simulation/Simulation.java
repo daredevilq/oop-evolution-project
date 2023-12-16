@@ -27,7 +27,7 @@ public class Simulation {
             //map.move()
             //map.reproduce
             //map ..
-            map.move();
+
 
         }
     }

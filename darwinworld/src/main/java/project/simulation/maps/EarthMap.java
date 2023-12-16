@@ -1,7 +1,11 @@
 package project.simulation.maps;
 
-import project.MapDirection;
 import project.Vector2D;
+import project.simulation.config.MapSettings;
+import project.simulation.fetures.AnimalBehavior;
+import project.simulation.fetures.MapType;
+import project.simulation.fetures.MutationType;
+import project.simulation.fetures.VegetationDynamicsType;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
@@ -10,38 +14,12 @@ import java.util.Map;
 
 public class EarthMap extends AbstractMap {
 
-    private final int width;
-    private final int height;
-    private final int grassEnergy;
-    private final int moveEnergy;
-    private final int startEnergy;
 
-    private final int fieldsNumber;
-
-    private Map<Vector2D, Animal> mapAnimals = new HashMap<>();
-    private Map<Vector2D, Grass> mapGrass = new HashMap<>();
-
-    private final Vector2D mapLowerLeft = new Vector2D(0, 0);
-    private final Vector2D mapUpperRight;
-    private final Vector2D jungleLowerleft;
-    private final Vector2D jungleUpperRight;
-
-    public EarthMap(int width, int height, int grassEnergy, int moveEnergy, int startEnergy, Vector2D mapUpperRight, Vector2D jungleLowerleft, Vector2D jungleUpperRight) {
-        this.width = width;
-        this.height = height;
-        this.grassEnergy = grassEnergy;
-        this.moveEnergy = moveEnergy;
-        this.startEnergy = startEnergy;
-        this.mapUpperRight = mapUpperRight;
-        this.jungleLowerleft = jungleLowerleft;
-        this.jungleUpperRight = jungleUpperRight;
-
-        this.fieldsNumber = (mapUpperRight.getX() - mapLowerLeft.getX() + 1)
-                * (mapUpperRight.getY() - mapLowerLeft.getY()) + 1;
-
+    public EarthMap(MapSettings mapSettings) {
+        super(mapSettings);
     }
 
-
+    //Metoda zwraca następną pozycję zwierzęcia po wykonaniu ruchu w przypadku mapy zakrzywionej horyzontalnie
     public Vector2D getNextPosition(Vector2D currPosition, Vector2D moveVector) {
 
         Vector2D newPosition = currPosition.add(moveVector);
@@ -64,19 +42,11 @@ public class EarthMap extends AbstractMap {
         else if (y < minY) y = currPosition.getY();
 
         return new Vector2D(x, y);
-    }
-
-
-    public void move(){ // for each animal
-        for (Animal animal : mapAnimals.values()) {
-            animal.move(this);
-            System.out.println(animal.getPosition());
-        }
-    }
-
-    public void eat(){
 
     }
+
+
+
 
 
 }
