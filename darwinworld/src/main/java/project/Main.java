@@ -1,19 +1,34 @@
 package project;
 
 import project.simulation.Simulation;
+import project.simulation.config.MapSettings;
+import project.simulation.fetures.AnimalBehavior;
+import project.simulation.fetures.MapType;
+import project.simulation.fetures.MutationType;
+import project.simulation.fetures.VegetationDynamicsType;
 import project.simulation.maps.EarthMap;
 import project.simulation.worldelements.Animal;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        Vector2D upperrigt = new Vector2D(5,5);
-        Vector2D lowerleft = new Vector2D(0,0);
-        EarthMap map = new EarthMap(10,10,10,1,10,upperrigt,lowerleft,new Vector2D(2,2));
 
-       Animal animal = new Animal(new Vector2D(2,2), MapDirection.NORTH, 10, List.of(1,2,3,4,5,6,7,0));
+        //testowa konfiguracja dla 10dni, na razie tutaj potem sie to wszsytko wrzuci do simulation
+        MapSettings mapSettings = new MapSettings(10,10,100,5,5,3
+                ,10, MapType.EARTH, AnimalBehavior.PREDESTINATION, VegetationDynamicsType.EQUATOR,MutationType.RANDOMNESS );
 
-        Simulation simulation = new Simulation(map);
+        EarthMap map = new EarthMap(mapSettings);
+
+        map.mapInitialize();
+        for (int i = 0; i <10 ; i++) {
+            System.out.println(map.getMapAnimals());
+            System.out.println(map.getMapPlants());
+            map.moveAnimals();
+
+        }
+
+
+
 
     }
 }
