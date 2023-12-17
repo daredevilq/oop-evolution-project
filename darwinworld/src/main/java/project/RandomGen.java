@@ -1,7 +1,11 @@
 package project;
 
+import project.simulation.worldelements.IWorldElement;
+import project.simulation.worldelements.WorldElement;
+
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class RandomGen {
 
@@ -23,6 +27,23 @@ public class RandomGen {
             list.add(randInt(minVal, maxVal));
         }
         return list;
+    }
+
+
+
+    public static <T extends IWorldElement> Vector2D randomFreePlace(Map<Vector2D, T> mapElements, Vector2D loweLeft, Vector2D upperRight){
+        int minX = loweLeft.getX();
+        int maxX = upperRight.getX();
+        int minY = loweLeft.getY();
+        int maxY = upperRight.getY();
+
+        Vector2D randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
+
+        while (mapElements.containsKey(randomPosition)) {
+            randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
+        }
+
+        return randomPosition;
     }
 
 }

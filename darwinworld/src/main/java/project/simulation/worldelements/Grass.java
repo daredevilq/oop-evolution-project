@@ -2,7 +2,7 @@ package project.simulation.worldelements;
 
 import project.Vector2D;
 
-public class Grass implements IWorldElement {
+public class Grass extends WorldElement {
 
     private static final String sign = "*";
     private final int energy;

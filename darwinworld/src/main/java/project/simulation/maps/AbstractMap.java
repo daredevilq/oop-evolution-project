@@ -1,5 +1,4 @@
 package project.simulation.maps;
-
 import project.MapDirection;
 import project.RandomGen;
 import project.Vector2D;
@@ -12,6 +11,8 @@ import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
 import java.util.*;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 public abstract class AbstractMap implements IWorldMap {
 
@@ -83,89 +84,6 @@ public abstract class AbstractMap implements IWorldMap {
 
     }
 
-
-    //Metoda umieszcza na mapie poczatkowa liczbe zwierzat i roslin
-    public void mapInitialize() {
-        randomlyPlaceAnimals(initialAnimalsNumber);
-        spawnPlants();
-    }
-
-
-
-    //Metoda losowa umieszcza rosliny na mapie, roślin jest sqrt(liczba_pol_na_mapie)
-    // bo nie bylo powiedziane ile ma ich byc, ewentualnei mozna dodac pole initialPlantsNumber i
-    // podawdac na starcie
-    // rosliny sa inicjowane losowo, na razie nie uwzglednilem prawdopodobienstwa bo to jest metoda do
-    // inicjalizacji
-
-    private void spawnPlants() {
-        int minX = mapLowerLeft.getX();
-        int maxX = mapUpperRight.getX();
-        int minY = mapLowerLeft.getY();
-        int maxY = mapUpperRight.getY();
-
-        for (int i = 0; i < (int) Math.sqrt(fieldsNumber); i++) {
-            Vector2D randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
-
-            while (mapAnimals.containsKey(randomPosition) || mapPlants.containsKey(randomPosition)) {
-                randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
-            }
-
-            List<Integer> randomGenesList = RandomGen.randIntList(0, 7, genomeSize);
-            Grass grass = new Grass(randomPosition, grassEnergy);
-            mapPlants.put(randomPosition, grass);
-        }
-
-    }
-
-
-    //Metoda losowo umieszcza zwierzeta na mapie i daje im losowy kierunek i genotyp na poczatek
-    // tak jak wyzej metoda jest tylko do inicjalizacji mapy, potem sie nie przyda
-
-    private void randomlyPlaceAnimals(int initialAnimalsNumber) {
-        int minX = mapLowerLeft.getX();
-        int maxX = mapUpperRight.getX();
-        int minY = mapLowerLeft.getY();
-        int maxY = mapUpperRight.getY();
-
-        for (int i = 0; i < initialAnimalsNumber; i++) {
-            Vector2D randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
-
-            while (mapAnimals.containsKey(randomPosition)) {
-                randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
-            }
-
-            Animal animal = new Animal(this, randomPosition, MapDirection.NORTHEAST.rotate((int) (Math.random() * 8)), startEnergy, RandomGen.randIntList(0, 7, genomeSize));
-            mapAnimals.put(randomPosition, animal);
-        }
-    }
-
-    //Metoda fla kazdego zwierzecia w mapAnimals uruchamia metode move()
-    //Metoda move() sprawdza czy zwierze ma wystarczajaco energii na ruch, jesli tak to je wykonuje
-    // uzylem tutaj Iteratora zebym mogl usuwac elementy z listy w trakcie iteracji
-    // zeby dodac elementy ktore zostaly zmienione musze uzyc tymczasowej mapy tempMap
-    // ktorą na koncu przypisuje do mapy mapAnimals
-    public void moveAnimals() {
-        Iterator<Map.Entry<Vector2D, Animal>> iterator = mapAnimals.entrySet().iterator();
-        Map<Vector2D, Animal> tempMap = new HashMap<>();
-        while (iterator.hasNext()) {
-            Map.Entry<Vector2D, Animal> entry = iterator.next();
-            Animal animal = entry.getValue();
-
-            if (animal.getEnergy() < moveEnergy) continue;
-
-            Vector2D prevPosition = animal.getPosition();
-            animal.move();
-            Vector2D newPosition = animal.getPosition();
-
-            if (!prevPosition.equals(newPosition)) {
-                iterator.remove(); // Usuń element z mapy przy użyciu iteratora
-                tempMap.put(newPosition, animal);
-            }
-        }
-        mapAnimals.putAll(tempMap);
-    }
-
     @Override
     public int getWidth() {
         return width;
@@ -192,4 +110,114 @@ public abstract class AbstractMap implements IWorldMap {
     }
 
 
+
+    //Metoda umieszcza na mapie poczatkowa liczbe zwierzat i roslin
+    public void mapInitialize() {
+        randomlyPlaceAnimals(initialAnimalsNumber);
+        spawnPlants();
+    }
+
+
+    // tu trzeba jeszcze zrobić warunek jak są wolne miejsca to szukaj do momentu aż są jeszcze jakieś wolne miejsca
+    // w dodatku trzeba zrobić tak by trawa rosła częściej w jungli
+    public void spawnPlants() {
+        for (int i = 0; i < (int) Math.sqrt(fieldsNumber); i++) {
+            Vector2D position =  RandomGen.randomFreePlace(mapPlants, mapLowerLeft, mapUpperRight);
+            Grass grass = new Grass(position, grassEnergy);
+            mapPlants.put(position, grass);
+        }
+    }
+
+    public void randomlyPlaceAnimals(int initialAnimalsNumber) {
+        for (int i = 0; i < initialAnimalsNumber; i++) {
+            Vector2D position =  RandomGen.randomFreePlace(mapAnimals, mapLowerLeft, mapUpperRight);
+            Animal animal = new Animal(this, position, MapDirection.NORTHEAST.rotate((int) (Math.random() * 8)), startEnergy, RandomGen.randIntList(0, 7, genomeSize));
+            mapAnimals.put(position, animal);
+        }
+    }
+
+
+    public void moveAnimals(Animal animal) {
+        if (animal.getEnergy() > moveEnergy)
+            animal.move();
+    }
+
+    public List<Animal> deleteDeadAnimals() {
+        int allAnimals = mapAnimals.size();
+
+        List<Animal> aliveAnimals = mapAnimals.values().stream()
+                .filter(animal -> animal.getEnergy() >= moveEnergy)
+                .collect(Collectors.toList());
+
+        mapAnimals = aliveAnimals.stream()
+                .collect(Collectors.toMap(Animal::getPosition, Function.identity()));
+
+
+        int alivedAnimals = mapAnimals.size();
+        diedAnimalsCount += (allAnimals - alivedAnimals);
+        animalsCount = alivedAnimals;
+
+        return aliveAnimals;
+    }
+
+    public void eatPlants(){
+        List<Grass> grassToRemove = new ArrayList<>();
+
+        for (Grass grass : mapPlants.values()){
+            if (mapAnimals.containsKey(grass.getPosition())) {
+                List<Animal> animalsOnField = mapAnimals.values().stream() // zwróć zwierzęta które stoja na danym polu
+                        .filter(animal -> animal.getPosition().equals(grass.getPosition()))
+                        .collect(Collectors.toList());
+
+                Animal dominantAnimal = animalsOnField.stream() // zwróć kandydata do zjedzenia rośliny
+                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
+                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
+                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
+                                .thenComparing(animal -> Math.random()))
+                        .findFirst()
+                        .orElse(null);
+
+                if (dominantAnimal != null){
+                    dominantAnimal.eatPlant(grass.getEnergy());
+                    grassToRemove.add(grass);
+                }
+            }
+        }
+        for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona
+            mapPlants.remove(grass.getPosition());
+        }
+    }
+
+    public void breeding() {
+        for (Vector2D position : mapAnimals.keySet()) {
+            List<Animal> animalsOnField = mapAnimals.values().stream()
+                    .filter(animal -> animal.getPosition().equals(position))
+                    .collect(Collectors.toList());
+
+            if (animalsOnField.size() >= 2) { // szukamy pola w mapie gdie mamy 2 zwierzęta
+                List<Animal> sortedAnimals = animalsOnField.stream() // sortujemy by wybrać tylko 2
+                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
+                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
+                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
+                                .thenComparing(animal -> Math.random()))
+                        .collect(Collectors.toList());
+
+                Animal parent1 = sortedAnimals.get(0);
+                Animal parent2 = sortedAnimals.get(1);
+
+                // warunki na rozmnażanie
+                if (parent1.getEnergy() >= startEnergy/2 && parent2.getEnergy() >= startEnergy/2) {
+
+                    List<Integer> childGenotype = parent1.reproduce(parent2); // tworzymy genotyp dziecka
+                    Animal child = new Animal(this, parent1.getPosition(), MapDirection.NORTHEAST.rotate((int) (Math.random() * 8)), this.startEnergy, childGenotype);
+                    mapAnimals.put(child.getPosition(), child);
+                    animalsCount += 1;
+
+                    double energyRatio = (double) parent1.getEnergy() / (parent1.getEnergy() + parent2.getEnergy());
+                    parent1.changeStatsAfterBreeding((int) energyRatio * parent1.getEnergy());
+                    parent1.changeStatsAfterBreeding(this.startEnergy - (int) energyRatio * parent2.getEnergy());
+                }
+            }
+        }
+    }
 }

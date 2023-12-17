@@ -14,21 +14,14 @@ public class Main {
     public static void main(String[] args) {
 
         //testowa konfiguracja dla 10dni, na razie tutaj potem sie to wszsytko wrzuci do simulation
-        MapSettings mapSettings = new MapSettings(10,10,100,5,5,3
+        MapSettings mapSettings = new MapSettings(10,10,100,5,5,1
                 ,10, MapType.EARTH, AnimalBehavior.PREDESTINATION, VegetationDynamicsType.EQUATOR,MutationType.RANDOMNESS );
 
         EarthMap map = new EarthMap(mapSettings);
 
-        map.mapInitialize();
-        for (int i = 0; i <10 ; i++) {
-            System.out.println(map.getMapAnimals());
-            System.out.println(map.getMapPlants());
-            map.moveAnimals();
+        Simulation simulation = new Simulation(map);
 
-        }
-
-
-
+        simulation.run();
 
     }
 }
