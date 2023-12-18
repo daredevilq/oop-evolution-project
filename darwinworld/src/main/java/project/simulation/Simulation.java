@@ -3,31 +3,35 @@ package project.simulation;
 import project.simulation.maps.EarthMap;
 import project.simulation.worldelements.Animal;
 
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Set;
 
-public class Simulation {
-//    private final List<Animal> animals; // linked list
+public class Simulation implements Runnable{
+    private List<Animal> animals;
     private final EarthMap map;
 
     public Simulation(EarthMap map) {
-//        this.animals = animals;
         this.map = map;
+        this.animals = new LinkedList<>(map.getMapAnimals().values());
+        map.mapInitialize();
     }
 
 
     public void run(){
 
         while (true){
-//            for (int i = 0; i < animals) { //usuniecie martwych zwierzat
-//                if (animal.getenergy = 0){
-//
-//                }
-//            }
-            //map.remove()
-            //map.move()
-            //map.reproduce
-            //map ..
 
+            animals = map.deleteDeadAnimals();
+
+            for (Animal animal : animals) {
+                map.moveAnimals(animal);
+            }
+
+            map.eatPlants();
+            map.breeding();
+
+            map.spawnPlants();
 
         }
     }

@@ -3,14 +3,13 @@ package project.simulation.worldelements;
 import project.MapDirection;
 import project.RandomGen;
 import project.Vector2D;
-import project.simulation.config.MapSettings;
-import project.simulation.maps.AbstractMap;
-import project.simulation.maps.EarthMap;
 import project.simulation.maps.IWorldMap;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
-public class Animal {
+public class Animal extends WorldElement{
     private static final int MIN_GENE_NUM = 0;
     private static final int MAX_GENE_NUM = 7;
 
@@ -21,6 +20,8 @@ public class Animal {
     private final List<Integer> genotype;
     private int currentGeneIndex;
     private int age;
+    private int atePlants = 0;
+
     private int childrenCounter;
 
 
@@ -37,6 +38,10 @@ public class Animal {
         this.childrenCounter = 0;
     }
 
+    public Vector2D getPosition() {
+        return position;
+    }
+
     public void setNextGeneIndex() {
         this.currentGeneIndex++;
         currentGeneIndex = currentGeneIndex % genotype.size();
@@ -45,8 +50,28 @@ public class Animal {
     public void setRandomGenIndex() {
         this.currentGeneIndex = RandomGen.randInt(0, genotype.size() - 1);
     }
-    public Vector2D getPosition() {
-        return position;
+    public MapDirection getDirection() {
+        return direction;
+    }
+
+    public int getEnergy() {
+        return energy;
+    }
+
+    public List<Integer> getGenotype() {
+        return genotype;
+    }
+
+    public int getCurrentGeneIndex() {
+        return currentGeneIndex;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public int getChildrenCounter() {
+        return childrenCounter;
     }
 
 
@@ -80,27 +105,54 @@ public class Animal {
 
     }
 
-    public MapDirection getDirection() {
-        return direction;
+    public void eatPlant(int energy){
+        this.energy += energy;
+        this.atePlants += 1;
     }
 
-    public int getEnergy() {
-        return energy;
+    public void changeStatsAfterBreeding(int energy){
+        this.childrenCounter += 1;
+        this.energy -= energy;
     }
 
-    public List<Integer> getGenotype() {
-        return genotype;
+
+    public List<Integer> reproduce(Animal partner) {
+        int genotypeSize = genotype.size();
+
+        double energyRatio = (double) this.getEnergy() / (this.getEnergy() + partner.getEnergy());
+
+
+        boolean takeLeft = new Random().nextBoolean();
+
+        List<Integer> childGenotype = new ArrayList<>();
+        int splitIndex = (int) (energyRatio * genotypeSize);
+
+        if (takeLeft) {
+            // Bierz lewą stronę genotypu od silniejszego osobnika
+            childGenotype.addAll(this.genotype.subList(0, splitIndex));
+
+            // Bierz prawą stronę genotypu od słabszego osobnika
+            childGenotype.addAll(partner.genotype.subList(splitIndex, genotype.size()));
+        } else {
+            // Bierz lewą stronę genotypu od słabszego osobnika
+            childGenotype.addAll(partner.genotype.subList(0, genotypeSize - splitIndex));
+
+            // Bierz prawą stronę genotypu od silniejszego osobnika
+            childGenotype.addAll(this.genotype.subList(genotypeSize - splitIndex, genotypeSize));
+        }
+
+        mutate(childGenotype);
+
+        return childGenotype;
     }
 
-    public int getCurrentGeneIndex() {
-        return currentGeneIndex;
-    }
+    private void mutate(List<Integer> childGenotype) {
+        int numberOfMutations = RandomGen.randInt(genotype.size()); // Losowa liczba mutacji
 
-    public int getAge() {
-        return age;
-    }
-
-    public int getChildrenCounter() {
-        return childrenCounter;
+        for (int i = 0; i < numberOfMutations; i++) {
+            int mutationIndex = RandomGen.randInt(genotype.size()); // Losowy indeks do mutacji
+            int newGeneValue = RandomGen.randInt(MIN_GENE_NUM, MAX_GENE_NUM); // Losowa nowa wartość genu
+            childGenotype.set(mutationIndex, newGeneValue);
+        }
     }
 }
