@@ -25,6 +25,8 @@ public abstract class AbstractMap implements IWorldMap {
     private final int startEnergy;
     private final int fieldsNumber;
 
+//    private final int fieldsNumberInJungle = 0;
+
     private final int initialAnimalsNumber;
 
     private Map<Vector2D, Animal> mapAnimals = new HashMap<>();
@@ -45,8 +47,8 @@ public abstract class AbstractMap implements IWorldMap {
     private final MutationType mutationType;
     private final AnimalBehavior animalBehavior;
 
-    private Vector2D jungleLowerleft = new Vector2D(-1, -1);
-    private Vector2D jungleUpperRight = new Vector2D(-1, -1);
+    private Vector2D jungleLowerleft = new Vector2D(0, 0);
+    private Vector2D jungleUpperRight = new Vector2D(0, 0);
 
 
     public AbstractMap(MapSettings mapSettings) {
@@ -80,6 +82,8 @@ public abstract class AbstractMap implements IWorldMap {
 
             this.jungleUpperRight = new Vector2D(mapUpperRight.getX(), jungleMiddle + jungleWidth / 2 );
 
+//            this.fieldsNumberInJungle = (jungleUpperRight.getX() - jungleLowerleft.getX() + 1)
+//                    * (jungleUpperRight.getY() - jungleLowerleft.getY()) + 1;
         }
 
     }
@@ -121,10 +125,22 @@ public abstract class AbstractMap implements IWorldMap {
     // tu trzeba jeszcze zrobić warunek jak są wolne miejsca to szukaj do momentu aż są jeszcze jakieś wolne miejsca
     // w dodatku trzeba zrobić tak by trawa rosła częściej w jungli
     public void spawnPlants() {
-        for (int i = 0; i < (int) Math.sqrt(fieldsNumber); i++) {
-            Vector2D position =  RandomGen.randomFreePlace(mapPlants, mapLowerLeft, mapUpperRight);
+
+        for (int i = 0; i < (int) Math.sqrt(fieldsNumber) & plantsCount < fieldsNumber; i++) {
+
+            Vector2D position;
+            // tu jeszcze trzeba warunek że w jungli są jeszcze wolne pola
+            if (new Random().nextBoolean()){
+                // losujemy z jungli
+                position =  RandomGen.randomFreePlace(mapPlants, jungleLowerleft, jungleUpperRight);
+            } else {
+                // losujemy z całej mapy - możliwe że wylosuje się jungla
+                position = RandomGen.randomFreePlace(mapPlants, mapLowerLeft, mapUpperRight);
+            }
+
             Grass grass = new Grass(position, grassEnergy);
             mapPlants.put(position, grass);
+            plantsCount += 1;
         }
     }
 
@@ -133,6 +149,7 @@ public abstract class AbstractMap implements IWorldMap {
             Vector2D position =  RandomGen.randomFreePlace(mapAnimals, mapLowerLeft, mapUpperRight);
             Animal animal = new Animal(this, position, MapDirection.NORTHEAST.rotate((int) (Math.random() * 8)), startEnergy, RandomGen.randIntList(0, 7, genomeSize));
             mapAnimals.put(position, animal);
+            animalsCount += 1;
         }
     }
 
@@ -185,6 +202,7 @@ public abstract class AbstractMap implements IWorldMap {
         }
         for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona
             mapPlants.remove(grass.getPosition());
+            plantsCount -= 1;
         }
     }
 
