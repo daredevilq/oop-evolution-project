@@ -1,21 +1,27 @@
 package project.simulation.maps;
 
 import project.Vector2D;
+import project.simulation.config.MapSettings;
 import project.simulation.fetures.AnimalBehavior;
 
 public interface IWorldMap {
 
-    int getWidth();
+    Vector2D getNextPosition(Vector2D currPosition, Vector2D moveVector);
 
-    int getHeight();
+    MapSettings getMapSettings();
 
-    void mapInitialize();
-
-
-    Vector2D getNextPosition(Vector2D position, Vector2D moveVector);
-
-    AnimalBehavior getAnimalBehavior();
-
-    int getMoveEnergy();
+    Boundary getBoundary();
+//    int getWidth();
+//
+//    int getHeight();
+//
+//    void mapInitialize();
+//
+//
+//    Vector2D getNextPosition(Vector2D position, Vector2D moveVector);
+//
+//    AnimalBehavior getAnimalBehavior();
+//
+//    int getMoveEnergy();
 
 }

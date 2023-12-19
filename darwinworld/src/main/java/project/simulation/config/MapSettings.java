@@ -1,9 +1,7 @@
 package project.simulation.config;
 
-import project.simulation.fetures.AnimalBehavior;
-import project.simulation.fetures.MapType;
-import project.simulation.fetures.MutationType;
-import project.simulation.fetures.VegetationDynamicsType;
+import project.simulation.maps.animalBehavior.AnimalBehavior;
+import project.simulation.maps.spawningPlants.SpawningPlants;
 
 public record MapSettings(
         int width,
@@ -11,11 +9,13 @@ public record MapSettings(
         int startEnergy,
         int moveEnergy,
         int grassEnergy,
-        int initialAnimalsNumber,
-        int genomeSize,
-        MapType mapType,
-        AnimalBehavior animalBehavior,
-        VegetationDynamicsType vegetationDynamicsType,
-        MutationType mutationType
+        int genomeSize
+//        MapType mapType,
+//        AnimalBehavior animalBehavior,
+//        VegetationDynamicsType vegetationDynamicsType,
+//        MutationType mutationType
+
+
+
         ) {
 }

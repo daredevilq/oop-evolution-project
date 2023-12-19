@@ -3,7 +3,7 @@ package project.simulation.worldelements;
 import project.MapDirection;
 import project.RandomGen;
 import project.Vector2D;
-import project.simulation.maps.IWorldMap;
+import project.simulation.config.MapSettings;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +13,7 @@ public class Animal extends WorldElement{
     private static final int MIN_GENE_NUM = 0;
     private static final int MAX_GENE_NUM = 7;
 
-    IWorldMap map;
+//    MapSettings settings;
     private Vector2D position;
     private MapDirection direction;
     private int energy;
@@ -21,14 +21,13 @@ public class Animal extends WorldElement{
     private int currentGeneIndex;
     private int age;
     private int atePlants = 0;
-
     private int childrenCounter;
 
 
 
 
-    public Animal(IWorldMap map,Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
-        this.map = map;
+    public Animal(MapSettings settings,Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
+//        this.settings = settings;
         this.position = position;
         this.direction = direction;
         this.energy = energy;
@@ -42,14 +41,14 @@ public class Animal extends WorldElement{
         return position;
     }
 
-    public void setNextGeneIndex() {
-        this.currentGeneIndex++;
-        currentGeneIndex = currentGeneIndex % genotype.size();
-    }
-
-    public void setRandomGenIndex() {
-        this.currentGeneIndex = RandomGen.randInt(0, genotype.size() - 1);
-    }
+//    public void setNextGeneIndex() {
+//        this.currentGeneIndex++;
+//        currentGeneIndex = currentGeneIndex % genotype.size();
+//    }
+//
+//    public void setRandomGenIndex() {
+//        this.currentGeneIndex = RandomGen.randInt(0, genotype.size() - 1);
+//    }
     public MapDirection getDirection() {
         return direction;
     }
@@ -81,7 +80,7 @@ public class Animal extends WorldElement{
     // zrobilem co switchem, w sumie nie wiem jak inaczej uwzglednic te warianty, moze lazarz podpowie nam w poniedzialek
     // jest 20% szans na szalenstwo
 
-    public void move() {
+    public void move(IWorldMap map) {
 
         this.direction = this.direction.rotate(currentGeneIndex);
         Vector2D currPosition = this.position;
@@ -93,15 +92,16 @@ public class Animal extends WorldElement{
 
         this.position = newPosition;
         this.age++;
-        this.energy -= map.getMoveEnergy();
+        this.energy -= map.getMapSettings().moveEnergy();
 
-        switch (map.getAnimalBehavior()){
-            case PREDESTINATION -> setNextGeneIndex();
-            case MADNESS -> {
-                if (Math.random() <= 0.2) setRandomGenIndex();
-                else setNextGeneIndex();
-            }
-        }
+        this.currentGeneIndex = map.getMapSettings().animalBehavior(currentGeneIndex, map.getMapSettings().genomeSize());
+//        switch (map.getAnimalBehavior()){
+//            case PREDESTINATION -> setNextGeneIndex();
+//            case MADNESS -> {
+//                if (Math.random() <= 0.2) setRandomGenIndex();
+//                else setNextGeneIndex();
+//            }
+//        }
 
     }
 
