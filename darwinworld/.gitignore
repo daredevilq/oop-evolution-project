@@ -17,7 +17,7 @@ out/
 !**/src/test/**/out/
 
 ### Eclipse ###
-.apt_generated
+.apt_generatedgit
 .classpath
 .factorypath
 .project

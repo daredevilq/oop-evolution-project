@@ -2,16 +2,24 @@ package project;
 
 import project.simulation.Simulation;
 import project.simulation.config.MapSettings;
+import project.simulation.config.Modifications;
 import project.simulation.fetures.AnimalBehavior;
 import project.simulation.fetures.MapType;
 import project.simulation.fetures.MutationType;
 import project.simulation.fetures.VegetationDynamicsType;
 import project.simulation.maps.EarthMap;
+import project.simulation.maps.animalBehavior.Madness;
+import project.simulation.maps.spawningPlants.SpawnPlantWithForestedEquators;
+import project.simulation.maps.spawningPlants.SpawnPlantWithMovingJungle;
+import project.simulation.maps.spawningPlants.SpawningPlants;
 import project.simulation.worldelements.Animal;
 import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
+        // inicjalizaja - return map?
+        // simulation
+
 
         //testowa konfiguracja dla 10dni, na razie tutaj potem sie to wszsytko wrzuci do simulation
         MapSettings mapSettings = new MapSettings(10,10,100,5,5,1
@@ -22,6 +30,14 @@ public class Main {
         Simulation simulation = new Simulation(map);
 
         simulation.run();
+
+        switch (){
+            case
+        }
+
+        Modifications modifications = new Modifications(new SpawnPlantWithMovingJungle(), new Madness());
+
+
 
     }
 }
