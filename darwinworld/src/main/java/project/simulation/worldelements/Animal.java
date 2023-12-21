@@ -4,6 +4,7 @@ import project.MapDirection;
 import project.RandomGen;
 import project.Vector2D;
 import project.simulation.config.MapSettings;
+import project.simulation.maps.IWorldMap;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +27,7 @@ public class Animal extends WorldElement{
 
 
 
-    public Animal(MapSettings settings,Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
+    public Animal(Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
 //        this.settings = settings;
         this.position = position;
         this.direction = direction;
@@ -80,29 +81,39 @@ public class Animal extends WorldElement{
     // zrobilem co switchem, w sumie nie wiem jak inaczej uwzglednic te warianty, moze lazarz podpowie nam w poniedzialek
     // jest 20% szans na szalenstwo
 
-    public void move(IWorldMap map) {
+//    public void move(IWorldMap map) {
+//
+//        this.direction = this.direction.rotate(currentGeneIndex);
+//        Vector2D currPosition = this.position;
+//        Vector2D newPosition = map.getNextPosition(this.position, direction.toUnitVector());
+//
+//        if (currPosition == newPosition){
+//            this.direction = this.direction.rotate(3); // obroc gdy zwierze sie nie poruszylo
+//        }
+//
+//        this.position = newPosition;
+//        this.age++;
+//        this.energy -= map.getMapSettings().moveEnergy();
+//
+//        this.currentGeneIndex = map.getMapSettings().animalBehavior(currentGeneIndex, map.getMapSettings().genomeSize());
+//    }
 
+    public void move(IWorldMap map){
         this.direction = this.direction.rotate(currentGeneIndex);
         Vector2D currPosition = this.position;
-        Vector2D newPosition = map.getNextPosition(this.position, direction.toUnitVector());
 
-        if (currPosition == newPosition){
-            this.direction = this.direction.rotate(3); // obroc gdy zwierze sie nie poruszylo
+        Vector2D newPosition = currPosition.add(direction.toUnitVector());
+
+        if (map.canMoveTo(newPosition)) {
+            newPosition = map.getNextPosition(newPosition);
+            this.position = newPosition;
+        } else {
+            this.direction = this.direction.rotate(3);
+            this.position = currPosition;
         }
 
-        this.position = newPosition;
         this.age++;
         this.energy -= map.getMapSettings().moveEnergy();
-
-        this.currentGeneIndex = map.getMapSettings().animalBehavior(currentGeneIndex, map.getMapSettings().genomeSize());
-//        switch (map.getAnimalBehavior()){
-//            case PREDESTINATION -> setNextGeneIndex();
-//            case MADNESS -> {
-//                if (Math.random() <= 0.2) setRandomGenIndex();
-//                else setNextGeneIndex();
-//            }
-//        }
-
     }
 
     public void eatPlant(int energy){

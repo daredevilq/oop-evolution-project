@@ -22,9 +22,7 @@ public class EarthMap extends AbstractMap {
 
     //Metoda zwraca następną pozycję zwierzęcia po wykonaniu ruchu w przypadku mapy zakrzywionej horyzontalnie
     @Override
-    public Vector2D getNextPosition(Vector2D currPosition, Vector2D moveVector) {
-
-        Vector2D newPosition = currPosition.add(moveVector);
+    public Vector2D getNextPosition(Vector2D newPosition) {
 
         int x = newPosition.getX();
         int y = newPosition.getY();
@@ -43,13 +41,20 @@ public class EarthMap extends AbstractMap {
         else if (x < minX)
             x += mapWidth;
 
-        if (y > maxY)
-            y = currPosition.getY();
-        else if (y < minY)
-            y = currPosition.getY();
+//        if (y > maxY)
+//            y = currPosition.getY();
+//        else if (y < minY)
+//            y = currPosition.getY();
 
         return new Vector2D(x, y);
 
+    }
+
+    @Override
+    public boolean canMoveTo(Vector2D position){
+        Vector2D upperRight = getBoundary().upperRightCorner();
+        Vector2D lowerLeft = getBoundary().lowerLeftCorner();
+        return position.getY() <= upperRight.getY() & position.getY() >= lowerLeft.getY();
     }
 
 

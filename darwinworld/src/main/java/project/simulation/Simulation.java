@@ -43,14 +43,15 @@ public class Simulation implements Runnable{
 
         while (true){
 
-            animals = map.deleteDeadAnimals();
+            animals = map.deleteDeadAnimals(this.animals); // tu sie zmienia l zwierzat
 
             for (Animal animal : animals) {
-                map.moveAnimals(animal);
+                map.moveAnimal(animal);
             }
 
-            eatPlants();
-            map.breeding();
+            int eatedPlants = (int) map.eatPlants();
+
+            map.breeding(); // tu sie zmienia l zwierzat
 
             map.spawnPlants();
 
@@ -61,39 +62,6 @@ public class Simulation implements Runnable{
         }
     }
 
-//    public void eatPlants(HashMap <Vector2D, Animal> mapAnimals, HashMap <Vector2D, Grass> mapPlants){
-    public void eatPlants(){
 
-        List<Grass> grassToRemove = new ArrayList<>();
-
-        HashMap <Vector2D, Animal> mapAnimals = map.get
-        HashMap <Vector2D, Grass> mapPlants = ma.get
-
-        for (Grass grass : mapPlants.values()){
-            if (mapAnimals.containsKey(grass.getPosition())) {
-                List<Animal> animalsOnField = mapAnimals.values().stream() // zwróć zwierzęta które stoja na danym polu
-                        .filter(animal -> animal.getPosition().equals(grass.getPosition()))
-                        .collect(Collectors.toList());
-
-                Animal dominantAnimal = animalsOnField.stream() // zwróć kandydata do zjedzenia rośliny
-                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
-                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
-                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
-                                .thenComparing(animal -> Math.random()))
-                        .findFirst()
-                        .orElse(null);
-
-                if (dominantAnimal != null){
-                    dominantAnimal.eatPlant(grass.getEnergy());
-                    grassToRemove.add(grass);
-                }
-            }
-        }
-
-        for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona
-            mapPlants.remove(grass.getPosition());
-            plantsCount -= 1;
-        }
-    }
 }
 

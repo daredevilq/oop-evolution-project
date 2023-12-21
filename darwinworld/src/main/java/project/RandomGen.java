@@ -31,7 +31,7 @@ public class RandomGen {
 
 
 
-    public static <T extends IWorldElement> Vector2D randomFreePlace(Map<Vector2D, T> mapElements, Vector2D loweLeft, Vector2D upperRight){
+    public static Vector2D randomFreePlace(Vector2D loweLeft, Vector2D upperRight){
         int minX = loweLeft.getX();
         int maxX = upperRight.getX();
         int minY = loweLeft.getY();
@@ -39,9 +39,9 @@ public class RandomGen {
 
         Vector2D randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
 
-        while (mapElements.containsKey(randomPosition)) {
-            randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
-        }
+//        while (mapElements.containsKey(randomPosition)) {
+//            randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
+//        }
 
         return randomPosition;
     }

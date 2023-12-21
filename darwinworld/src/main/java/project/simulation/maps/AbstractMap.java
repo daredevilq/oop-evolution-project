@@ -31,10 +31,6 @@ public abstract class AbstractMap implements IWorldMap {
 //    private final int genomeSize;
 
 
-//    private final VegetationDynamicsType vegetationDynamicsType;
-//    private final MutationType mutationType;
-//    private final AnimalBehavior animalBehavior;
-//
 //    private Vector2D jungleLowerleft = new Vector2D(0, 0);
 //    private Vector2D jungleUpperRight = new Vector2D(0, 0);
 //
@@ -42,9 +38,6 @@ public abstract class AbstractMap implements IWorldMap {
     private long dayNum = 0;
     private long animalsCount;
     private long diedAnimalsCount = 0;
-
-
-//    private final SpawningPlants spawnPlants = SpawnPlantWithJungle;
 
 
 
@@ -78,9 +71,8 @@ public abstract class AbstractMap implements IWorldMap {
 
     }
 
-    public Map<Vector2D, Animal> getMapAnimals() {
-        return Collections.unmodifiableMap(mapAnimals);
-    }
+
+    @Override
     public Map<Vector2D, Grass> getMapPlants() {
         return Collections.unmodifiableMap(mapPlants);
     }
@@ -96,36 +88,98 @@ public abstract class AbstractMap implements IWorldMap {
     }
 
 
-    public void spawnPlants() {
-        int fieldsNumber = (boundary.upperRightCorner().getX() - boundary.lowerLeftCorner().getX()) * (boundary.upperRightCorner().getY() - boundary.lowerLeftCorner().getY());
+//    public void spawnPlants() {
+//        int fieldsNumber = (boundary.upperRightCorner().getX() - boundary.lowerLeftCorner().getX()) * (boundary.upperRightCorner().getY() - boundary.lowerLeftCorner().getY());
+//
+//        for (int i = 0; i < (int) Math.sqrt(fieldsNumber) & plantsCount < fieldsNumber; i++) {
+//
+//            Vector2D position = mapSettings.spawningPlants().spawnPlant();
+//
+//            Grass grass = new Grass(position, mapSettings.grassEnergy());
+//            mapPlants.put(position, grass);
+//            plantsCount += 1;
+//        }
+//    }
 
-        for (int i = 0; i < (int) Math.sqrt(fieldsNumber) & plantsCount < fieldsNumber; i++) {
+    public void placeAnimal(Animal animal){
+        if (canMoveTo(animal.getPosition())){
+            List<Animal> animalsAtPosition = mapAnimals.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>());
+            animalsAtPosition.add(animal);
+        }
+    }
 
-            Vector2D position = mapSettings.spawningPlants().spawnPlant();
+    public void removeAnimal(Animal animal){
+        List<Animal> animalsAtPosition = mapAnimals.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>());
+        animalsAtPosition.remove(animal);
+    }
 
-            Grass grass = new Grass(position, mapSettings.grassEnergy());
-            mapPlants.put(position, grass);
-            plantsCount += 1;
+    //    public void eatPlants(HashMap <Vector2D, Animal> mapAnimals, HashMap <Vector2D, Grass> mapPlants){
+    public int eatPlants(Map<Vector2D, List<Animal>> mapAnimals, Map<Vector2D, Grass> mapPlants){
+
+        int eatedPlants = 0;
+        List<Grass> grassToRemove = new ArrayList<>();
+
+        for (Grass grass : mapPlants.values()){
+
+            Vector2D grassPosistion = grass.getPosition();
+
+            if (mapAnimals.containsKey(grassPosistion) & mapAnimals.containsKey(grassPosistion)) {
+                List<Animal> animalsOnField = mapAnimals.get(grassPosistion);
+                if (!animalsOnField.isEmpty()) {
+
+                    Animal dominantAnimal = animalsOnField.stream() // zwróć kandydata do zjedzenia rośliny
+                            .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
+                                    .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
+                                    .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
+                                    .thenComparing(animal -> Math.random()))
+                            .findFirst()
+                            .orElse(null);
+
+                    if (dominantAnimal != null) {
+                        dominantAnimal.eatPlant(grass.getEnergy());
+                        grassToRemove.add(grass);
+                    }
+                }
+            }
+        }
+
+        for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona
+            mapPlants.remove(grass.getPosition());
+            eatedPlants += 1;
+        }
+        return eatedPlants;
+    }
+
+
+    public void moveAnimal(Animal animal) {
+        Vector2D oldPosition = animal.getPosition();
+
+        if (animal.getEnergy() > mapSettings.moveEnergy())
+            animal.move(this);
+
+        Vector2D newPositon = animal.getPosition();
+
+        if (!newPositon.equals(oldPosition)){
+            removeAnimal(animal);
+            placeAnimal(animal);
         }
     }
 
 
+    public List<Animal> deleteDeadAnimals(List<Animal> animals) {
+        int allAnimals = animals.size();
 
-
-    public void moveAnimals(Animal animal) {
-        if (animal.getEnergy() > mapSettings.moveEnergy())
-            animal.move(this);
-    }
-
-    public List<Animal> deleteDeadAnimals() {
-        int allAnimals = mapAnimals.size();
-
-        List<Animal> aliveAnimals = mapAnimals.values().stream()
-                .filter(animal -> animal.getEnergy() >= mapSettings.moveEnergy())
+        List<Animal> deadAnimals = animals.stream()
+                .filter(animal -> animal.getEnergy() < mapSettings.moveEnergy())
                 .collect(Collectors.toList());
 
-        mapAnimals = aliveAnimals.stream()
-                .collect(Collectors.toMap(Animal::getPosition, Function.identity()));
+
+        for (Animal deadAnimal : deadAnimals){
+            removeAnimal(deadAnimal);
+            animals.remove(deadAnimal);
+        }
+
+
 
 
         int alivedAnimals = mapAnimals.size();
@@ -135,39 +189,10 @@ public abstract class AbstractMap implements IWorldMap {
         return aliveAnimals;
     }
 
+    @Override
+    public abstract boolean canMoveTo(Vector2D position);
 
+    @Override
+    public abstract Vector2D getNextPosition(Vector2D newPositnion);
 
-    public void breeding() {
-        for (Vector2D position : mapAnimals.keySet()) {
-            List<Animal> animalsOnField = mapAnimals.values().stream()
-                    .filter(animal -> animal.getPosition().equals(position))
-                    .collect(Collectors.toList());
-
-            if (animalsOnField.size() >= 2) { // szukamy pola w mapie gdie mamy 2 zwierzęta
-                List<Animal> sortedAnimals = animalsOnField.stream() // sortujemy by wybrać tylko 2
-                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
-                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
-                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
-                                .thenComparing(animal -> Math.random()))
-                        .collect(Collectors.toList());
-
-                Animal parent1 = sortedAnimals.get(0);
-                Animal parent2 = sortedAnimals.get(1);
-
-                // warunki na rozmnażanie
-                int startEnergy = mapSettings.startEnergy();
-                if (parent1.getEnergy() >= startEnergy/2 && parent2.getEnergy() >= startEnergy/2) {
-
-                    List<Integer> childGenotype = parent1.reproduce(parent2); // tworzymy genotyp dziecka
-                    Animal child = new Animal(mapSettings, parent1.getPosition(), MapDirection.NORTHEAST.rotate(RandomGen.randInt(0, 7)), startEnergy, childGenotype);
-                    mapAnimals.put(child.getPosition(), child);
-                    animalsCount += 1;
-
-                    double energyRatio = (double) parent1.getEnergy() / (parent1.getEnergy() + parent2.getEnergy());
-                    parent1.changeStatsAfterBreeding((int) energyRatio * parent1.getEnergy());
-                    parent1.changeStatsAfterBreeding(startEnergy - (int) energyRatio * parent2.getEnergy());
-                }
-            }
-        }
-    }
 }

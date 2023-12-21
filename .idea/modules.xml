@@ -2,7 +2,9 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/oop-evolution-project.iml" filepath="$PROJECT_DIR$/.idea/oop-evolution-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/darwinworld.iml" filepath="$PROJECT_DIR$/.idea/modules/darwinworld.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/darwinworld.main.iml" filepath="$PROJECT_DIR$/.idea/modules/darwinworld.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/darwinworld.test.iml" filepath="$PROJECT_DIR$/.idea/modules/darwinworld.test.iml" />
     </modules>
   </component>
 </project>
