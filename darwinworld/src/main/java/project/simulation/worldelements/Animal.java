@@ -166,4 +166,13 @@ public class Animal extends WorldElement{
             childGenotype.set(mutationIndex, newGeneValue);
         }
     }
+
+    public void decreaseEnergyBy1(){
+        this.energy -= 1;
+    }
+
+    @Override
+    public String toString() {
+        return "(" + this.position.toString() + " Energia: " + this.energy + ")";
+    }
 }

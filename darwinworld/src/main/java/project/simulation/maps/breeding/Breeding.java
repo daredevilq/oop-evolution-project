@@ -1,5 +1,9 @@
 package project.simulation.maps.breeding;
 
+import project.simulation.worldelements.Animal;
+
+import java.util.List;
+
 public interface Breeding {
-    void breed();
+    List<Animal> breed(List<Animal> animalList, int startEnergy);
 }
