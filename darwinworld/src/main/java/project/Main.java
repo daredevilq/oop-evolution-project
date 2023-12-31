@@ -1,6 +1,7 @@
 package project;
 
 import project.simulation.Simulation;
+import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
 import project.simulation.fetures.AnimalBehavior;
@@ -8,7 +9,10 @@ import project.simulation.fetures.MapType;
 import project.simulation.fetures.MutationType;
 import project.simulation.fetures.VegetationDynamicsType;
 import project.simulation.maps.EarthMap;
+import project.simulation.maps.IWorldMap;
+import project.simulation.maps.animalBehavior.Default;
 import project.simulation.maps.animalBehavior.Madness;
+import project.simulation.maps.breeding.ClassicBreed;
 import project.simulation.maps.spawningPlants.SpawnPlantWithForestedEquators;
 import project.simulation.maps.spawningPlants.SpawnPlantWithMovingJungle;
 import project.simulation.maps.spawningPlants.SpawningPlants;
@@ -17,27 +21,14 @@ import java.util.List;
 
 public class Main {
     public static void main(String[] args) {
-        // inicjalizaja - return map?
-        // simulation
 
+        Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed());
+        MapSettings mapSettings = new MapSettings(10, 10, 20, 2, 1, 7, 2, 10, 1, 0, 3, 10, 0.2);
 
-        //testowa konfiguracja dla 10dni, na razie tutaj potem sie to wszsytko wrzuci do simulation
-        MapSettings mapSettings = new MapSettings(10,10,100,5,5,1
-                ,10, MapType.EARTH, AnimalBehavior.PREDESTINATION, VegetationDynamicsType.EQUATOR,MutationType.RANDOMNESS );
+        IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
+        Simulation simulation = new Simulation(map, modifications);
 
-        EarthMap map = new EarthMap(mapSettings);
-
-        Simulation simulation = new Simulation(map);
 
         simulation.run();
-
-        switch (){
-            case
-        }
-
-        Modifications modifications = new Modifications(new SpawnPlantWithMovingJungle(), new Madness());
-
-
-
     }
 }

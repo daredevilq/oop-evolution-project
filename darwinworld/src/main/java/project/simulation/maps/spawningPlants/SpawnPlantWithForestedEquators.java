@@ -11,21 +11,23 @@ import java.util.Map;
 import java.util.Random;
 
 public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
-    int fieldsNumberToPlant;
 
-    public SpawnPlantWithForestedEquators(int fieldsNumberToPlant) {
-        this.fieldsNumberToPlant = fieldsNumberToPlant;
-    }
-
+    //moze sie wylosowac miejsce juz zajete przez trawe,
+    //mozna to zmienic ale bedzie sporo problemow z tym zwiazanych
     @Override
-    public Vector2D spawnPlant(HashMap <Vector2D, Grass> mapPlants, Boundary boundary) {
-        // tu jeszcze trzeba warunek że w jungli są jeszcze wolne pola
-        if (new Random().nextBoolean()){ // inne warunki
-            // losujemy z jungli
-            return RandomGen.randomFreePlace(jungleLowerleft, jungleUpperRight);
+    public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlants) {
+        if (RandomGen.random()<=0.8){
+            return RandomGen.randomFreePlace(map.getJungleBoundary().lowerLeftCorner(), map.getJungleBoundary().upperRightCorner());
         } else {
-            // losujemy z całej mapy - możliwe że wylosuje się jungla
-            return RandomGen.randomFreePlace(mapLowerLeft, mapUpperRight);
+
+            Vector2D randomPosition =  RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(),map.getJungleBoundary().upperRightCorner());
+            while(randomPosition.follows(map.getJungleBoundary().lowerLeftCorner()) && randomPosition.precedes(map.getJungleBoundary().upperRightCorner())){
+                randomPosition =  RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(),map.getJungleBoundary().upperRightCorner());
+            }
+            return randomPosition;
         }
+
     }
+
+
 }

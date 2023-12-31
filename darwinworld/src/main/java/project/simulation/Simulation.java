@@ -1,67 +1,52 @@
 package project.simulation;
 
-import project.Vector2D;
+import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
-import project.simulation.config.Mod;
 import project.simulation.maps.IWorldMap;
-import project.simulation.maps.spawningPlants.SpawningPlants;
 import project.simulation.worldelements.Animal;
-import project.simulation.worldelements.Grass;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class Simulation implements Runnable{
-    private List<Animal> animals;
+    private List<Animal> deadAnimals = new ArrayList<>();
     private final IWorldMap map;
 
     private final Modifications modifications;
-    private final Mod mod;
-
-
-    private int plantsCount;
     private long dayNum = 0;
-    private long animalsCount;
-    private long diedAnimalsCount = 0;
-
-
-
-
+    private long aliveAnimalsCount=0;
+    private long deadAnimalsCount = 0;
 
     public Simulation(IWorldMap map, Modifications modifications) {
         this.modifications = modifications;
         this.map = map;
-        this.animals = new LinkedList<>(map.getMapAnimals().values());
-        map.mapInitialize();
     }
 
-    public long getPlantsCount() {
-        return plantsCount;
-    }
 
     public void run(){
 
         while (true){
+            map.deleteDeadAnimals(this.deadAnimals);
+            map.moveAnimals();
+            map.eatPlants();
+            map.breeding(modifications);
+            map.spawnPlants(modifications);
 
-            animals = map.deleteDeadAnimals(this.animals); // tu sie zmienia l zwierzat
+            aliveAnimalsCount = map.getAnimalsList().size();
+            deadAnimalsCount = deadAnimals.size();
+            map.decreaceAllAnimalsEnergy();
+            dayNum++;
 
-            for (Animal animal : animals) {
-                map.moveAnimal(animal);
+            System.out.println(
+                    "zwierzaki: "+map.getAnimalsList().toString());
+
+            //tylko do debugowania
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
-
-            int eatedPlants = (int) map.eatPlants();
-
-            map.breeding(); // tu sie zmienia l zwierzat
-
-            map.spawnPlants();
-
-            modifications.spawningPlants().spawnAllPlants(map);
-            mod.getSpawningPlants().spawnAllPlants(map);
-
-
         }
     }
-
 
 }
 

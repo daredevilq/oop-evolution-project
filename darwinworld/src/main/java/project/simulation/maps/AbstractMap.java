@@ -4,6 +4,7 @@ import project.RandomGen;
 import project.Vector2D;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
+import project.simulation.config.Modifications;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
@@ -12,71 +13,42 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class AbstractMap implements IWorldMap {
-
     private final MapSettings mapSettings;
-    private final MapInit mapInitialize;
+
 
 
 
     private final Boundary boundary;
-//    private static double JUNGLE_RATIO = 0.2;
-//    private final int fieldsNumber;
+    private Boundary jungleBoundary;
 
 
-    private Map<Vector2D, List<Animal>> mapAnimals = new HashMap<>();
+//    private Map<Vector2D, List<Animal>> mapAnimals = new HashMap<>();
+    private List<Animal> animalsList = new ArrayList<>();
     private Map<Vector2D, Grass> mapPlants = new HashMap<>();
 
 
-//    private long diedAnimalsSumDaysAlive = 0;
-//    private final int genomeSize;
-
-
-//    private Vector2D jungleLowerleft = new Vector2D(0, 0);
-//    private Vector2D jungleUpperRight = new Vector2D(0, 0);
-//
-    private long plantsCount = 0;
-    private long dayNum = 0;
-    private long animalsCount;
-    private long diedAnimalsCount = 0;
 
 
 
-    public AbstractMap(MapSettings mapSettings, MapInit mapInitialize) {
+
+    public AbstractMap(MapSettings mapSettings,Modifications modifications, MapInit mapInitialize) {
         this.mapSettings = mapSettings;
-        this.mapInitialize = mapInitialize;
-
         this.boundary = new Boundary(new Vector2D(0, 0), new Vector2D(mapSettings.width()-1, mapSettings.height()-1));
 
-//        randomlyPlaceAnimals(mapInitialize.initialAnimalsNumber());
-        mapAnimals = this.mapInitialize.randomlyPlaceAnimals(mapSettings, boundary);
-        spawnPlants();
-
-//        this.vegetationDynamicsType = mapSettings.vegetationDynamicsType();
-//        this.mutationType = mapSettings.mutationType();
-//        this.animalBehavior = mapSettings.animalBehavior();
-//
-//        //Obliczam współrzędne dżungli kiedy mamy opcję z równikiem
-//        if (vegetationDynamicsType == VegetationDynamicsType.EQUATOR) {
-//            int jungleWidth = (int) Math.round(width * JUNGLE_RATIO);
-//            if (jungleWidth % 2 != width % 2) jungleWidth += 1;
-//
-//            int jungleMiddle = width / 2;
-//            this.jungleLowerleft = new Vector2D(mapLowerLeft.getX(), jungleMiddle - jungleWidth / 2 );
-//
-//            this.jungleUpperRight = new Vector2D(mapUpperRight.getX(), jungleMiddle + jungleWidth / 2 );
-
-//            this.fieldsNumberInJungle = (jungleUpperRight.getX() - jungleLowerleft.getX() + 1)
-//                    * (jungleUpperRight.getY() - jungleLowerleft.getY()) + 1;
-//        }
-
+        this.jungleBoundary = Boundary.computeJungleBounds(mapSettings, boundary);
+        animalsList = mapInitialize.randomlyPlaceAnimals(mapSettings, boundary);
+        spawnPlants(modifications);
     }
 
 
     @Override
     public Map<Vector2D, Grass> getMapPlants() {
+
         return Collections.unmodifiableMap(mapPlants);
     }
-
+    public List<Animal> getAnimalsList() {
+        return Collections.unmodifiableList(animalsList);
+    }
     @Override
     public Boundary getBoundary() {
         return boundary;
@@ -87,106 +59,76 @@ public abstract class AbstractMap implements IWorldMap {
         return mapSettings;
     }
 
-
-//    public void spawnPlants() {
-//        int fieldsNumber = (boundary.upperRightCorner().getX() - boundary.lowerLeftCorner().getX()) * (boundary.upperRightCorner().getY() - boundary.lowerLeftCorner().getY());
-//
-//        for (int i = 0; i < (int) Math.sqrt(fieldsNumber) & plantsCount < fieldsNumber; i++) {
-//
-//            Vector2D position = mapSettings.spawningPlants().spawnPlant();
-//
-//            Grass grass = new Grass(position, mapSettings.grassEnergy());
-//            mapPlants.put(position, grass);
-//            plantsCount += 1;
-//        }
-//    }
-
-    public void placeAnimal(Animal animal){
-        if (canMoveTo(animal.getPosition())){
-            List<Animal> animalsAtPosition = mapAnimals.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>());
-            animalsAtPosition.add(animal);
-        }
+    @Override
+    public Boundary getJungleBoundary() {
+        return jungleBoundary;
     }
 
-    public void removeAnimal(Animal animal){
-        List<Animal> animalsAtPosition = mapAnimals.computeIfAbsent(animal.getPosition(), k -> new ArrayList<>());
-        animalsAtPosition.remove(animal);
+
+    public List<Animal> animalsAtPosition(Vector2D position) {
+        return this.animalsList.stream()
+                .filter(animal -> animal.getPosition().equals(position))
+                .collect(Collectors.toList());
     }
 
-    //    public void eatPlants(HashMap <Vector2D, Animal> mapAnimals, HashMap <Vector2D, Grass> mapPlants){
-    public int eatPlants(Map<Vector2D, List<Animal>> mapAnimals, Map<Vector2D, Grass> mapPlants){
 
-        int eatedPlants = 0;
+    @Override
+    public void eatPlants(){
+
         List<Grass> grassToRemove = new ArrayList<>();
 
         for (Grass grass : mapPlants.values()){
 
             Vector2D grassPosistion = grass.getPosition();
+            List<Animal> animalsOnField = animalsAtPosition(grassPosistion);
 
-            if (mapAnimals.containsKey(grassPosistion) & mapAnimals.containsKey(grassPosistion)) {
-                List<Animal> animalsOnField = mapAnimals.get(grassPosistion);
-                if (!animalsOnField.isEmpty()) {
+            if (!animalsOnField.isEmpty()) {
+                Animal dominantAnimal = animalsOnField.stream() // zwróć kandydata do zjedzenia rośliny
+                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
+                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
+                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
+                                .thenComparing(animal -> Math.random()))
+                        .findFirst()
+                        .orElse(null);
 
-                    Animal dominantAnimal = animalsOnField.stream() // zwróć kandydata do zjedzenia rośliny
-                            .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
-                                    .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
-                                    .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
-                                    .thenComparing(animal -> Math.random()))
-                            .findFirst()
-                            .orElse(null);
-
-                    if (dominantAnimal != null) {
-                        dominantAnimal.eatPlant(grass.getEnergy());
-                        grassToRemove.add(grass);
-                    }
+                if (dominantAnimal != null) {
+                    dominantAnimal.eatPlant(grass.getEnergy());
+                    grassToRemove.add(grass);
                 }
+
             }
         }
 
         for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona
             mapPlants.remove(grass.getPosition());
-            eatedPlants += 1;
-        }
-        return eatedPlants;
-    }
 
+        }
+
+    }
+    @Override
+    public void moveAnimals(){
+        if (!animalsList.isEmpty()) {
+            for (Animal animal : this.animalsList)
+                moveAnimal(animal);
+        }else
+            System.out.println("pusta lista");
+    }
 
     public void moveAnimal(Animal animal) {
         Vector2D oldPosition = animal.getPosition();
-
-        if (animal.getEnergy() > mapSettings.moveEnergy())
+        if (animal.getEnergy() >= mapSettings.moveEnergy())
             animal.move(this);
-
-        Vector2D newPositon = animal.getPosition();
-
-        if (!newPositon.equals(oldPosition)){
-            removeAnimal(animal);
-            placeAnimal(animal);
-        }
     }
 
+    @Override
+    public void deleteDeadAnimals(List<Animal> deadAnimalsList) {
+        List<Animal> newDeadAnimals = animalsList.stream()
+                .filter(animal -> animal.getEnergy() <= 0)
+                .toList();
 
-    public List<Animal> deleteDeadAnimals(List<Animal> animals) {
-        int allAnimals = animals.size();
-
-        List<Animal> deadAnimals = animals.stream()
-                .filter(animal -> animal.getEnergy() < mapSettings.moveEnergy())
-                .collect(Collectors.toList());
-
-
-        for (Animal deadAnimal : deadAnimals){
-            removeAnimal(deadAnimal);
-            animals.remove(deadAnimal);
-        }
-
-
-
-
-        int alivedAnimals = mapAnimals.size();
-        diedAnimalsCount += (allAnimals - alivedAnimals);
-        animalsCount = alivedAnimals;
-
-        return aliveAnimals;
+        animalsList.removeIf(newDeadAnimals::contains);
+        //animalsList.removeIf(animal -> newDeadAnimals.contains(animal)); to jest to samo co wyzej
+        deadAnimalsList.addAll(newDeadAnimals);
     }
 
     @Override
@@ -195,4 +137,29 @@ public abstract class AbstractMap implements IWorldMap {
     @Override
     public abstract Vector2D getNextPosition(Vector2D newPositnion);
 
+
+    @Override
+    public void spawnPlants(Modifications modification){
+        modification.spawningPlants().spawnAllPlants(this, mapPlants, mapSettings);
+    }
+
+    @Override
+    public void breeding(Modifications modification){
+      this.animalsList = modification.breeding().breed(animalsList, mapSettings.startEnergy());
+    }
+
+    public boolean isOccupied(Vector2D position){
+        return !animalsAtPosition(position).isEmpty();
+    }
+
+    public boolean isOccupiedByPlant(Vector2D position){
+        return mapPlants.containsKey(position);
+    }
+
+    @Override
+    public void decreaceAllAnimalsEnergy(){
+        for (Animal animal : animalsList){
+            animal.decreaseEnergyBy1();
+        }
+    }
 }

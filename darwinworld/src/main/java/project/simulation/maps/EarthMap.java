@@ -3,6 +3,7 @@ package project.simulation.maps;
 import project.Vector2D;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
+import project.simulation.config.Modifications;
 import project.simulation.fetures.AnimalBehavior;
 import project.simulation.fetures.MapType;
 import project.simulation.fetures.MutationType;
@@ -16,8 +17,8 @@ import java.util.Map;
 public class EarthMap extends AbstractMap {
 
 
-    public EarthMap(MapSettings mapSettings, MapInit mapInit) {
-        super(mapSettings, mapInit);
+    public EarthMap(MapSettings mapSettings, Modifications modifications, MapInit mapInitialize) {
+        super(mapSettings, modifications, mapInitialize);
     }
 
     //Metoda zwraca następną pozycję zwierzęcia po wykonaniu ruchu w przypadku mapy zakrzywionej horyzontalnie
@@ -41,20 +42,13 @@ public class EarthMap extends AbstractMap {
         else if (x < minX)
             x += mapWidth;
 
-//        if (y > maxY)
-//            y = currPosition.getY();
-//        else if (y < minY)
-//            y = currPosition.getY();
-
         return new Vector2D(x, y);
 
     }
 
     @Override
     public boolean canMoveTo(Vector2D position){
-        Vector2D upperRight = getBoundary().upperRightCorner();
-        Vector2D lowerLeft = getBoundary().lowerLeftCorner();
-        return position.getY() <= upperRight.getY() & position.getY() >= lowerLeft.getY();
+        return position.follows(this.getBoundary().lowerLeftCorner()) && position.precedes(this.getBoundary().upperRightCorner());
     }
 
 

@@ -23,5 +23,10 @@ public class Grass extends WorldElement {
         return energy;
     }
 
-
+    @Override
+    public String toString() {
+        return "Grass{" +
+                "position=" + position +
+                '}';
+    }
 }

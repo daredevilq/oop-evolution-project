@@ -1,5 +1,7 @@
 package project;
 
+import project.simulation.maps.Boundary;
+import project.simulation.maps.IWorldMap;
 import project.simulation.worldelements.IWorldElement;
 import project.simulation.worldelements.WorldElement;
 
@@ -43,6 +45,21 @@ public class RandomGen {
 //            randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
 //        }
 
+        return randomPosition;
+    }
+
+    public static Vector2D randomAdjacentPosition(IWorldMap map, Vector2D position){
+        int[] digits = {-1,0,1};
+        int randomX = digits[randInt(2)];
+        int randomY = digits[randInt(2)];
+
+        Vector2D randomPosition = new Vector2D(position.getX()+randomX, position.getY()+randomY);
+
+        while (!map.canMoveTo(randomPosition)){
+            randomX = digits[randInt(2)];
+            randomY = digits[randInt(2)];
+            randomPosition = new Vector2D(position.getX()+randomX, position.getY()+randomY);
+        }
         return randomPosition;
     }
 
