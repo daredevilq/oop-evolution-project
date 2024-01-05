@@ -11,19 +11,12 @@ public record MapSettings(
         int grassEnergy,
         int genomeSize,
         int startAnimals,
-        int startPlants,
+//        int startPlants,
         int breedEnergy,
-        int minMutations,
-        int maxMutations,
+//        int minMutations,
+//        int maxMutations,
         int plantsPerDay,
         double JUNGLE_MAP_RATIO
-
-//        MapType mapType,
-//        AnimalBehavior animalBehavior,
-//        VegetationDynamicsType vegetationDynamicsType,
-//        MutationType mutationType
-
-
 
         ) {
 }

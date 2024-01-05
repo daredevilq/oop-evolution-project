@@ -22,14 +22,14 @@ public class Simulation implements Runnable{
     }
 
 
-    public void run(){
+    public void run() throws IllegalStateException {
 
         while (true){
             map.deleteDeadAnimals(this.deadAnimals);
             map.moveAnimals();
             map.eatPlants();
             map.breeding(modifications);
-            map.spawnPlants(modifications);
+            map.spawnPlants();
 
             aliveAnimalsCount = map.getAnimalsList().size();
             deadAnimalsCount = deadAnimals.size();

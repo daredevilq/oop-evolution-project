@@ -20,9 +20,9 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
             return RandomGen.randomFreePlace(map.getJungleBoundary().lowerLeftCorner(), map.getJungleBoundary().upperRightCorner());
         } else {
 
-            Vector2D randomPosition =  RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(),map.getJungleBoundary().upperRightCorner());
+            Vector2D randomPosition =  RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(),map.getBoundary().upperRightCorner());
             while(randomPosition.follows(map.getJungleBoundary().lowerLeftCorner()) && randomPosition.precedes(map.getJungleBoundary().upperRightCorner())){
-                randomPosition =  RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(),map.getJungleBoundary().upperRightCorner());
+                randomPosition =  RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(),map.getBoundary().upperRightCorner());
             }
             return randomPosition;
         }

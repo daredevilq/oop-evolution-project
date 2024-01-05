@@ -12,15 +12,15 @@ import java.util.Map;
 public abstract class SpawnAllPlants implements SpawningPlants{
 
     @Override
-    public void spawnAllPlants(IWorldMap map,Map <Vector2D, Grass> mapPlants,MapSettings mapSettings){
+    public void spawnAllPlants(IWorldMap map,Map <Vector2D, Grass> mapPlants, int plantsToSpawnNumber, int grassEnergy){
 
 
         int fieldsNumber = (map.getBoundary().upperRightCorner().getX() - map.getBoundary().lowerLeftCorner().getX()) * (map.getBoundary().upperRightCorner().getY() - map.getBoundary().lowerLeftCorner().getY());
-        int plantsToSpawn = Math.min(mapSettings.plantsPerDay(), fieldsNumber - mapPlants.size());
+        int plantsToSpawn = Math.min(plantsToSpawnNumber, fieldsNumber - mapPlants.size());
         for (int i = 0; i < plantsToSpawn; i++) {
 
             Vector2D position = spawnPlant(map,mapPlants);
-            Grass grass = new Grass(position, mapSettings.grassEnergy());
+            Grass grass = new Grass(position, grassEnergy);
             mapPlants.put(position, grass);
         }
     }
