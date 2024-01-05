@@ -32,7 +32,7 @@ public interface IWorldMap {
     void moveAnimals();
     void deleteDeadAnimals(List<Animal> deadAnimals);
 
-    void spawnPlants(Modifications modifications);
+    void spawnPlants();
     Boundary getJungleBoundary();
 
     void decreaceAllAnimalsEnergy();

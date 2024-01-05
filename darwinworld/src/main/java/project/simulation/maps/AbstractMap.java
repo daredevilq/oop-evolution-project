@@ -1,6 +1,5 @@
 package project.simulation.maps;
-import project.MapDirection;
-import project.RandomGen;
+
 import project.Vector2D;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
@@ -9,35 +8,25 @@ import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public abstract class AbstractMap implements IWorldMap {
     private final MapSettings mapSettings;
-
-
-
-
+    private final Modifications modifications;
     private final Boundary boundary;
-    private Boundary jungleBoundary;
-
-
-//    private Map<Vector2D, List<Animal>> mapAnimals = new HashMap<>();
+    private final Boundary jungleBoundary;
     private List<Animal> animalsList = new ArrayList<>();
     private Map<Vector2D, Grass> mapPlants = new HashMap<>();
 
 
-
-
-
-
     public AbstractMap(MapSettings mapSettings,Modifications modifications, MapInit mapInitialize) {
         this.mapSettings = mapSettings;
+        this.modifications = modifications;
         this.boundary = new Boundary(new Vector2D(0, 0), new Vector2D(mapSettings.width()-1, mapSettings.height()-1));
 
         this.jungleBoundary = Boundary.computeJungleBounds(mapSettings, boundary);
         animalsList = mapInitialize.randomlyPlaceAnimals(mapSettings, boundary);
-        spawnPlants(modifications);
+        spawnPlants();
     }
 
 
@@ -106,18 +95,20 @@ public abstract class AbstractMap implements IWorldMap {
 
     }
     @Override
-    public void moveAnimals(){
-        if (!animalsList.isEmpty()) {
-            for (Animal animal : this.animalsList)
-                moveAnimal(animal);
-        }else
-            System.out.println("pusta lista");
+    public void moveAnimals() {
+        if (animalsList.isEmpty()) {
+            throw new IllegalStateException("The animalsList is empty.");
+        }
+        for (Animal animal : this.animalsList) {
+            moveAnimal(animal);
+        }
     }
+
 
     public void moveAnimal(Animal animal) {
         Vector2D oldPosition = animal.getPosition();
         if (animal.getEnergy() >= mapSettings.moveEnergy())
-            animal.move(this);
+            animal.move(this, modifications.animalBehavior());
     }
 
     @Override
@@ -139,13 +130,13 @@ public abstract class AbstractMap implements IWorldMap {
 
 
     @Override
-    public void spawnPlants(Modifications modification){
-        modification.spawningPlants().spawnAllPlants(this, mapPlants, mapSettings);
+    public void spawnPlants(){
+        modifications.spawningPlants().spawnAllPlants(this, mapPlants, mapSettings.plantsPerDay(), mapSettings.grassEnergy());
     }
 
     @Override
     public void breeding(Modifications modification){
-      this.animalsList = modification.breeding().breed(animalsList, mapSettings.startEnergy());
+      this.animalsList = modification.breeding().breed(animalsList, mapSettings.startEnergy(), mapSettings.breedEnergy());
     }
 
     public boolean isOccupied(Vector2D position){

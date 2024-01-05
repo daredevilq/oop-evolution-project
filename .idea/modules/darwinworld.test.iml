@@ -3,7 +3,10 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_17">
     <output-test url="file://$MODULE_DIR$/../../darwinworld/build/classes/java/test" />
     <exclude-output />
-    <content url="file://$MODULE_DIR$/../../darwinworld/src/test" />
+    <content url="file://$MODULE_DIR$/../../darwinworld/src/test">
+      <sourceFolder url="file://$MODULE_DIR$/../../darwinworld/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/../../darwinworld/src/test/resources" type="java-test-resource" />
+    </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="darwinworld.main" />

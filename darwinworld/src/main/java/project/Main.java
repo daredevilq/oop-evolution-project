@@ -23,12 +23,16 @@ public class Main {
     public static void main(String[] args) {
 
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed());
-        MapSettings mapSettings = new MapSettings(10, 10, 20, 2, 1, 7, 2, 10, 1, 0, 3, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(10, 10, 20, 2, 1, 7, 2, 1, 10, 0.2);
 
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
         Simulation simulation = new Simulation(map, modifications);
 
-
-        simulation.run();
+        try {
+            simulation.run();
+        } catch (IllegalStateException e) {
+            System.out.println(e);
+            System.exit(1);
+        }
     }
 }

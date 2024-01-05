@@ -15,7 +15,7 @@ public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
     public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlant) {
 
 
-        Vector2D randomPosition = RandomGen.randomFreePlace(map.getJungleBoundary().lowerLeftCorner(), map.getJungleBoundary().upperRightCorner());
+        Vector2D randomPosition = RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(), map.getBoundary().upperRightCorner());
 
         if (RandomGen.random()<=0.8){
             int randomGrassIndex = RandomGen.randInt(mapPlant.size()-1);

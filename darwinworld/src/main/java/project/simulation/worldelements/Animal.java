@@ -5,6 +5,7 @@ import project.RandomGen;
 import project.Vector2D;
 import project.simulation.config.MapSettings;
 import project.simulation.maps.IWorldMap;
+import project.simulation.maps.animalBehavior.AnimalBehavior;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,7 @@ public class Animal extends WorldElement{
         this.direction = direction;
         this.energy = energy;
         this.genotype = genotype;
-        this.currentGeneIndex = RandomGen.randInt(0, genotype.size() - 1);
+        this.currentGeneIndex = 0;
         this.age = 0;
         this.childrenCounter = 0;
     }
@@ -42,14 +43,7 @@ public class Animal extends WorldElement{
         return position;
     }
 
-//    public void setNextGeneIndex() {
-//        this.currentGeneIndex++;
-//        currentGeneIndex = currentGeneIndex % genotype.size();
-//    }
-//
-//    public void setRandomGenIndex() {
-//        this.currentGeneIndex = RandomGen.randInt(0, genotype.size() - 1);
-//    }
+
     public MapDirection getDirection() {
         return direction;
     }
@@ -80,26 +74,8 @@ public class Animal extends WorldElement{
     // map.getAnimalBehavior() - zwraca aktualny wariant zachowania zwierzaka podany w konfikuracji MapSettings
     // zrobilem co switchem, w sumie nie wiem jak inaczej uwzglednic te warianty, moze lazarz podpowie nam w poniedzialek
     // jest 20% szans na szalenstwo
-
-//    public void move(IWorldMap map) {
-//
-//        this.direction = this.direction.rotate(currentGeneIndex);
-//        Vector2D currPosition = this.position;
-//        Vector2D newPosition = map.getNextPosition(this.position, direction.toUnitVector());
-//
-//        if (currPosition == newPosition){
-//            this.direction = this.direction.rotate(3); // obroc gdy zwierze sie nie poruszylo
-//        }
-//
-//        this.position = newPosition;
-//        this.age++;
-//        this.energy -= map.getMapSettings().moveEnergy();
-//
-//        this.currentGeneIndex = map.getMapSettings().animalBehavior(currentGeneIndex, map.getMapSettings().genomeSize());
-//    }
-
-    public void move(IWorldMap map){
-        this.direction = this.direction.rotate(currentGeneIndex);
+    public void move(IWorldMap map, AnimalBehavior animalBehavior){
+        this.direction = this.direction.rotate(genotype.get(currentGeneIndex));
         Vector2D currPosition = this.position;
 
         Vector2D newPosition = currPosition.add(direction.toUnitVector());
@@ -114,6 +90,8 @@ public class Animal extends WorldElement{
 
         this.age++;
         this.energy -= map.getMapSettings().moveEnergy();
+//        this.currentGeneIndex = (currentGeneIndex + 1) % genotype.size();
+        this.currentGeneIndex = animalBehavior.SetGeneIndex(currentGeneIndex, genotype.size());
     }
 
     public void eatPlant(int energy){
@@ -121,9 +99,9 @@ public class Animal extends WorldElement{
         this.atePlants += 1;
     }
 
-    public void changeStatsAfterBreeding(int energy){
+    public void changeStatsAfterBreeding(int energyLost){
         this.childrenCounter += 1;
-        this.energy -= energy;
+        this.energy -= energyLost;
     }
 
 
@@ -131,7 +109,7 @@ public class Animal extends WorldElement{
         int genotypeSize = genotype.size();
 
         double energyRatio = (double) this.getEnergy() / (this.getEnergy() + partner.getEnergy());
-
+        System.out.println(energyRatio);
 
         boolean takeLeft = new Random().nextBoolean();
 
@@ -161,7 +139,7 @@ public class Animal extends WorldElement{
         int numberOfMutations = RandomGen.randInt(genotype.size()); // Losowa liczba mutacji
 
         for (int i = 0; i < numberOfMutations; i++) {
-            int mutationIndex = RandomGen.randInt(genotype.size()); // Losowy indeks do mutacji
+            int mutationIndex = RandomGen.randInt(genotype.size()-1); // Losowy indeks do mutacji
             int newGeneValue = RandomGen.randInt(MIN_GENE_NUM, MAX_GENE_NUM); // Losowa nowa wartość genu
             childGenotype.set(mutationIndex, newGeneValue);
         }
