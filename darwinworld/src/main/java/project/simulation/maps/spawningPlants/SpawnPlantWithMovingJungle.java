@@ -1,12 +1,15 @@
 package project.simulation.maps.spawningPlants;
 
+import project.MapDirection;
 import project.RandomGen;
 import project.Vector2D;
+import project.simulation.fetures.MapAreaType;
 import project.simulation.maps.Boundary;
 import project.simulation.maps.IWorldMap;
 import project.simulation.worldelements.Grass;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
@@ -14,25 +17,30 @@ public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
     @Override
     public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlant) {
 
-
-        Vector2D randomPosition = RandomGen.randomFreePlace(map.getBoundary().lowerLeftCorner(), map.getBoundary().upperRightCorner());
-
         if (RandomGen.random()<=0.8){
-            int randomGrassIndex = RandomGen.randInt(mapPlant.size()-1);
-            //to jest chyba najglupszy sposob zeby to robic, ale tez najprostszy XDDD
-            //jest problem bo mamy HashMape a nie tablice, wiec nie mozna wybrac losowego indeksu z tablicy
-            //a zeby to zrobic trzeba by zrobic tablice z kluczami i wtedy losowac indeks z tej tablicy
-            //ale to by bylo nieoptymalne bo trzeba by to robic za kazdym razem jak dodajemy nowa trawe
+            List<Vector2D> adjacentFreeAreas = map.getFreePlaces().keySet().stream()
+                    .filter(entry -> adjacentToAnimal(entry, mapPlant))
+                    .toList();
 
-            for (Vector2D key : mapPlant.keySet()) {
-
-                if (randomGrassIndex == 0) {
-                    randomPosition = key;
-                    break;
-                }
-                randomGrassIndex--;
+            if (!adjacentFreeAreas.isEmpty()) {
+                return pickRandomVectorFromList(adjacentFreeAreas, map);
+            }
+            else{
+                return generateVectorInBoundaries(map, map.getBoundary());
             }
         }
-        return RandomGen.randomAdjacentPosition(map, randomPosition);
+
+        return generateVectorInBoundaries(map, map.getBoundary());
     }
+    private boolean adjacentToAnimal(Vector2D position,  Map<Vector2D, Grass> mapPlant){
+        for (MapDirection direction : MapDirection.values()) {
+            Vector2D adjacentPosition = position.add(direction.toUnitVector());
+            if (mapPlant.containsKey(adjacentPosition)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
 }

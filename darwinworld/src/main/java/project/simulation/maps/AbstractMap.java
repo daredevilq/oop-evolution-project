@@ -4,6 +4,7 @@ import project.Vector2D;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
+import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
@@ -17,7 +18,7 @@ public abstract class AbstractMap implements IWorldMap {
     private final Boundary jungleBoundary;
     private List<Animal> animalsList = new ArrayList<>();
     private Map<Vector2D, Grass> mapPlants = new HashMap<>();
-
+    private Map<Vector2D, MapAreaType> freePlaces = new HashMap<>();
 
     public AbstractMap(MapSettings mapSettings,Modifications modifications, MapInit mapInitialize) {
         this.mapSettings = mapSettings;
@@ -26,7 +27,8 @@ public abstract class AbstractMap implements IWorldMap {
 
         this.jungleBoundary = Boundary.computeJungleBounds(mapSettings, boundary);
         animalsList = mapInitialize.randomlyPlaceAnimals(mapSettings, boundary);
-        spawnPlants();
+        spawnInitPlants();
+        computeFreePlaces();
     }
 
 
@@ -53,6 +55,9 @@ public abstract class AbstractMap implements IWorldMap {
         return jungleBoundary;
     }
 
+    public Map<Vector2D, MapAreaType> getFreePlaces() {
+        return Collections.unmodifiableMap(freePlaces);
+    }
 
     public List<Animal> animalsAtPosition(Vector2D position) {
         return this.animalsList.stream()
@@ -88,9 +93,10 @@ public abstract class AbstractMap implements IWorldMap {
             }
         }
 
-        for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona
+        for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona i dodaje do wolnych miejsc
             mapPlants.remove(grass.getPosition());
-
+            MapAreaType type = (grass.getPosition().precedes(jungleBoundary.upperRightCorner()) && grass.getPosition().follows(jungleBoundary.lowerLeftCorner())) ? MapAreaType.JUNGLE : MapAreaType.NORMAL;
+            freePlaces.put(grass.getPosition(), type);
         }
 
     }
@@ -133,10 +139,13 @@ public abstract class AbstractMap implements IWorldMap {
     public void spawnPlants(){
         modifications.spawningPlants().spawnAllPlants(this, mapPlants, mapSettings.plantsPerDay(), mapSettings.grassEnergy());
     }
+    public void spawnInitPlants(){
+        modifications.spawningPlants().spawnAllPlants(this, mapPlants, mapSettings.startPlants(), mapSettings.grassEnergy());
+    }
 
     @Override
     public void breeding(Modifications modification){
-      this.animalsList = modification.breeding().breed(animalsList, mapSettings.startEnergy(), mapSettings.breedEnergy());
+      this.animalsList = modification.breeding().breed(animalsList, mapSettings.startEnergy(), mapSettings.breedEnergy(), modification.animalMutation());
     }
 
     public boolean isOccupied(Vector2D position){
@@ -152,5 +161,29 @@ public abstract class AbstractMap implements IWorldMap {
         for (Animal animal : animalsList){
             animal.decreaseEnergyBy1();
         }
+    }
+
+    public void computeFreePlaces(){
+        freePlaces.clear();
+        for (int i = 0; i < mapSettings.width(); i++) {
+            for (int j = 0; j < mapSettings.height(); j++) {
+                Vector2D position = new Vector2D(i,j);
+                if (!mapPlants.containsKey(position)){
+                    MapAreaType type = (position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner())) ? MapAreaType.JUNGLE : MapAreaType.NORMAL;
+                    freePlaces.put(position, type);
+                }
+            }
+        }
+    }
+    public void removeFreePlace(Vector2D position){
+        freePlaces.remove(position);
+    }
+
+    public void addAnimal(Animal animal){
+        animalsList.add(animal);
+    }
+
+    public void addPlant(Grass grass){
+        mapPlants.put(grass.getPosition(), grass);
     }
 }

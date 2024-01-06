@@ -41,9 +41,6 @@ public class RandomGen {
 
         Vector2D randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
 
-//        while (mapElements.containsKey(randomPosition)) {
-//            randomPosition = Vector2D.randomVector(minX, maxX, minY, maxY);
-//        }
 
         return randomPosition;
     }

@@ -4,16 +4,16 @@ import project.MapDirection;
 import project.RandomGen;
 import project.Vector2D;
 import project.simulation.config.MapSettings;
+import project.simulation.config.Modifications;
 import project.simulation.maps.IWorldMap;
 import project.simulation.maps.animalBehavior.AnimalBehavior;
+import project.simulation.maps.animalMutations.AnimalMutation;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 public class Animal extends WorldElement{
-    private static final int MIN_GENE_NUM = 0;
-    private static final int MAX_GENE_NUM = 7;
+    public static final int MIN_GENE_NUM = 0;
+    public static final int MAX_GENE_NUM = 7;
 
 //    MapSettings settings;
     private Vector2D position;
@@ -22,10 +22,9 @@ public class Animal extends WorldElement{
     private final List<Integer> genotype;
     private int currentGeneIndex;
     private int age;
-    private int atePlants = 0;
+    private int eatenPlants;
     private int childrenCounter;
-
-
+    private List<Animal> childrenList = new ArrayList<>();
 
 
     public Animal(Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
@@ -37,6 +36,7 @@ public class Animal extends WorldElement{
         this.currentGeneIndex = 0;
         this.age = 0;
         this.childrenCounter = 0;
+        this.eatenPlants = 0;
     }
 
     public Vector2D getPosition() {
@@ -68,44 +68,76 @@ public class Animal extends WorldElement{
         return childrenCounter;
     }
 
+    public List<Animal> getChildrenList() {
+        return Collections.unmodifiableList(childrenList);
+    }
 
-    //Metoda rusza zwierzaka na nastepna pozycje
-    // uzwzgledniajac przy tym losowosc zachowania zwierzaka (MADNESS / PREDESTINATION) jeden z wariantow
-    // map.getAnimalBehavior() - zwraca aktualny wariant zachowania zwierzaka podany w konfikuracji MapSettings
-    // zrobilem co switchem, w sumie nie wiem jak inaczej uwzglednic te warianty, moze lazarz podpowie nam w poniedzialek
-    // jest 20% szans na szalenstwo
+    public void setChildrenList(List<Animal> childrenList) {
+        this.childrenList = childrenList;
+    }
+
+    //    Po zatrzymaniu programu można oznaczyć jednego zwierzaka jako wybranego do śledzenia.
+//    Od tego momentu (do zatrzymania śledzenia) UI powinien przekazywać nam informacje o jego statusie i historii:
+//    ile posiada dzieci,
+//    ile posiada potomków (niekoniecznie będących bezpośrednio dziećmi),
+
+    public int computeNumberOfDescendants() {
+        Set<Animal> visitedAnimals = new HashSet<>();
+        return countRecursive(this, visitedAnimals);
+    }
+
+    private int countRecursive(Animal currentAnimal, Set<Animal> visitedAnimals) {
+        visitedAnimals.add(currentAnimal);
+        int successorsCount = 0;
+
+        for (Animal child : currentAnimal.childrenList) {
+            if (!visitedAnimals.contains(child)) {
+                successorsCount++; // Liczymy dziecko jako następnika
+                successorsCount += countRecursive(child, visitedAnimals);
+            }
+        }
+        return successorsCount;
+    }
+
     public void move(IWorldMap map, AnimalBehavior animalBehavior){
+        System.out.println("rotacja z: " + this.direction.toString());
         this.direction = this.direction.rotate(genotype.get(currentGeneIndex));
         Vector2D currPosition = this.position;
+        System.out.println("do: " + this.direction.toString() + " indexValue: " + genotype.get(currentGeneIndex).toString());
 
         Vector2D newPosition = currPosition.add(direction.toUnitVector());
-
+        System.out.println("wektor przemieszczenia: " + direction.toUnitVector().toString() + " direction: " + direction.toString());
         if (map.canMoveTo(newPosition)) {
             newPosition = map.getNextPosition(newPosition);
             this.position = newPosition;
+            System.out.println("IF Zwierzak przeszedł na pozycję: " + newPosition.toString() + " z pozycji: " + currPosition.toString());
         } else {
-            this.direction = this.direction.rotate(3);
+            MapDirection old_direcrtion = this.direction;
+            this.direction = this.direction.rotate(4);
             this.position = currPosition;
+            System.out.println("ELSE Zwierzak został na pozycji:  " + currPosition.toString() );
+            System.out.println("i zmienił orientacja z: " + old_direcrtion.toString() + " na: " + this.direction.toString());
         }
-
+        System.out.println(this.toString());
         this.age++;
         this.energy -= map.getMapSettings().moveEnergy();
-//        this.currentGeneIndex = (currentGeneIndex + 1) % genotype.size();
+
         this.currentGeneIndex = animalBehavior.SetGeneIndex(currentGeneIndex, genotype.size());
     }
 
     public void eatPlant(int energy){
         this.energy += energy;
-        this.atePlants += 1;
+        this.eatenPlants += 1;
     }
 
-    public void changeStatsAfterBreeding(int energyLost){
-        this.childrenCounter += 1;
+    public void changeStatsAfterBreeding(int energyLost, Animal child){
         this.energy -= energyLost;
+        this.childrenList.add(child);
+        this.childrenCounter = childrenList.size();
     }
 
 
-    public List<Integer> reproduce(Animal partner) {
+    public List<Integer> reproduce(Animal partner, AnimalMutation mutation) {
         int genotypeSize = genotype.size();
 
         double energyRatio = (double) this.getEnergy() / (this.getEnergy() + partner.getEnergy());
@@ -130,20 +162,22 @@ public class Animal extends WorldElement{
             childGenotype.addAll(this.genotype.subList(genotypeSize - splitIndex, genotypeSize));
         }
 
-        mutate(childGenotype);
-
+        //mutate(childGenotype);
+        mutation.mutate(childGenotype);
         return childGenotype;
     }
 
-    private void mutate(List<Integer> childGenotype) {
-        int numberOfMutations = RandomGen.randInt(genotype.size()); // Losowa liczba mutacji
+    // dodalem interfejs do mutacji bo ona jest jednym z wariantow
 
-        for (int i = 0; i < numberOfMutations; i++) {
-            int mutationIndex = RandomGen.randInt(genotype.size()-1); // Losowy indeks do mutacji
-            int newGeneValue = RandomGen.randInt(MIN_GENE_NUM, MAX_GENE_NUM); // Losowa nowa wartość genu
-            childGenotype.set(mutationIndex, newGeneValue);
-        }
-    }
+//    private void mutate(List<Integer> childGenotype) {
+//        int numberOfMutations = RandomGen.randInt(genotype.size()); // Losowa liczba mutacji
+//
+//        for (int i = 0; i < numberOfMutations; i++) {
+//            int mutationIndex = RandomGen.randInt(genotype.size()-1); // Losowy indeks do mutacji
+//            int newGeneValue = RandomGen.randInt(MIN_GENE_NUM, MAX_GENE_NUM); // Losowa nowa wartość genu
+//            childGenotype.set(mutationIndex, newGeneValue);
+//        }
+//    }
 
     public void decreaseEnergyBy1(){
         this.energy -= 1;
@@ -151,6 +185,8 @@ public class Animal extends WorldElement{
 
     @Override
     public String toString() {
-        return "(" + this.position.toString() + " Energia: " + this.energy + ")";
+        return "(" + this.position.toString() + " Energia: " + this.energy + " Genom: " + this.genotype.toString() + " GenomIndex: "+ this.currentGeneIndex + " Orientation: "+ this.direction.toString() + ")";
     }
+
+
 }

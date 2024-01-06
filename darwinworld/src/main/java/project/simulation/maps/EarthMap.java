@@ -21,7 +21,6 @@ public class EarthMap extends AbstractMap {
         super(mapSettings, modifications, mapInitialize);
     }
 
-    //Metoda zwraca następną pozycję zwierzęcia po wykonaniu ruchu w przypadku mapy zakrzywionej horyzontalnie
     @Override
     public Vector2D getNextPosition(Vector2D newPosition) {
 

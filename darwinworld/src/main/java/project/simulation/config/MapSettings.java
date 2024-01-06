@@ -11,7 +11,7 @@ public record MapSettings(
         int grassEnergy,
         int genomeSize,
         int startAnimals,
-//        int startPlants,
+        int startPlants,
         int breedEnergy,
 //        int minMutations,
 //        int maxMutations,

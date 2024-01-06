@@ -3,6 +3,8 @@ package project.simulation.breeding;
 import org.junit.jupiter.api.Test;
 import project.MapDirection;
 import project.Vector2D;
+import project.simulation.maps.animalMutations.AnimalMutation;
+import project.simulation.maps.animalMutations.DefaultMutation;
 import project.simulation.maps.breeding.ClassicBreed;
 import project.simulation.worldelements.Animal;
 
@@ -47,8 +49,8 @@ public class ClassicBreadTest {
 
         List<Animal> animalList = List.of(animal1, animal2, animal3);
         ClassicBreed classicBreed = new ClassicBreed();
-
-        List<Animal> animals = classicBreed.breed(animalList, 20, 20);
+        AnimalMutation mutation = new DefaultMutation();
+        List<Animal> animals = classicBreed.breed(animalList, 20, 20, mutation);
 
         assertEquals(4, animals.size());
 

@@ -38,6 +38,8 @@ public class Simulation implements Runnable{
 
             System.out.println(
                     "zwierzaki: "+map.getAnimalsList().toString());
+            System.out.println("Liczba roslin: " + map.getMapPlants().size() + " Liczba miejsc wolnych: " + map.getFreePlaces().size());
+            System.out.println("-----------------------------");
 
             //tylko do debugowania
             try {

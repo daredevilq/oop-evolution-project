@@ -4,6 +4,7 @@ import project.Vector2D;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
 import project.simulation.fetures.AnimalBehavior;
+import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
@@ -36,4 +37,13 @@ public interface IWorldMap {
     Boundary getJungleBoundary();
 
     void decreaceAllAnimalsEnergy();
+
+    Map<Vector2D, MapAreaType> getFreePlaces();
+
+    void computeFreePlaces();
+
+    void removeFreePlace(Vector2D randomPosition);
+
+    void addAnimal(Animal animal);
+    void addPlant(Grass grass);
 }
