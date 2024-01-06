@@ -100,25 +100,25 @@ public class Animal extends WorldElement{
     }
 
     public void move(IWorldMap map, AnimalBehavior animalBehavior){
-        System.out.println("rotacja z: " + this.direction.toString());
+        //System.out.println("rotacja z: " + this.direction.toString());
         this.direction = this.direction.rotate(genotype.get(currentGeneIndex));
         Vector2D currPosition = this.position;
-        System.out.println("do: " + this.direction.toString() + " indexValue: " + genotype.get(currentGeneIndex).toString());
+        //System.out.println("do: " + this.direction.toString() + " indexValue: " + genotype.get(currentGeneIndex).toString());
 
         Vector2D newPosition = currPosition.add(direction.toUnitVector());
-        System.out.println("wektor przemieszczenia: " + direction.toUnitVector().toString() + " direction: " + direction.toString());
+        //System.out.println("wektor przemieszczenia: " + direction.toUnitVector().toString() + " direction: " + direction.toString());
         if (map.canMoveTo(newPosition)) {
             newPosition = map.getNextPosition(newPosition);
             this.position = newPosition;
-            System.out.println("IF Zwierzak przeszedł na pozycję: " + newPosition.toString() + " z pozycji: " + currPosition.toString());
+            //System.out.println("IF Zwierzak przeszedł na pozycję: " + newPosition.toString() + " z pozycji: " + currPosition.toString());
         } else {
             MapDirection old_direcrtion = this.direction;
             this.direction = this.direction.rotate(4);
             this.position = currPosition;
-            System.out.println("ELSE Zwierzak został na pozycji:  " + currPosition.toString() );
-            System.out.println("i zmienił orientacja z: " + old_direcrtion.toString() + " na: " + this.direction.toString());
+            //System.out.println("ELSE Zwierzak został na pozycji:  " + currPosition.toString() );
+           // System.out.println("i zmienił orientacja z: " + old_direcrtion.toString() + " na: " + this.direction.toString());
         }
-        System.out.println(this.toString());
+        //System.out.println(this.toString());
         this.energy -= map.getMapSettings().moveEnergy();
 
         this.currentGeneIndex = animalBehavior.SetGeneIndex(currentGeneIndex, genotype.size());
