@@ -36,7 +36,6 @@ public interface IWorldMap {
     void spawnPlants();
     Boundary getJungleBoundary();
 
-    void decreaceAllAnimalsEnergy();
 
     Map<Vector2D, MapAreaType> getFreePlaces();
 
@@ -46,4 +45,10 @@ public interface IWorldMap {
 
     void addAnimal(Animal animal);
     void addPlant(Grass grass);
+
+    boolean isOccupied(Vector2D currentPosition);
+
+    Object objectAt(Vector2D currentPosition);
+
+    void updateDailyStatistics();
 }

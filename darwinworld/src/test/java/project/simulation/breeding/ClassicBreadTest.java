@@ -58,5 +58,49 @@ public class ClassicBreadTest {
         assertEquals(25, animal2.getEnergy());
     }
 
+    @Test
+    public void testBreedingWithTreeAnimalsOnOnePLace(){
+        List<Integer> genotype1 = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
+        List<Integer> genotype2 = new ArrayList<>(List.of(2,2,2,4,5,1,1,1));
+        Animal animal1 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 90, genotype1);
+        Animal animal2 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 30, genotype2);
+        Animal animal3 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 100, genotype1);
 
+        List<Animal> animalList = List.of(animal1, animal2, animal3);
+        ClassicBreed classicBreed = new ClassicBreed();
+        AnimalMutation mutation = new DefaultMutation();
+        List<Animal> animals = classicBreed.breed(animalList, 20, 20, mutation);
+
+        assertEquals(4, animals.size());
+
+        assertEquals(1, animal3.getChildrenCounter());
+        assertEquals(0, animal2.getChildrenCounter());
+        assertEquals(1, animal1.getChildrenCounter());
+    }
+
+    @Test
+    public void testBreedingWithFiveAnimalsOnOnePLaceWithDifferentStats(){
+        List<Integer> genotype1 = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
+        List<Integer> genotype2 = new ArrayList<>(List.of(2,2,2,4,5,1,1,1));
+        Animal animal1 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 90, genotype1);
+        Animal animal2 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 30, genotype2);
+        Animal animal3 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 100, genotype1);
+        Animal animal4 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 99, genotype2);
+        Animal animal5 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 100, genotype1);
+
+        List<Animal> animalList = List.of(animal1, animal2, animal3, animal4, animal5);
+
+        animal3.updateDailyStatsOnAnimal();
+        animal5.updateDailyStatsOnAnimal();
+
+        ClassicBreed classicBreed = new ClassicBreed();
+        AnimalMutation mutation = new DefaultMutation();
+        List<Animal> animals = classicBreed.breed(animalList, 20, 20, mutation);
+
+        assertEquals(6, animals.size());
+
+        assertEquals(1, animal3.getChildrenCounter());
+        assertEquals(0, animal4.getChildrenCounter());
+        assertEquals(1, animal5.getChildrenCounter());
+    }
 }

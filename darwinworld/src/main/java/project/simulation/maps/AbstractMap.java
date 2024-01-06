@@ -1,25 +1,30 @@
 package project.simulation.maps;
 
+import project.MapVisualizer;
 import project.Vector2D;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
 import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
+import project.simulation.worldelements.AnimalComparator;
 import project.simulation.worldelements.Grass;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public abstract class AbstractMap implements IWorldMap {
+
+    private static final AnimalComparator animalComparator = new AnimalComparator();
+
     private final MapSettings mapSettings;
     private final Modifications modifications;
     private final Boundary boundary;
     private final Boundary jungleBoundary;
-    private List<Animal> animalsList = new ArrayList<>();
+    private List<Animal> animalsList;
     private Map<Vector2D, Grass> mapPlants = new HashMap<>();
     private Map<Vector2D, MapAreaType> freePlaces = new HashMap<>();
-
+    private MapVisualizer mapVisualizer;
     public AbstractMap(MapSettings mapSettings,Modifications modifications, MapInit mapInitialize) {
         this.mapSettings = mapSettings;
         this.modifications = modifications;
@@ -29,6 +34,7 @@ public abstract class AbstractMap implements IWorldMap {
         animalsList = mapInitialize.randomlyPlaceAnimals(mapSettings, boundary);
         spawnInitPlants();
         computeFreePlaces();
+        mapVisualizer = new MapVisualizer(this);
     }
 
 
@@ -77,13 +83,24 @@ public abstract class AbstractMap implements IWorldMap {
             List<Animal> animalsOnField = animalsAtPosition(grassPosistion);
 
             if (!animalsOnField.isEmpty()) {
-                Animal dominantAnimal = animalsOnField.stream() // zwróć kandydata do zjedzenia rośliny
-                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
-                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
-                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
-                                .thenComparing(animal -> Math.random()))
-                        .findFirst()
+//                Comparator<Animal> animalComparator = Comparator
+//                        .comparingInt(Animal::getEnergy)
+//                        .reversed()
+//                        .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
+//                        .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
+//                        .thenComparing(animal -> Math.random());
+
+                Animal dominantAnimal = animalsOnField.stream()
+                        .min(animalComparator)
                         .orElse(null);
+
+//                Animal dominantAnimal = animalsOnField.stream() // zwróć kandydata do zjedzenia rośliny
+//                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
+//                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
+//                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
+//                                .thenComparing(animal -> Math.random()))
+//                        .findFirst()
+//                        .orElse(null);
 
                 if (dominantAnimal != null) {
                     dominantAnimal.eatPlant(grass.getEnergy());
@@ -148,20 +165,9 @@ public abstract class AbstractMap implements IWorldMap {
       this.animalsList = modification.breeding().breed(animalsList, mapSettings.startEnergy(), mapSettings.breedEnergy(), modification.animalMutation());
     }
 
-    public boolean isOccupied(Vector2D position){
-        return !animalsAtPosition(position).isEmpty();
-    }
 
-    public boolean isOccupiedByPlant(Vector2D position){
-        return mapPlants.containsKey(position);
-    }
 
-    @Override
-    public void decreaceAllAnimalsEnergy(){
-        for (Animal animal : animalsList){
-            animal.decreaseEnergyBy1();
-        }
-    }
+
 
     public void computeFreePlaces(){
         freePlaces.clear();
@@ -185,5 +191,28 @@ public abstract class AbstractMap implements IWorldMap {
 
     public void addPlant(Grass grass){
         mapPlants.put(grass.getPosition(), grass);
+    }
+
+    public void updateDailyStatistics(){
+        for (Animal animal : animalsList){
+            animal.updateDailyStatsOnAnimal();
+        }
+    }
+    //pomocnicze metody dla MapVisualizer
+    public boolean isOccupied(Vector2D position){
+        return animalsList.stream().anyMatch(animal -> animal.getPosition().equals(position)) || mapPlants.containsKey(position);
+    }
+
+    public Object objectAt(Vector2D position){
+      for (Animal animal : animalsList){
+          if (animal.getPosition().equals(position)){
+              return animal;
+          }
+      }
+        return mapPlants.get(position);
+    }
+
+    public String toString() {
+        return mapVisualizer.draw(this.boundary.lowerLeftCorner(), this.boundary.upperRightCorner());
     }
 }
