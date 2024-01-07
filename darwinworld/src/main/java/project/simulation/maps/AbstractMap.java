@@ -130,8 +130,8 @@ public abstract class AbstractMap implements IWorldMap {
 
     public void moveAnimal(Animal animal) {
         Vector2D oldPosition = animal.getPosition();
-        if (animal.getEnergy() >= mapSettings.moveEnergy())
-            animal.move(this, modifications.animalBehavior());
+        if (animal.getEnergy() >= mapSettings.moveEnergy()){
+        animal.move(this, modifications.animalBehavior());}
     }
 
     @Override
@@ -162,7 +162,7 @@ public abstract class AbstractMap implements IWorldMap {
 
     @Override
     public void breeding(Modifications modification){
-      this.animalsList = modification.breeding().breed(animalsList, mapSettings.startEnergy(), mapSettings.breedEnergy(), modification.animalMutation());
+      this.animalsList = modification.breeding().breed(animalsList, mapSettings.breedEnergy(), mapSettings.readyToBreedEnergy(),modification.animalMutation());
     }
 
 

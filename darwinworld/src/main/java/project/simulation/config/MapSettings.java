@@ -7,6 +7,7 @@ public record MapSettings(
         int width,
         int height,
         int startEnergy,
+        int readyToBreedEnergy,
         int moveEnergy,
         int grassEnergy,
         int genomeSize,

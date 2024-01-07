@@ -40,22 +40,22 @@ public class AnimalTest {
         Animal animal = new Animal(new Vector2D(0, 0), MapDirection.NORTH, 100,genotype);
 
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(10, 10, 20, 10, 1, 8, 0,10, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(10, 10, 20, 10, 1, 8, 0,10, 10, 10,5, 0.2);
 
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
         animal.move(map, modifications.animalBehavior());
 
         assertEquals(new Vector2D(1, 1), animal.getPosition());
         assertEquals(MapDirection.NORTHEAST, animal.getDirection());
-        assertEquals(90, animal.getEnergy());
-        assertEquals(1, animal.getAge());
+        assertEquals(99, animal.getEnergy());
+        assertEquals(0, animal.getAge());
 
 
         animal.move(map, modifications.animalBehavior());
         assertEquals(new Vector2D(2, 0), animal.getPosition());
         assertEquals(MapDirection.SOUTHEAST, animal.getDirection());
-        assertEquals(80, animal.getEnergy());
-        assertEquals(2, animal.getAge());
+        assertEquals(98, animal.getEnergy());
+        assertEquals(0, animal.getAge());
     }
 
     @Test

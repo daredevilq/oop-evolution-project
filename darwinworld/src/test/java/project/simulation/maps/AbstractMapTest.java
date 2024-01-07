@@ -24,7 +24,7 @@ public class AbstractMapTest {
         int grassEnergy = 3;
         int grassNumber = 10;
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 8, 0,10, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 8, 0,10, 10, 10,5, 0.2);
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
 
         //when
@@ -44,7 +44,7 @@ public class AbstractMapTest {
         int grassEnergy = 3;
         int grassNumber = 10;
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 8, 0,10, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(10, 10, 10, 10, 0, grassEnergy, 3,0, grassNumber, 10,5, 0.2);
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
 
         //when
@@ -76,7 +76,7 @@ public class AbstractMapTest {
         int grassEnergy = 3;
         int grassNumber = 1;
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 8, 0,10, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(10, 10, 0, 10, 0, grassEnergy, 0,10, grassNumber, 10,5, 0.2);
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
 
         Vector2D grassPosition = map.getMapPlants().keySet().iterator().next();
@@ -93,9 +93,9 @@ public class AbstractMapTest {
         //then
         System.out.println(strongerAnimal.getEnergy());
         System.out.println(weakerAnimal.getEnergy());
-        boolean outcome = strongerAnimal.getEnergy() == 23 && weakerAnimal.getEnergy() == 10;
 
-        assertTrue(outcome);
+        assertEquals(23,  strongerAnimal.getEnergy());
+        assertEquals(10,  weakerAnimal.getEnergy());
     }
 
     @Test
@@ -106,7 +106,7 @@ public class AbstractMapTest {
         int grassEnergy = 3;
         int grassNumber = 1;
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 8, 0,10, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 3, 0,10, 10, 10,5, 0.2);
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
 
         Vector2D grassPosition = map.getMapPlants().keySet().iterator().next();
@@ -123,9 +123,9 @@ public class AbstractMapTest {
         map.eatPlants();
 
         //then
-        boolean outcome = strongerAnimal.getEnergy() == 13 && weakerAnimal.getEnergy() == 10;
+        assertEquals(10,  weakerAnimal.getEnergy());
+        assertEquals(13, strongerAnimal.getEnergy());
 
-        assertTrue(outcome);
     }
 
 

@@ -19,7 +19,7 @@ public class EarthMapTest {
     public void getNextPositionTest1(){
         //given
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(5, 5, 20, 10, 1, 8, 0,10, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(5, 5, 20, 10, 1, 8, 0,10, 10, 10,5, 0.2);
 
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
         Vector2D newPosition = new Vector2D(5,1);
