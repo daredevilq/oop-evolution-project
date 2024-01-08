@@ -5,12 +5,13 @@ import project.RandomGen;
 import project.Vector2D;
 import project.simulation.maps.animalMutations.AnimalMutation;
 import project.simulation.worldelements.Animal;
+import project.simulation.worldelements.AnimalComparator;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassicBreed implements Breeding {
-
+    private static final AnimalComparator animalComparator = new AnimalComparator();
     @Override
     public List<Animal> breed(List<Animal> animalList, int startEnergy, int breadEnergy, AnimalMutation mutation) {
 
@@ -21,12 +22,18 @@ public class ClassicBreed implements Breeding {
             List<Animal> animalsOnField = mapAnimals.get(position);
 
             if (animalsOnField != null && animalsOnField.size() >= 2) { // szukamy pola w mapie gdie mamy 2 zwierzęta
-                List<Animal> sortedAnimals = animalsOnField.stream() // sortujemy by wybrać tylko 2
-                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
-                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
-                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
-                                .thenComparing(animal -> Math.random()))
+                List<Animal> sortedAnimals = animalsOnField.stream()
+                        .sorted(animalComparator)
                         .collect(Collectors.toList());
+
+
+//
+//                List<Animal> sortedAnimals = animalsOnField.stream() // sortujemy by wybrać tylko 2
+//                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
+//                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
+//                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
+//                                .thenComparing(animal -> Math.random()))
+//                        .collect(Collectors.toList());
 
                 Animal parent1 = sortedAnimals.get(0);
                 Animal parent2 = sortedAnimals.get(1);

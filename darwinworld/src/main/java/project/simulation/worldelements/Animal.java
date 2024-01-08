@@ -119,7 +119,6 @@ public class Animal extends WorldElement{
             System.out.println("i zmienił orientacja z: " + old_direcrtion.toString() + " na: " + this.direction.toString());
         }
         System.out.println(this.toString());
-        this.age++;
         this.energy -= map.getMapSettings().moveEnergy();
 
         this.currentGeneIndex = animalBehavior.SetGeneIndex(currentGeneIndex, genotype.size());
@@ -141,7 +140,6 @@ public class Animal extends WorldElement{
         int genotypeSize = genotype.size();
 
         double energyRatio = (double) this.getEnergy() / (this.getEnergy() + partner.getEnergy());
-        System.out.println(energyRatio);
 
         boolean takeLeft = new Random().nextBoolean();
 
@@ -167,26 +165,18 @@ public class Animal extends WorldElement{
         return childGenotype;
     }
 
-    // dodalem interfejs do mutacji bo ona jest jednym z wariantow
-
-//    private void mutate(List<Integer> childGenotype) {
-//        int numberOfMutations = RandomGen.randInt(genotype.size()); // Losowa liczba mutacji
-//
-//        for (int i = 0; i < numberOfMutations; i++) {
-//            int mutationIndex = RandomGen.randInt(genotype.size()-1); // Losowy indeks do mutacji
-//            int newGeneValue = RandomGen.randInt(MIN_GENE_NUM, MAX_GENE_NUM); // Losowa nowa wartość genu
-//            childGenotype.set(mutationIndex, newGeneValue);
-//        }
-//    }
-
-    public void decreaseEnergyBy1(){
+    public void updateDailyStatsOnAnimal(){
         this.energy -= 1;
+        this.age += 1;
     }
 
+//    @Override
+//    public String toString() {
+//        return "(" + this.position.toString() + " Energia: " + this.energy + " Genom: " + this.genotype.toString() + " GenomIndex: "+ this.currentGeneIndex + " Orientation: "+ this.direction.toString() + ")";
+//    }
     @Override
-    public String toString() {
-        return "(" + this.position.toString() + " Energia: " + this.energy + " Genom: " + this.genotype.toString() + " GenomIndex: "+ this.currentGeneIndex + " Orientation: "+ this.direction.toString() + ")";
+    public String toString(){
+            return "Z";
     }
-
 
 }

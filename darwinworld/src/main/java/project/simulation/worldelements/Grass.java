@@ -25,8 +25,7 @@ public class Grass extends WorldElement {
 
     @Override
     public String toString() {
-        return "Grass{" +
-                "position=" + position +
-                '}';
+        return sign;
+
     }
 }

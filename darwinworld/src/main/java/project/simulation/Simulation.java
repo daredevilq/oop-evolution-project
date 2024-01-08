@@ -11,6 +11,7 @@ public class Simulation implements Runnable{
     private List<Animal> deadAnimals = new ArrayList<>();
     private final IWorldMap map;
 
+
     private final Modifications modifications;
     private long dayNum = 0;
     private long aliveAnimalsCount=0;
@@ -33,14 +34,14 @@ public class Simulation implements Runnable{
 
             aliveAnimalsCount = map.getAnimalsList().size();
             deadAnimalsCount = deadAnimals.size();
-            map.decreaceAllAnimalsEnergy();
+            map.updateDailyStatistics();
             dayNum++;
 
             System.out.println(
                     "zwierzaki: "+map.getAnimalsList().toString());
             System.out.println("Liczba roslin: " + map.getMapPlants().size() + " Liczba miejsc wolnych: " + map.getFreePlaces().size());
             System.out.println("-----------------------------");
-
+            System.out.println(map.toString());
             //tylko do debugowania
             try {
                 Thread.sleep(1000);
@@ -49,6 +50,8 @@ public class Simulation implements Runnable{
             }
         }
     }
+
+
 
 }
 

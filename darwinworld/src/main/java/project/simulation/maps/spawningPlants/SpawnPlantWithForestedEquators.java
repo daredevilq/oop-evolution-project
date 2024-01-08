@@ -33,13 +33,13 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
 
         } else {
 
-            List<Vector2D> jungleAreas = map.getFreePlaces().entrySet().stream()
+            List<Vector2D> nonJungleAreas = map.getFreePlaces().entrySet().stream()
                     .filter(entry -> entry.getValue() == MapAreaType.NORMAL)
                     .map(Map.Entry::getKey)
                     .toList();
 
-            if (!jungleAreas.isEmpty()) {
-                return pickRandomVectorFromList(jungleAreas, map);
+            if (!nonJungleAreas.isEmpty()) {
+                return pickRandomVectorFromList(nonJungleAreas, map);
             }
             else{
                 return generateVectorInBoundaries(map, map.getBoundary());
