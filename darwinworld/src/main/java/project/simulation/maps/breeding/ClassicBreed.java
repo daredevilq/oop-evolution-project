@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 public class ClassicBreed implements Breeding {
     private static final AnimalComparator animalComparator = new AnimalComparator();
     @Override
-    public List<Animal> breed(List<Animal> animalList, int startEnergy, int breadEnergy, AnimalMutation mutation) {
+    public List<Animal> breed(List<Animal> animalList, int breadEnergy, int readyToBreedEnergy, AnimalMutation mutation) {
 
         Map<Vector2D, List<Animal>> mapAnimals = createAnimalMap(animalList);
         List<Animal> animals = new ArrayList<>(animalList);
@@ -40,15 +40,15 @@ public class ClassicBreed implements Breeding {
 
                 // warunki na rozmnażanie
 //                if (parent1.getEnergy() >= startEnergy / 2 && parent2.getEnergy() >= startEnergy / 2) {
-                if (parent1.getEnergy() >= breadEnergy && parent2.getEnergy() >= breadEnergy) {
+                if (parent1.getEnergy() >= readyToBreedEnergy && parent2.getEnergy() >= readyToBreedEnergy) {
 
                     List<Integer> childGenotype = parent1.reproduce(parent2, mutation); // tworzymy genotyp dziecka
-                    Animal child = new Animal(parent1.getPosition(), MapDirection.NORTHEAST.rotate(RandomGen.randInt(0, 7)), startEnergy, childGenotype);
+                    Animal child = new Animal(parent1.getPosition(), MapDirection.NORTHEAST.rotate(RandomGen.randInt(0, 7)), 2 * breadEnergy, childGenotype);
                     animals.add(child);
 
                     double energyRatio = (double) parent1.getEnergy() / (parent1.getEnergy() + parent2.getEnergy());
-                    parent1.changeStatsAfterBreeding((int) (energyRatio * startEnergy), child);
-                    parent2.changeStatsAfterBreeding(startEnergy - (int) (energyRatio * startEnergy), child);
+                    parent1.changeStatsAfterBreeding(breadEnergy, child);
+                    parent2.changeStatsAfterBreeding(breadEnergy, child);
                 }
             }
         }

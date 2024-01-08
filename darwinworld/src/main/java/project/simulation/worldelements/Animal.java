@@ -120,7 +120,6 @@ public class Animal extends WorldElement{
         }
         //System.out.println(this.toString());
         this.energy -= map.getMapSettings().moveEnergy();
-
         this.currentGeneIndex = animalBehavior.SetGeneIndex(currentGeneIndex, genotype.size());
     }
 

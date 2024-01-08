@@ -4,15 +4,6 @@ import project.Vector2D;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
-import project.simulation.fetures.AnimalBehavior;
-import project.simulation.fetures.MapType;
-import project.simulation.fetures.MutationType;
-import project.simulation.fetures.VegetationDynamicsType;
-import project.simulation.worldelements.Animal;
-import project.simulation.worldelements.Grass;
-
-import java.util.HashMap;
-import java.util.Map;
 
 public class EarthMap extends AbstractMap {
 

@@ -23,7 +23,7 @@ public class SpawningPlantsTest {
         SpawningPlants spawningPlants = new SpawnPlantWithForestedEquators();
         int plantsToSpawnNumber = 55;
         Modifications modifications = new Modifications(spawningPlants,new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(100, 100, 20, 10, 1, 8, 0,55, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(100, 100, 20, 10, 1, 8, 0,0, plantsToSpawnNumber, 10, 5,0.2);
 
         //when
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
@@ -41,7 +41,7 @@ public class SpawningPlantsTest {
         SpawningPlants spawningPlants = new SpawnPlantWithMovingJungle();
         int plantsToSpawnNumber = 31;
         Modifications modifications = new Modifications(spawningPlants,new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(100, 100, 20, 10, 1, 8, 0,plantsToSpawnNumber, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(100, 100, 20, 10, 1, 8, 0,0, plantsToSpawnNumber, 10,5, 0.2);
 
         //when
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
@@ -59,7 +59,7 @@ public class SpawningPlantsTest {
         SpawningPlants spawningPlants = new SpawnPlantWithForestedEquators();
         int plantsToSpawnNumber = 1000;
         Modifications modifications = new Modifications(spawningPlants,new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(1000, 1000, 20, 10, 1, 8, 0,plantsToSpawnNumber, 10, 10, 0.2);
+        MapSettings mapSettings = new MapSettings(1000, 1000, 20, 10, 1, 8, 0,0, plantsToSpawnNumber, 10,5, 0.2);
 
         //when
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());

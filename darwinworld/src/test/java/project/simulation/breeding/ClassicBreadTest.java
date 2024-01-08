@@ -50,12 +50,12 @@ public class ClassicBreadTest {
         List<Animal> animalList = List.of(animal1, animal2, animal3);
         ClassicBreed classicBreed = new ClassicBreed();
         AnimalMutation mutation = new DefaultMutation();
-        List<Animal> animals = classicBreed.breed(animalList, 20, 20, mutation);
+        List<Animal> animals = classicBreed.breed(animalList,  20,30, mutation);
 
         assertEquals(4, animals.size());
 
-        assertEquals(75, animal1.getEnergy());
-        assertEquals(25, animal2.getEnergy());
+        assertEquals(70, animal1.getEnergy());
+        assertEquals(10, animal2.getEnergy());
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ClassicBreadTest {
         List<Animal> animalList = List.of(animal1, animal2, animal3);
         ClassicBreed classicBreed = new ClassicBreed();
         AnimalMutation mutation = new DefaultMutation();
-        List<Animal> animals = classicBreed.breed(animalList, 20, 20, mutation);
+        List<Animal> animals = classicBreed.breed(animalList,  20,20, mutation);
 
         assertEquals(4, animals.size());
 
@@ -95,7 +95,7 @@ public class ClassicBreadTest {
 
         ClassicBreed classicBreed = new ClassicBreed();
         AnimalMutation mutation = new DefaultMutation();
-        List<Animal> animals = classicBreed.breed(animalList, 20, 20, mutation);
+        List<Animal> animals = classicBreed.breed(animalList,  20,20, mutation);
 
         assertEquals(6, animals.size());
 

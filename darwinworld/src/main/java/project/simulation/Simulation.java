@@ -50,7 +50,7 @@ public class Simulation implements Runnable{
 //            System.out.println(map.toString());
             //tylko do debugowania
             try {
-                Thread.sleep(1000);
+                Thread.sleep(500);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
