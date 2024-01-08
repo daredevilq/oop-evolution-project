@@ -8,14 +8,11 @@ public class InitPresenter {
     private Stage primaryStage;
 
     // Metoda do ustawiania obiektu klasy Stage
-    public void setPrimaryStage(Stage primaryStage) {
-        this.primaryStage = primaryStage;
-    }
-
     @FXML
     private void startSimulation() {
         try {
             SimulationApp simulationApp = new SimulationApp();
+
             Stage secondStage = new Stage();
             simulationApp.start(secondStage);
 

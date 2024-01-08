@@ -1,34 +1,52 @@
 package project.presenter;
 
+import javafx.application.Platform;
+import javafx.concurrent.Task;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.geometry.HPos;
+import javafx.geometry.Pos;
+import javafx.geometry.VPos;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.RowConstraints;
+import project.Vector2D;
+import project.simulation.Simulation;
+import project.simulation.maps.Boundary;
+import project.simulation.maps.IWorldMap;
+import javafx.scene.Node;
+import java.awt.*;
+import java.util.List;
 
-public class SimulationPresenter {
-    @FXML
-    private Label messageLabel;
+import javafx.scene.control.Label;
+import project.simulation.observer.SimulationChangeListener;
+
+public class SimulationPresenter implements SimulationChangeListener {
+
     @FXML
     private GridPane mapGrid;
 
-    @FXML
-    private Label infoLabel;
-    private WorldMap worldMap;
 
-    public void setWorldMap(WorldMap worldMap) {
-        this.worldMap = worldMap;
+    private IWorldMap map;
+    private Simulation simulation;
+
+    public void setSimulation(Simulation simulation) {
+        this.simulation = simulation;
+        this.map = simulation.getMap();
     }
 
     public void drawMap() {
         clearGrid();
 
-        Boundary bounds = worldMap.getCurrentBounds();
+        Boundary bounds = map.getBoundary();
         int minX = bounds.lowerLeftCorner().getX();
         int minY = bounds.lowerLeftCorner().getY();
         int maxX = bounds.upperRightCorner().getX();
         int maxY = bounds.upperRightCorner().getY();
 
-
         for (int x = minX - 1; x <= maxX; x++) {
             for (int y = maxY + 1; y >= minY; y--) {
-                Label label = new Label("");
+                Label label;
 
                 if (x == minX - 1 && y == maxY + 1) {
                     label = new Label("y\\x");
@@ -37,21 +55,26 @@ public class SimulationPresenter {
                 } else if (y == maxY + 1) {
                     label = new Label(String.valueOf(x));
                 } else {
-                    WorldElement element = worldMap.objectAt(new Vector2d(x, y));
+                    Object element = map.objectAt(new Vector2D(x, y));
                     if (element != null) {
                         try {
-                            WorldElementBox elementBox = new WorldElementBox(element);
+                            Label elementBox = new Label(element.toString());
+                            elementBox.setAlignment(Pos.CENTER);
+                            GridPane.setHalignment(elementBox, HPos.CENTER);
+                            GridPane.setValignment(elementBox, VPos.CENTER);
                             mapGrid.add(elementBox, x - minX + 1, maxY - y + 1);
                             continue;
-                        } catch (IllegalArgumentException e){
+                        } catch (IllegalArgumentException e) {
                             System.out.println(e.getMessage());
                         }
                     }
+                    label = new Label("");
                 }
 
                 label.setAlignment(Pos.CENTER);
                 GridPane.setHalignment(label, HPos.CENTER);
-                mapGrid.add(label, x - minX+1, maxY - y+1);
+                GridPane.setValignment(label, VPos.CENTER);
+                mapGrid.add(label, x - minX + 1, maxY - y + 1);
             }
         }
 
@@ -71,25 +94,19 @@ public class SimulationPresenter {
         mapGrid.getRowConstraints().clear();
     }
 
+
+
     @Override
-    public void mapChanged(WorldMap worldMap, String message) {
-        Platform.runLater(() -> {
-            drawMap();
-            messageLabel.setText(message);
-        });
+    public void simulationChanged(Simulation simulation) {
+        Platform.runLater(this::drawMap);
     }
+    private boolean isSimulationRunning = false;
+    public void onSimulationStartClicked(ActionEvent actionEvent) {
+        //simulation.run();
 
-
-    @FXML
-    private void onSimulationStartClicked() {
-        String[] commandLineArgs = movesTextArea.getText().split("\\s+");
-
-        try {
-            List<MoveDirection> directions = OptionsParser.parse(commandLineArgs);
-            List<Vector2d> positions = List.of(new Vector2d(0, 0), new Vector2d(2, 3));
-            Simulation simulation = new Simulation(directions, positions, worldMap);
-
-            Task<Void> simulationTask = new Task<>() {
+        if (!isSimulationRunning) {
+            isSimulationRunning = true;
+            Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
                     simulation.run();
@@ -97,17 +114,42 @@ public class SimulationPresenter {
                 }
             };
 
-            simulationTask.setOnSucceeded(event -> {
-                drawMap();
-                System.out.println("Simulation finished.");
-            });
+            task.setOnSucceeded(event -> isSimulationRunning = false);
 
-            new Thread(simulationTask).start();
-
-
-        } catch (IllegalArgumentException e) {
-            System.out.println("Error: " + e.getMessage());
-            System.exit(0);
+            new Thread(task).start();
         }
     }
+
+
+
+//    @FXML
+//    private void onSimulationStartClicked() {
+//        String[] commandLineArgs = movesTextArea.getText().split("\\s+");
+//
+//        try {
+//            List<MoveDirection> directions = OptionsParser.parse(commandLineArgs);
+//            List<Vector2d> positions = List.of(new Vector2d(0, 0), new Vector2d(2, 3));
+//            Simulation simulation = new Simulation(directions, positions, worldMap);
+//
+//            Task<Void> simulationTask = new Task<>() {
+//                @Override
+//                protected Void call() {
+//                    simulation.run();
+//                    return null;
+//                }
+//            };
+//
+//            simulationTask.setOnSucceeded(event -> {
+//                drawMap();
+//                System.out.println("Simulation finished.");
+//            });
+//
+//            new Thread(simulationTask).start();
+//
+//
+//        } catch (IllegalArgumentException e) {
+//            System.out.println("Error: " + e.getMessage());
+//            System.exit(0);
+//        }
+//    }
 }

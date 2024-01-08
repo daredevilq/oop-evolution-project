@@ -16,6 +16,7 @@ public class InitApp extends Application {
         loader.setLocation(getClass().getClassLoader().getResource("initialize.fxml"));
         BorderPane viewRoot = loader.load();
         InitPresenter presenter = loader.getController();
+
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
     }
@@ -23,7 +24,7 @@ public class InitApp extends Application {
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
         var scene = new Scene(viewRoot);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("Initialize app");
+        primaryStage.setTitle("Init App");
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
