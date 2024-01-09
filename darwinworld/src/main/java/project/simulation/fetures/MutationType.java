@@ -1,5 +1,6 @@
 package project.simulation.fetures;
 
+import project.RandomGen;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;

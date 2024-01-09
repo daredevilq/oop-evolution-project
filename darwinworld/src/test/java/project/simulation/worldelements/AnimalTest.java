@@ -69,10 +69,10 @@ public class AnimalTest {
         //when
         fatherAnimal.setChildrenList(List.of(kid1));
         motherAnimal.setChildrenList(List.of(kid1));
-        boolean outcome = fatherAnimal.computeNumberOfDescendants() == 1 && motherAnimal.computeNumberOfDescendants() == 1;
-        //then
-        assertTrue(outcome);
 
+        //then
+        assertEquals(1, fatherAnimal.computeNumberOfDescendants());
+        assertEquals(1, motherAnimal.computeNumberOfDescendants());
     }
     @Test
     public void computeNumberOfDescendantsTest2(){
@@ -95,16 +95,11 @@ public class AnimalTest {
         kid3.setChildrenList(List.of(kid13_1, kid13_2));
 
         //then
-        int fatherDescendants = fatherAnimal.computeNumberOfDescendants();
-        int motherDescendants = motherAnimal.computeNumberOfDescendants();
-        int kid1Descendants = kid1.computeNumberOfDescendants();
-        int kid3Descendants = kid3.computeNumberOfDescendants();
-        boolean outcome = (fatherDescendants == 5)  && (motherDescendants == 5) && (kid1Descendants == 2) && (kid3Descendants == 2);
-
-        assertTrue(outcome);
-
+        assertEquals(5, fatherAnimal.computeNumberOfDescendants());
+        assertEquals(5, motherAnimal.computeNumberOfDescendants());
+        assertEquals(2, kid1.computeNumberOfDescendants());
+        assertEquals(2, kid3.computeNumberOfDescendants());
 
     }
-
 
 }

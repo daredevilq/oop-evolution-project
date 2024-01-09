@@ -8,10 +8,41 @@
             xmlns:fx="http://javafx.com/fxml"
             minHeight="800.0" minWidth="1000.0"
             fx:controller="project.presenter.SimulationPresenter">
-
     <top>
         <Button text="Start" onAction="#onSimulationStartClicked"/>
     </top>
+
+    <left>
+        <VBox>
+            <HBox>
+                <Label fx:id="dayNum"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="aliveAnimalsCount"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="plantsNumber"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="deadAnimalsCount"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="freePlacesOnMap"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="averageLivingAnimalsEnergy"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="averageDeadAnimalsLifespan"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="averageChildrenNumberForLivingAnimals"></Label>
+            </HBox>
+            <HBox>
+                <Label fx:id="theMostPopularGenotype"></Label>
+            </HBox>
+        </VBox>
+    </left>
     <center>
         <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true"/>
     </center>

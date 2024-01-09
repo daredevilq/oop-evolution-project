@@ -19,33 +19,35 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
     @Override
     public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlants) {
         if (RandomGen.random()<=0.8){
-            List<Vector2D> jungleAreas = map.getFreePlaces().entrySet().stream()
-                    .filter(entry -> entry.getValue() == MapAreaType.JUNGLE)
-                    .map(Map.Entry::getKey)
+            List<Vector2D> jungleAreas = map.getFreePlaces().stream()
+                    .filter(entry -> isJungleArea(entry, map.getJungleBoundary()))
                     .toList();
 
             if (!jungleAreas.isEmpty()) {
                 return pickRandomVectorFromList(jungleAreas, map);
             }
-            else {
-                return generateVectorInBoundaries(map, map.getJungleBoundary());
-            }
 
-        } else {
+        }
 
-            List<Vector2D> nonJungleAreas = map.getFreePlaces().entrySet().stream()
-                    .filter(entry -> entry.getValue() == MapAreaType.NORMAL)
-                    .map(Map.Entry::getKey)
+
+            List<Vector2D> nonJungleAreas = map.getFreePlaces().stream()
+                    .filter(entry -> !isJungleArea(entry, map.getJungleBoundary()))
                     .toList();
 
             if (!nonJungleAreas.isEmpty()) {
                 return pickRandomVectorFromList(nonJungleAreas, map);
             }
-            else{
+
+
+            else{ //!!!!!!!!!!!!!!!!!!!!!!
                 return generateVectorInBoundaries(map, map.getBoundary());
             }
 
-        }
+    }
+
+
+    private boolean isJungleArea(Vector2D position, Boundary jungleBoundary) {
+        return position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner());
     }
 
 

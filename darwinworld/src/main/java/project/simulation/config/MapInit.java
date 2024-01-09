@@ -3,18 +3,14 @@ package project.simulation.config;
 import project.MapDirection;
 import project.RandomGen;
 import project.Vector2D;
+import project.simulation.fetures.MapAreaType;
 import project.simulation.maps.Boundary;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-public record MapInit (
-
-){
+public class MapInit {
 
     public List<Animal> randomlyPlaceAnimals (MapSettings mapSettings, Boundary boundary) {
 
@@ -29,4 +25,18 @@ public record MapInit (
         return animalList;
     }
 
+
+    public Set<Vector2D> computeFreePlacesForPlants(Map<Vector2D, Grass> mapPlants, int width, int height){
+        Set<Vector2D> freePlaces = new HashSet<>();
+        for (int i = 0; i < width; i++) {
+            for (int j = 0; j < height; j++) {
+                Vector2D position = new Vector2D(i,j);
+                if (!mapPlants.containsKey(position)){
+                    //MapAreaType type = (position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner())) ? MapAreaType.JUNGLE : MapAreaType.NORMAL;
+                    freePlaces.add(position);
+                }
+            }
+        }
+        return freePlaces;
+    }
 }

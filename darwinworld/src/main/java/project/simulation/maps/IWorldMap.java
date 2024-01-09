@@ -7,8 +7,10 @@ import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public interface IWorldMap {
 
@@ -32,10 +34,11 @@ public interface IWorldMap {
     void spawnPlants();
     Boundary getJungleBoundary();
 
+    Set<Vector2D> getFreePlaces();
 
-    Map<Vector2D, MapAreaType> getFreePlaces();
+    int freePlacesOnMap();
 
-    void computeFreePlaces();
+//    void computeFreePlaces();
 
     void removeFreePlace(Vector2D randomPosition);
 
@@ -46,5 +49,5 @@ public interface IWorldMap {
 
     Object objectAt(Vector2D currentPosition);
 
-    void updateDailyStatistics();
+    void updateDailyAnimalStats();
 }
