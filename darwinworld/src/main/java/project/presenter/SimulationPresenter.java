@@ -10,22 +10,47 @@ import javafx.geometry.VPos;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
+import project.RandomGen;
 import project.Vector2D;
 import project.simulation.Simulation;
 import project.simulation.maps.Boundary;
 import project.simulation.maps.IWorldMap;
 import javafx.scene.control.Label;
 import project.simulation.observer.SimulationChangeListener;
+import project.simulation.statistics.SimulationStatistics;
 
 public class SimulationPresenter implements SimulationChangeListener {
+
+    @FXML
+    private Label dayNum;
+    @FXML
+    private Label aliveAnimalsCount;
+    @FXML
+    private Label plantsNumber;
+    @FXML
+    private Label deadAnimalsCount;
+    @FXML
+    private Label freePlacesOnMap;
+    @FXML
+    private Label averageLivingAnimalsEnergy;
+    @FXML
+    private Label averageDeadAnimalsLifespan;
+    @FXML
+    private Label averageChildrenNumberForLivingAnimals;
+    @FXML
+    private Label theMostPopularGenotype;
+
 
     @FXML
     private GridPane mapGrid;
     private IWorldMap map;
     private Simulation simulation;
+    private SimulationStatistics simulationStatistics;
+
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
         this.map = simulation.getMap();
+        this.simulationStatistics = simulation.getSimulationStatistics();
     }
 
     public void drawMap() {
@@ -89,10 +114,25 @@ public class SimulationPresenter implements SimulationChangeListener {
 
 
 
+    public void updateStats(){
+        dayNum.setText("Day number: "+ simulationStatistics.getDayNum());
+        aliveAnimalsCount.setText("Animals number: "+ simulationStatistics.getAliveAnimalsCount());
+        plantsNumber.setText("Plants number: "+ simulationStatistics.getPlantsNumber());
+        deadAnimalsCount.setText("Dead animas number: "+ simulationStatistics.getDeadAnimalsCount());
+        freePlacesOnMap.setText("Free places on map: "+ simulationStatistics.getFreePlacesOnMap());
+        averageLivingAnimalsEnergy.setText("Average animals energy: "+ simulationStatistics.getAverageLivingAnimalsEnergy());
+        averageDeadAnimalsLifespan.setText("Average lifespan: "+ simulationStatistics.getAverageDeadAnimalsLifespan());
+        averageChildrenNumberForLivingAnimals.setText("Average children number: "+ simulationStatistics.getAverageChildrenNumberForLivingAnimals());
+        theMostPopularGenotype.setText("The most popular genotype: " + simulationStatistics.getTheMostPopularGenotype());
+    }
+
     @Override
     public void simulationChanged(Simulation simulation) {
+
         Platform.runLater(this::drawMap);
+        Platform.runLater(this::updateStats);
     }
+
     private boolean isSimulationRunning = false;
     public void onSimulationStartClicked(ActionEvent actionEvent) {
 

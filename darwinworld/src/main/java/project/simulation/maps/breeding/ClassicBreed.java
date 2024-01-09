@@ -11,7 +11,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 public class ClassicBreed implements Breeding {
-    private static final AnimalComparator animalComparator = new AnimalComparator();
+    private static final AnimalComparator ANIMAL_COMPARATOR = new AnimalComparator();
     @Override
     public List<Animal> breed(List<Animal> animalList, int breadEnergy, int readyToBreedEnergy, AnimalMutation mutation) {
 
@@ -23,23 +23,15 @@ public class ClassicBreed implements Breeding {
 
             if (animalsOnField != null && animalsOnField.size() >= 2) { // szukamy pola w mapie gdie mamy 2 zwierzęta
                 List<Animal> sortedAnimals = animalsOnField.stream()
-                        .sorted(animalComparator)
+                        .sorted(ANIMAL_COMPARATOR)
                         .collect(Collectors.toList());
 
 
-//
-//                List<Animal> sortedAnimals = animalsOnField.stream() // sortujemy by wybrać tylko 2
-//                        .sorted(Comparator.comparingInt(Animal::getEnergy).reversed()
-//                                .thenComparing(Comparator.comparingLong(Animal::getAge).reversed())
-//                                .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
-//                                .thenComparing(animal -> Math.random()))
-//                        .collect(Collectors.toList());
 
                 Animal parent1 = sortedAnimals.get(0);
                 Animal parent2 = sortedAnimals.get(1);
 
-                // warunki na rozmnażanie
-//                if (parent1.getEnergy() >= startEnergy / 2 && parent2.getEnergy() >= startEnergy / 2) {
+
                 if (parent1.getEnergy() >= readyToBreedEnergy && parent2.getEnergy() >= readyToBreedEnergy) {
 
                     List<Integer> childGenotype = parent1.reproduce(parent2, mutation); // tworzymy genotyp dziecka

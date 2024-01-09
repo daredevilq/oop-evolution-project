@@ -14,7 +14,7 @@ public class DefaultMutation implements AnimalMutation{
         int numberOfMutations = RandomGen.randInt(childGenotype.size()); // Losowa liczba mutacji
 
         for (int i = 0; i < numberOfMutations; i++) {
-            int mutationIndex = RandomGen.randInt(childGenotype.size()-1); // Losowy indeks do mutacji
+            int mutationIndex = RandomGen.randInt(childGenotype.size() - 1); // Losowy indeks do mutacji
             int newGeneValue = RandomGen.randInt(MIN_GENE_NUM, MAX_GENE_NUM); // Losowa nowa wartość genu
             childGenotype.set(mutationIndex, newGeneValue);
         }

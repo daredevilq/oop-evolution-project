@@ -33,16 +33,15 @@ public class EarthMap extends AbstractMap {
             x += mapWidth;
 
         return new Vector2D(x, y);
-
     }
 
     @Override
     public boolean canMoveTo(Vector2D position){
-        return position.follows(this.getBoundary().lowerLeftCorner()) && position.precedes(this.getBoundary().upperRightCorner());
+//        return position.follows(this.getBoundary().lowerLeftCorner()) && position.precedes(this.getBoundary().upperRightCorner());
+        int minY = getBoundary().lowerLeftCorner().getY();
+        int maxY = getBoundary().upperRightCorner().getY();
+
+        int positionY = position.getY();
+        return positionY <= maxY || position.getY() >= minY;
     }
-
-
-
-
-
 }

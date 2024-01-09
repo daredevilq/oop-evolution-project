@@ -3,7 +3,6 @@ package project;
 import project.simulation.maps.Boundary;
 import project.simulation.maps.IWorldMap;
 import project.simulation.worldelements.IWorldElement;
-import project.simulation.worldelements.WorldElement;
 
 import java.util.ArrayList;
 import java.util.List;

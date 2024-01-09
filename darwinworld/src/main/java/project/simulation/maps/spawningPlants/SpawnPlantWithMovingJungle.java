@@ -18,21 +18,27 @@ public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
     public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlant) {
 
         if (RandomGen.random()<=0.8){
-            List<Vector2D> adjacentFreeAreas = map.getFreePlaces().keySet().stream()
-                    .filter(entry -> adjacentToAnimal(entry, mapPlant))
+            List<Vector2D> adjacentFreeAreas = map.getFreePlaces().stream()
+                    .filter(entry -> adjacentToPlant(entry, mapPlant))
                     .toList();
 
             if (!adjacentFreeAreas.isEmpty()) {
                 return pickRandomVectorFromList(adjacentFreeAreas, map);
             }
-            else{
-                return generateVectorInBoundaries(map, map.getBoundary());
-            }
+        }
+        List<Vector2D> freeAreas = map.getFreePlaces().stream()
+                .toList();
+
+        if (!freeAreas.isEmpty()) {
+            return pickRandomVectorFromList(freeAreas, map);
         }
 
+        // !!!!!!!!!!!!!!!!!!!!!!!!
+//        return new Vector2D(0,0);
         return generateVectorInBoundaries(map, map.getBoundary());
     }
-    private boolean adjacentToAnimal(Vector2D position,  Map<Vector2D, Grass> mapPlant){
+
+    private boolean adjacentToPlant(Vector2D position,  Map<Vector2D, Grass> mapPlant){
         for (MapDirection direction : MapDirection.values()) {
             Vector2D adjacentPosition = position.add(direction.toUnitVector());
             if (mapPlant.containsKey(adjacentPosition)) {

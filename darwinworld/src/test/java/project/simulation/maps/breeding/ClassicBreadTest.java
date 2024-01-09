@@ -1,4 +1,4 @@
-package project.simulation.breeding;
+package project.simulation.maps.breeding;
 
 import org.junit.jupiter.api.Test;
 import project.MapDirection;

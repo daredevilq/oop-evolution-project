@@ -11,11 +11,10 @@ import project.simulation.maps.animalMutations.AnimalMutation;
 
 import java.util.*;
 
-public class Animal extends WorldElement{
+public class Animal implements IWorldElement{
     public static final int MIN_GENE_NUM = 0;
     public static final int MAX_GENE_NUM = 7;
 
-//    MapSettings settings;
     private Vector2D position;
     private MapDirection direction;
     private int energy;
@@ -28,7 +27,6 @@ public class Animal extends WorldElement{
 
 
     public Animal(Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
-//        this.settings = settings;
         this.position = position;
         this.direction = direction;
         this.energy = energy;
@@ -76,10 +74,7 @@ public class Animal extends WorldElement{
         this.childrenList = childrenList;
     }
 
-    //    Po zatrzymaniu programu można oznaczyć jednego zwierzaka jako wybranego do śledzenia.
-//    Od tego momentu (do zatrzymania śledzenia) UI powinien przekazywać nam informacje o jego statusie i historii:
-//    ile posiada dzieci,
-//    ile posiada potomków (niekoniecznie będących bezpośrednio dziećmi),
+
 
     public int computeNumberOfDescendants() {
         Set<Animal> visitedAnimals = new HashSet<>();
@@ -100,25 +95,18 @@ public class Animal extends WorldElement{
     }
 
     public void move(IWorldMap map, AnimalBehavior animalBehavior){
-        //System.out.println("rotacja z: " + this.direction.toString());
         this.direction = this.direction.rotate(genotype.get(currentGeneIndex));
         Vector2D currPosition = this.position;
-        //System.out.println("do: " + this.direction.toString() + " indexValue: " + genotype.get(currentGeneIndex).toString());
 
         Vector2D newPosition = currPosition.add(direction.toUnitVector());
-        //System.out.println("wektor przemieszczenia: " + direction.toUnitVector().toString() + " direction: " + direction.toString());
         if (map.canMoveTo(newPosition)) {
             newPosition = map.getNextPosition(newPosition);
             this.position = newPosition;
-            //System.out.println("IF Zwierzak przeszedł na pozycję: " + newPosition.toString() + " z pozycji: " + currPosition.toString());
         } else {
-            MapDirection old_direcrtion = this.direction;
             this.direction = this.direction.rotate(4);
             this.position = currPosition;
-            //System.out.println("ELSE Zwierzak został na pozycji:  " + currPosition.toString() );
-           // System.out.println("i zmienił orientacja z: " + old_direcrtion.toString() + " na: " + this.direction.toString());
+
         }
-        //System.out.println(this.toString());
         this.energy -= map.getMapSettings().moveEnergy();
         this.currentGeneIndex = animalBehavior.SetGeneIndex(currentGeneIndex, genotype.size());
     }
