@@ -21,6 +21,7 @@ public abstract class AbstractMap implements IWorldMap {
     private final Boundary boundary;
     private final Boundary jungleBoundary;
     private List<Animal> animalsList;
+    private List<Animal> deadAnimals = new ArrayList<>();
     private Map<Vector2D, Grass> mapPlants = new HashMap<>();
     private Set<Vector2D> freePlaces;
     private MapVisualizer mapVisualizer;
@@ -73,6 +74,11 @@ public abstract class AbstractMap implements IWorldMap {
     }
 
     @Override
+    public List<Animal> getDeadAnimals() {
+        return deadAnimals;
+    }
+
+    @Override
     public int freePlacesOnMap(){
         int animalsNotOnPlant = 0;
         for (Animal animal: animalsList) {
@@ -112,14 +118,14 @@ public abstract class AbstractMap implements IWorldMap {
     }
 
     @Override
-    public void deleteDeadAnimals(List<Animal> deadAnimalsList) {
+    public void deleteDeadAnimals() {
         List<Animal> newDeadAnimals = animalsList.stream()
                 .filter(animal -> animal.getEnergy() <= 0)
                 .toList();
 
         animalsList.removeIf(newDeadAnimals::contains);
         //animalsList.removeIf(animal -> newDeadAnimals.contains(animal)); to jest to samo co wyzej
-        deadAnimalsList.addAll(newDeadAnimals);
+        this.deadAnimals.addAll(newDeadAnimals);
     }
 
     @Override

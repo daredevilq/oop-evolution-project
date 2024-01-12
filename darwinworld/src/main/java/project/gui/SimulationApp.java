@@ -8,8 +8,6 @@ import javafx.stage.Stage;
 import project.presenter.SimulationPresenter;
 import project.simulation.Simulation;
 
-import java.io.IOException;
-
 
 public class SimulationApp extends Application {
 
@@ -30,17 +28,11 @@ public class SimulationApp extends Application {
 
 
         presenter.setSimulation(simulation);
-        simulation.addSubscriber(presenter);
+        simulation.getSubscribers().addSubscriber(presenter);
 
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> {
-            try {
-                presenter.closeStatisticFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-        });
+        primaryStage.setOnCloseRequest(event -> presenter.saveStatsToFile());
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {

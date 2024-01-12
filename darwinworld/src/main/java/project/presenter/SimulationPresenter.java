@@ -141,14 +141,12 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
     @Override
-    public void simulationChanged(Simulation simulation) throws IOException {
-
+    public void simulationChanged(Simulation simulation) {
         Platform.runLater(this::drawMap);
         Platform.runLater(this::updateStats);
-        this.simulation.writeDownStatistics();
     }
 
-    public void closeStatisticFile() throws IOException {
+    public void saveStatsToFile() {
         this.simulation.saveStatistics();
     }
 

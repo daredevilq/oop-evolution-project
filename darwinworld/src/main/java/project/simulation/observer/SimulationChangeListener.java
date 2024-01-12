@@ -6,5 +6,5 @@ import java.io.IOException;
 
 public interface SimulationChangeListener {
 
-        void simulationChanged(Simulation simulation) throws IOException;
+        void simulationChanged(Simulation simulation);
 }

@@ -3,22 +3,19 @@ package project.simulation;
 
 import project.simulation.config.Modifications;
 import project.simulation.maps.IWorldMap;
-import project.simulation.observer.SimulationChangeListener;
+import project.simulation.observer.SaveStatistics;
+import project.simulation.observer.SubscribersManager;
 import project.simulation.statistics.SimulationStatistics;
 import project.simulation.statistics.StatisticsWriter;
-import project.simulation.worldelements.Animal;
 
-import java.io.IOException;
 import java.util.*;
 
 public class Simulation implements Runnable{
     private final IWorldMap map;
     private final UUID  uuid;
     private final Modifications modifications;
-    private List<Animal> deadAnimals = new ArrayList<>();
-    private List<SimulationChangeListener> subscribers = new ArrayList<>();
-    private SimulationStatistics simulationStatistics;
-    private StatisticsWriter statisticsWriter;
+    private final SubscribersManager subscribersMenager;
+    private final SimulationStatistics simulationStatistics;
     private volatile boolean isRunning = false;
     private boolean storeStatistics = false;
     public Simulation(IWorldMap map, Modifications modifications) {
@@ -26,6 +23,8 @@ public class Simulation implements Runnable{
         this.simulationStatistics = new SimulationStatistics();
         this.map = map;
         this.uuid = UUID.randomUUID();
+        this.subscribersMenager = new SubscribersManager();
+        subscribersMenager.addSubscriber(new SaveStatistics());
     }
 
 
@@ -36,13 +35,12 @@ public class Simulation implements Runnable{
     public IWorldMap getMap() {
         return this.map;
     }
+    public SubscribersManager getSubscribers() {
+        return subscribersMenager;
+    }
 
     public boolean isRunning() {
         return isRunning;
-    }
-
-    public boolean isStoreStatistics() {
-        return storeStatistics;
     }
 
 
@@ -51,17 +49,14 @@ public class Simulation implements Runnable{
 
 
         while (isRunning){
-            try {
-                this.notifySubscribers();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-            map.deleteDeadAnimals(this.deadAnimals);
+            subscribersMenager.notifySubscribers(this);
+
+            map.deleteDeadAnimals();
             map.moveAnimals();
             map.eatPlants();
             map.breeding(modifications);
             map.spawnPlants();
-            simulationStatistics.updateDailySimulationStats(map.getAnimalsList(), deadAnimals, map.getMapPlants().size(), map.freePlacesOnMap());
+
             map.updateDailyAnimalStats();
 
 
@@ -74,23 +69,16 @@ public class Simulation implements Runnable{
     }
     public void setStoreStatistics(boolean storeStatistics) {
         this.storeStatistics = storeStatistics;
+    }
+    public void saveStatistics() {
         if (storeStatistics){
             try {
-                statisticsWriter = new StatisticsWriter(this);
+                StatisticsWriter statisticsWriter = new StatisticsWriter(this);
+                statisticsWriter.writeToFile(simulationStatistics);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }
-        }
-    }
-    public void writeDownStatistics() throws IOException {
-        if (storeStatistics){
-            statisticsWriter.writeStats(simulationStatistics);
-        }
-    }
 
-    public void saveStatistics() throws IOException {
-        if (storeStatistics){
-            statisticsWriter.closeFile();
         }
     }
     public void stopSimulation(){
@@ -99,20 +87,6 @@ public class Simulation implements Runnable{
 
     public void startSimulation(){
         isRunning = true;
-    }
-
-    public void addSubscriber(SimulationChangeListener subscriber){
-        subscribers.add(subscriber);
-    }
-
-    public void removeSubscriber(SimulationChangeListener subscriber){
-        subscribers.remove(subscriber);
-    }
-
-    public void notifySubscribers() throws IOException {
-        for (SimulationChangeListener subscriber : subscribers) {
-            subscriber.simulationChanged(this);
-        }
     }
 
     @Override
