@@ -1,13 +1,10 @@
 package project.presenter;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Spinner;
+import javafx.scene.control.*;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import project.gui.SimulationApp;
-import javafx.scene.control.Button;
 import project.simulation.Simulation;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
@@ -16,6 +13,8 @@ import project.simulation.fetures.*;
 import project.simulation.maps.IWorldMap;
 
 public class InitPresenter {
+    @FXML
+    private CheckBox saveStatistics;
     @FXML
     private VBox Title;
     @FXML
@@ -92,11 +91,9 @@ public class InitPresenter {
     private Simulation createSimulation() {
         Modifications modifications = new Modifications(vegetation.getValue().createVegetationClass(), animalBehaviorType.getValue().createAnimalBehaviorClass(), animalBreedingType.getValue().createBreedingClass(), mutationType.getValue().createAnimalMutationClass());
         MapSettings mapSettings = new MapSettings(mapWidth.getValue(), mapHeight.getValue(), startEnergy.getValue(), readyToBreedEnergy.getValue(), moveEnergy.getValue(), grassEnergy.getValue(), genomSize.getValue(), animalNumber.getValue(), startPlants.getValue(), animalsBreedEnergy.getValue(), plantsPerDay.getValue(), 0.2);
-
         IWorldMap map = mapType.getValue().createMapClass(mapSettings, modifications, new MapInit());
-
         Simulation simulation = new Simulation(map, modifications);
-
+        simulation.setStoreStatistics(saveStatistics.isSelected());
         return simulation;
     }
 

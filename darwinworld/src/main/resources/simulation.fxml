@@ -9,7 +9,7 @@
             minHeight="800.0" minWidth="1000.0"
             fx:controller="project.presenter.SimulationPresenter">
     <top>
-        <Button text="Start" onAction="#onSimulationStartClicked"/>
+        <Button text="Run Simulation" onAction="#onSimulationStartClicked" fx:id="startStopButton"/>
     </top>
 
     <left>

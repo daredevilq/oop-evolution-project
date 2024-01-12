@@ -8,6 +8,8 @@ import javafx.stage.Stage;
 import project.presenter.SimulationPresenter;
 import project.simulation.Simulation;
 
+import java.io.IOException;
+
 
 public class SimulationApp extends Application {
 
@@ -32,7 +34,13 @@ public class SimulationApp extends Application {
 
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
-
+        primaryStage.setOnCloseRequest(event -> {
+            try {
+                presenter.closeStatisticFile();
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        });
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
@@ -42,7 +50,6 @@ public class SimulationApp extends Application {
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
-
 
 
 }

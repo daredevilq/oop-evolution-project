@@ -6,7 +6,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.geometry.VPos;
+import javafx.scene.control.Button;
 import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.RowConstraints;
@@ -18,9 +20,17 @@ import project.simulation.maps.IWorldMap;
 import javafx.scene.control.Label;
 import project.simulation.observer.SimulationChangeListener;
 import project.simulation.statistics.SimulationStatistics;
+import project.simulation.statistics.StatisticsWriter;
+
+import java.awt.*;
+import java.io.IOException;
+import java.text.DecimalFormat;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
+    private static final int MAP_CONST =  600;
+    @FXML
+    private Button startStopButton;
     @FXML
     private Label dayNum;
     @FXML
@@ -47,7 +57,7 @@ public class SimulationPresenter implements SimulationChangeListener {
     private Simulation simulation;
     private SimulationStatistics simulationStatistics;
 
-    public void setSimulation(Simulation simulation) {
+    public void setSimulation(Simulation simulation) throws IOException {
         this.simulation = simulation;
         this.map = simulation.getMap();
         this.simulationStatistics = simulation.getSimulationStatistics();
@@ -61,6 +71,9 @@ public class SimulationPresenter implements SimulationChangeListener {
         int minY = bounds.lowerLeftCorner().getY();
         int maxX = bounds.upperRightCorner().getX();
         int maxY = bounds.upperRightCorner().getY();
+
+        int cellWidth = (int) (MAP_CONST / (maxX - minX + 2));
+        int cellHeight = (int) (MAP_CONST / (maxY - minY + 2));
 
         for (int x = minX - 1; x <= maxX; x++) {
             for (int y = maxY + 1; y >= minY; y--) {
@@ -80,6 +93,7 @@ public class SimulationPresenter implements SimulationChangeListener {
                             elementBox.setAlignment(Pos.CENTER);
                             GridPane.setHalignment(elementBox, HPos.CENTER);
                             GridPane.setValignment(elementBox, VPos.CENTER);
+
                             mapGrid.add(elementBox, x - minX + 1, maxY - y + 1);
                             continue;
                         } catch (IllegalArgumentException e) {
@@ -97,11 +111,11 @@ public class SimulationPresenter implements SimulationChangeListener {
         }
 
         for (int i = 0; i < (maxX - minX + 2); i++) {
-            mapGrid.getColumnConstraints().add(new ColumnConstraints(40));
+            mapGrid.getColumnConstraints().add(new ColumnConstraints(cellWidth));
         }
 
         for (int i = 0; i < (maxY - minY + 2); i++) {
-            mapGrid.getRowConstraints().add(new RowConstraints(40));
+            mapGrid.getRowConstraints().add(new RowConstraints(cellHeight));
         }
     }
 
@@ -115,29 +129,33 @@ public class SimulationPresenter implements SimulationChangeListener {
 
 
     public void updateStats(){
-        dayNum.setText("Day number: "+ simulationStatistics.getDayNum());
-        aliveAnimalsCount.setText("Animals number: "+ simulationStatistics.getAliveAnimalsCount());
+        dayNum.setText("Day number: "+  simulationStatistics.getDayNum());
+        aliveAnimalsCount.setText("Animals number: "+  simulationStatistics.getAliveAnimalsCount());
         plantsNumber.setText("Plants number: "+ simulationStatistics.getPlantsNumber());
         deadAnimalsCount.setText("Dead animas number: "+ simulationStatistics.getDeadAnimalsCount());
         freePlacesOnMap.setText("Free places on map: "+ simulationStatistics.getFreePlacesOnMap());
-        averageLivingAnimalsEnergy.setText("Average animals energy: "+ simulationStatistics.getAverageLivingAnimalsEnergy());
-        averageDeadAnimalsLifespan.setText("Average lifespan: "+ simulationStatistics.getAverageDeadAnimalsLifespan());
-        averageChildrenNumberForLivingAnimals.setText("Average children number: "+ simulationStatistics.getAverageChildrenNumberForLivingAnimals());
-        theMostPopularGenotype.setText("The most popular genotype: " + simulationStatistics.getTheMostPopularGenotype());
+        averageLivingAnimalsEnergy.setText("Average animals energy: " + Math.round(simulationStatistics.getAverageLivingAnimalsEnergy()));
+        averageDeadAnimalsLifespan.setText("Average lifespan: "+ Math.round(simulationStatistics.getAverageDeadAnimalsLifespan()) );
+        averageChildrenNumberForLivingAnimals.setText("Average children number: "+ Math.round(simulationStatistics.getAverageChildrenNumberForLivingAnimals()));
+        theMostPopularGenotype.setText("The most popular genotype: " + (simulationStatistics.getTheMostPopularGenotype()));
     }
 
     @Override
-    public void simulationChanged(Simulation simulation) {
+    public void simulationChanged(Simulation simulation) throws IOException {
 
         Platform.runLater(this::drawMap);
         Platform.runLater(this::updateStats);
+        this.simulation.writeDownStatistics();
     }
 
-    private boolean isSimulationRunning = false;
-    public void onSimulationStartClicked(ActionEvent actionEvent) {
+    public void closeStatisticFile() throws IOException {
+        this.simulation.saveStatistics();
+    }
 
-        if (!isSimulationRunning) {
-            isSimulationRunning = true;
+    public void onSimulationStartClicked(ActionEvent actionEvent) {
+        if (! simulation.isRunning()) {
+            simulation.startSimulation();
+            startStopButton.setText("Stop Simulation");
             Task<Void> task = new Task<>() {
                 @Override
                 protected Void call() {
@@ -145,10 +163,14 @@ public class SimulationPresenter implements SimulationChangeListener {
                     return null;
                 }
             };
-
-            task.setOnSucceeded(event -> isSimulationRunning = false);
-
+            task.setOnSucceeded(event -> simulation.stopSimulation());
             new Thread(task).start();
         }
+        else {
+            simulation.stopSimulation();
+            startStopButton.setText("Start Simulation");
+        }
     }
+
+
 }
