@@ -185,4 +185,9 @@ public abstract class AbstractMap implements IWorldMap {
     public String toString() {
         return mapVisualizer.draw(this.boundary.lowerLeftCorner(), this.boundary.upperRightCorner());
     }
+
+    @Override
+    public boolean isJungleArea(Vector2D position) {
+        return position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner());
+    }
 }

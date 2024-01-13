@@ -6,13 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
-import javafx.geometry.Rectangle2D;
-import javafx.geometry.VPos;
 import javafx.scene.control.Button;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.RowConstraints;
-import project.RandomGen;
+import javafx.scene.layout.*;
 import project.Vector2D;
 import project.simulation.Simulation;
 import project.simulation.maps.Boundary;
@@ -21,16 +16,24 @@ import javafx.scene.control.Label;
 import project.simulation.observer.SimulationChangeListener;
 import project.simulation.statistics.SimulationStatistics;
 import project.simulation.statistics.StatisticsWriter;
+import project.simulation.worldelements.IWorldElement;
+import project.simulation.worldelements.WorldElementBox;
 
-import java.awt.*;
 import java.io.IOException;
-import java.text.DecimalFormat;
+
 
 public class SimulationPresenter implements SimulationChangeListener {
 
     private static final int MAP_CONST =  600;
     @FXML
     private Button startStopButton;
+    @FXML
+    private Button speedButtonx05;
+    @FXML
+    private Button speedButtonx1;
+    @FXML
+    private Button speedButtonx2;
+
     @FXML
     private Label dayNum;
     @FXML
@@ -61,6 +64,7 @@ public class SimulationPresenter implements SimulationChangeListener {
         this.simulation = simulation;
         this.map = simulation.getMap();
         this.simulationStatistics = simulation.getSimulationStatistics();
+        drawMap();
     }
 
     public void drawMap() {
@@ -77,7 +81,8 @@ public class SimulationPresenter implements SimulationChangeListener {
 
         for (int x = minX - 1; x <= maxX; x++) {
             for (int y = maxY + 1; y >= minY; y--) {
-                Label label;
+                Label label = new Label("");
+                StackPane cellPane = new StackPane();
 
                 if (x == minX - 1 && y == maxY + 1) {
                     label = new Label("y\\x");
@@ -86,27 +91,31 @@ public class SimulationPresenter implements SimulationChangeListener {
                 } else if (y == maxY + 1) {
                     label = new Label(String.valueOf(x));
                 } else {
+                    if (map.isJungleArea(new Vector2D(x, y)))
+                        cellPane.setStyle("-fx-background-color: #679f65; " +
+                                "-fx-border-color: black; -fx-border-width: 1;");
+                    else
+                        cellPane.setStyle("-fx-background-color: #bde5b4; " +
+                                "-fx-border-color: black; -fx-border-width: 1;");
+
                     Object element = map.objectAt(new Vector2D(x, y));
                     if (element != null) {
                         try {
-                            Label elementBox = new Label(element.toString());
-                            elementBox.setAlignment(Pos.CENTER);
-                            GridPane.setHalignment(elementBox, HPos.CENTER);
-                            GridPane.setValignment(elementBox, VPos.CENTER);
-
-                            mapGrid.add(elementBox, x - minX + 1, maxY - y + 1);
+                            WorldElementBox elementBox = new WorldElementBox((IWorldElement) element, (int) (0.8*cellWidth));
+                            cellPane.getChildren().add(elementBox);
+                            mapGrid.add(cellPane, x - minX + 1, maxY - y + 1);
                             continue;
                         } catch (IllegalArgumentException e) {
                             System.out.println(e.getMessage());
                         }
                     }
-                    label = new Label("");
+
                 }
 
                 label.setAlignment(Pos.CENTER);
+                cellPane.getChildren().add(label);
                 GridPane.setHalignment(label, HPos.CENTER);
-                GridPane.setValignment(label, VPos.CENTER);
-                mapGrid.add(label, x - minX + 1, maxY - y + 1);
+                mapGrid.add(cellPane, x - minX + 1, maxY - y + 1);
             }
         }
 
@@ -147,7 +156,14 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
     public void saveStatsToFile() {
-        this.simulation.saveStatistics();
+        if (this.simulation.isStoreStatistics()){
+            try {
+                StatisticsWriter statisticsWriter = new StatisticsWriter(this.simulation);
+                statisticsWriter.writeToFile(simulationStatistics);
+            } catch (Exception e) {
+                throw new RuntimeException(e);
+            }
+        }
     }
 
     public void onSimulationStartClicked(ActionEvent actionEvent) {
@@ -170,5 +186,20 @@ public class SimulationPresenter implements SimulationChangeListener {
         }
     }
 
+    @FXML
+    private void changeSpeed(ActionEvent event) {
+        Button clickedButton = (Button) event.getSource();
+        String buttonText = clickedButton.getText();
+
+        double multipier;
+        switch (buttonText) {
+            case "x0.5" -> multipier = 10.0;
+            case "x1" -> multipier = 1.0;
+            case "x2" -> multipier = 0.5;
+            default -> multipier = 1.0;
+        }
+
+        this.simulation.setSimulationSpeed(multipier);
+    }
 
 }

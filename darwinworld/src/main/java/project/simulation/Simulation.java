@@ -6,7 +6,6 @@ import project.simulation.maps.IWorldMap;
 import project.simulation.observer.SaveStatistics;
 import project.simulation.observer.SubscribersManager;
 import project.simulation.statistics.SimulationStatistics;
-import project.simulation.statistics.StatisticsWriter;
 
 import java.util.*;
 
@@ -14,19 +13,19 @@ public class Simulation implements Runnable{
     private final IWorldMap map;
     private final UUID  uuid;
     private final Modifications modifications;
-    private final SubscribersManager subscribersMenager;
+    private final SubscribersManager subscribersManager;
     private final SimulationStatistics simulationStatistics;
     private volatile boolean isRunning = false;
     private boolean storeStatistics = false;
+    private double simulationSpeed = 1.0;
     public Simulation(IWorldMap map, Modifications modifications) {
         this.modifications = modifications;
         this.simulationStatistics = new SimulationStatistics();
         this.map = map;
         this.uuid = UUID.randomUUID();
-        this.subscribersMenager = new SubscribersManager();
-        subscribersMenager.addSubscriber(new SaveStatistics());
+        this.subscribersManager = new SubscribersManager();
+        subscribersManager.addSubscriber(new SaveStatistics());
     }
-
 
     public SimulationStatistics getSimulationStatistics() {
         return simulationStatistics;
@@ -36,20 +35,27 @@ public class Simulation implements Runnable{
         return this.map;
     }
     public SubscribersManager getSubscribers() {
-        return subscribersMenager;
+        return subscribersManager;
+    }
+
+    public boolean isStoreStatistics() {
+        return storeStatistics;
     }
 
     public boolean isRunning() {
         return isRunning;
     }
 
+    public void setSimulationSpeed(double simulationSpeed) {
+        this.simulationSpeed = simulationSpeed;
+    }
 
 
     public void run() throws IllegalStateException {
 
 
         while (isRunning){
-            subscribersMenager.notifySubscribers(this);
+            subscribersManager.notifySubscribers(this);
 
             map.deleteDeadAnimals();
             map.moveAnimals();
@@ -61,7 +67,8 @@ public class Simulation implements Runnable{
 
 
             try {
-                Thread.sleep(500);
+                int sleepDuration = (int) (500 * this.simulationSpeed);
+                Thread.sleep(sleepDuration);
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
@@ -70,17 +77,7 @@ public class Simulation implements Runnable{
     public void setStoreStatistics(boolean storeStatistics) {
         this.storeStatistics = storeStatistics;
     }
-    public void saveStatistics() {
-        if (storeStatistics){
-            try {
-                StatisticsWriter statisticsWriter = new StatisticsWriter(this);
-                statisticsWriter.writeToFile(simulationStatistics);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
 
-        }
-    }
     public void stopSimulation(){
         isRunning = false;
     }

@@ -42,6 +42,6 @@ public class EarthMap extends AbstractMap {
         int maxY = getBoundary().upperRightCorner().getY();
 
         int positionY = position.getY();
-        return positionY <= maxY || position.getY() >= minY;
+        return positionY <= maxY && position.getY() >= minY;
     }
 }
