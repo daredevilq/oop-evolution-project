@@ -4,6 +4,7 @@ import project.Vector2D;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 
+import java.text.DecimalFormat;
 import java.util.*;
 
 public class SimulationStatistics {
@@ -18,7 +19,7 @@ public class SimulationStatistics {
     private List<Integer> theMostPopularGenotype = new ArrayList<>();
 
 
-    public void updateDailySimulationStats(List<Animal> animalList, List<Animal> deadAnimalList, int mapPlantSize, int freePlaces){
+    public void updateDailySimulationStats(List<Animal> animalList, List<Animal> deadAnimalList, int mapPlantSize, int freePlaces) {
         dayNum++;
 
         this.aliveAnimalsCount = animalList.size();
@@ -69,44 +70,44 @@ public class SimulationStatistics {
         return theMostPopularGenotype;
     }
 
-    private double calculateAverageLivingAnimalsEnergy(List<Animal> animalList){
+    private double calculateAverageLivingAnimalsEnergy(List<Animal> animalList) {
         if (aliveAnimalsCount == 0) return 0.0;
         double energySum = 0.0;
-        for (Animal animal: animalList) {
+        for (Animal animal : animalList) {
             energySum += animal.getEnergy();
         }
-        return  energySum /aliveAnimalsCount;
+        return energySum / aliveAnimalsCount;
     }
 
-    private double calculateAverageDeadAnimalsLifespan(List<Animal> deadAnimalList){
+    private double calculateAverageDeadAnimalsLifespan(List<Animal> deadAnimalList) {
         int sumLivedDays = 0;
         if (this.deadAnimalsCount == 0) return 0.0;
-        for (Animal animal : deadAnimalList){
+        for (Animal animal : deadAnimalList) {
             sumLivedDays += animal.getAge();
         }
         return (double) sumLivedDays / (double) this.deadAnimalsCount;
     }
 
 
-    private double calculateAverageChildrenNumberForLivingAnimals(List<Animal> animalList){
+    private double calculateAverageChildrenNumberForLivingAnimals(List<Animal> animalList) {
         double childrenCounter = 0;
-        for (Animal animal: animalList) {
+        for (Animal animal : animalList) {
             childrenCounter += animal.getChildrenList().size();
         }
 
-        if (aliveAnimalsCount != 0) return childrenCounter/aliveAnimalsCount;
+        if (aliveAnimalsCount != 0) return childrenCounter / aliveAnimalsCount;
 
         return 0.0;
     }
 
-    private List<Integer> calculateTheMostPopularGenotype(List<Animal> animalList){
+    private List<Integer> calculateTheMostPopularGenotype(List<Animal> animalList) {
         Map<List<Integer>, Integer> countGenotypes = new HashMap<>();
 
         int mostCommonGenotypeCounter = 0;
         List<Integer> mostCommonGenotype = new ArrayList<>();
 
         int count;
-        for (Animal animal : animalList){
+        for (Animal animal : animalList) {
             List<Integer> genotype = animal.getGenotype();
 
             if (countGenotypes.containsKey(genotype)) {
@@ -118,7 +119,7 @@ public class SimulationStatistics {
                 count = 0;
             }
 
-            if (count + 1 > mostCommonGenotypeCounter){
+            if (count + 1 > mostCommonGenotypeCounter) {
                 mostCommonGenotype = genotype;
                 mostCommonGenotypeCounter = count + 1;
             }

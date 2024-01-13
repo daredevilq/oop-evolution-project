@@ -4,7 +4,6 @@ import project.Vector2D;
 
 public class Grass implements IWorldElement {
 
-    private static final String sign = "*";
     private final int energy;
 
     private final Vector2D position;
@@ -25,7 +24,12 @@ public class Grass implements IWorldElement {
 
     @Override
     public String toString() {
-        return sign;
+        return "*";
 
+    }
+
+    @Override
+    public String getResourceName() {
+        return "img/grass.png";
     }
 }

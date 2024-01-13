@@ -54,4 +54,22 @@ public class EarthMapTest {
         animal.move(map, modifications.animalBehavior());
         assertEquals(new Vector2D(1,0), animal.getPosition());
     }
+
+
+    @Test
+    public void testBlockMovingToOtherSideMap(){
+        Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
+        MapSettings mapSettings = new MapSettings(5, 5, 20, 10, 1, 8, 5,0, 0, 10,0, 0.2);
+
+        IWorldMap map = new EarthMap(mapSettings, modifications, new MapInit());
+
+        List<Integer> genotype = new ArrayList<>(List.of(0,0,0,0,0));
+        Animal animal = new Animal(new Vector2D(0, 4), MapDirection.NORTH, 100, genotype);
+
+        animal.move(map, modifications.animalBehavior());
+        assertEquals(new Vector2D(0,4), animal.getPosition());
+
+        animal.move(map, modifications.animalBehavior());
+        assertEquals(new Vector2D(0,3), animal.getPosition());
+    }
 }

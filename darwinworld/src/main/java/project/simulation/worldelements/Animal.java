@@ -166,4 +166,8 @@ public class Animal implements IWorldElement{
             return "Z";
     }
 
+    @Override
+    public String getResourceName() {
+        return "img/animal.png";
+    }
 }

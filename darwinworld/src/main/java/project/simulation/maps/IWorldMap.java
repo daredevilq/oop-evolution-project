@@ -20,6 +20,8 @@ public interface IWorldMap {
 
     Boundary getBoundary();
 
+    List<Animal> getDeadAnimals();
+
     Map<Vector2D, Grass> getMapPlants();
     List<Animal> getAnimalsList();
     boolean canMoveTo(Vector2D position);
@@ -29,7 +31,7 @@ public interface IWorldMap {
     void eatPlants();
     void breeding(Modifications modification);
     void moveAnimals();
-    void deleteDeadAnimals(List<Animal> deadAnimals);
+    void deleteDeadAnimals();
 
     void spawnPlants();
     Boundary getJungleBoundary();
@@ -50,4 +52,6 @@ public interface IWorldMap {
     Object objectAt(Vector2D currentPosition);
 
     void updateDailyAnimalStats();
+
+    boolean isJungleArea(Vector2D position);
 }

@@ -28,11 +28,11 @@ public class SimulationApp extends Application {
 
 
         presenter.setSimulation(simulation);
-        simulation.addSubscriber(presenter);
+        simulation.getSubscribers().addSubscriber(presenter);
 
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
-
+        primaryStage.setOnCloseRequest(event -> presenter.saveStatsToFile());
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {
@@ -42,7 +42,6 @@ public class SimulationApp extends Application {
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
-
 
 
 }

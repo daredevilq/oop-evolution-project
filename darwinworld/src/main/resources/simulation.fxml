@@ -9,7 +9,13 @@
             minHeight="800.0" minWidth="1000.0"
             fx:controller="project.presenter.SimulationPresenter">
     <top>
-        <Button text="Start" onAction="#onSimulationStartClicked"/>
+        <HBox>
+            <Button text="Run Simulation" onAction="#onSimulationStartClicked" fx:id="startStopButton"/>
+            <Button text="x0.5" onAction="#changeSpeed" fx:id="speedButtonx05"/>
+            <Button text="x1" onAction="#changeSpeed" fx:id="speedButtonx1"/>
+            <Button text="x2" onAction="#changeSpeed" fx:id="speedButtonx2"/>
+        </HBox>
+
     </top>
 
     <left>

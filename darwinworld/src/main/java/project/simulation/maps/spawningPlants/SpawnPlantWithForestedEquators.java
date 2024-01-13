@@ -20,7 +20,7 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
     public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlants) {
         if (RandomGen.random()<=0.8){
             List<Vector2D> jungleAreas = map.getFreePlaces().stream()
-                    .filter(entry -> isJungleArea(entry, map.getJungleBoundary()))
+                    .filter(map::isJungleArea)
                     .toList();
 
             if (!jungleAreas.isEmpty()) {
@@ -31,7 +31,7 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
 
 
             List<Vector2D> nonJungleAreas = map.getFreePlaces().stream()
-                    .filter(entry -> !isJungleArea(entry, map.getJungleBoundary()))
+                    .filter(entry -> !map.isJungleArea(entry))
                     .toList();
 
             if (!nonJungleAreas.isEmpty()) {
@@ -46,9 +46,9 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
     }
 
 
-    private boolean isJungleArea(Vector2D position, Boundary jungleBoundary) {
-        return position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner());
-    }
+//    private boolean isJungleArea(Vector2D position, Boundary jungleBoundary) {
+//        return position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner());
+//    }
 
 
 }

@@ -28,4 +28,5 @@ public class InitApp extends Application {
         primaryStage.minWidthProperty().bind(viewRoot.minWidthProperty());
         primaryStage.minHeightProperty().bind(viewRoot.minHeightProperty());
     }
+
 }
