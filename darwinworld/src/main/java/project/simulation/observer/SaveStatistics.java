@@ -7,12 +7,16 @@ import project.simulation.statistics.SimulationStatistics;
 import project.simulation.worldelements.IWorldElement;
 
 public class SaveStatistics implements SimulationChangeListener {
+    private final SimulationStatistics simulationStatistics;
+    private final IWorldMap map;
+
+    public SaveStatistics(SimulationStatistics simulationStatistics, IWorldMap map) {
+        this.simulationStatistics = simulationStatistics;
+        this.map = map;
+    }
 
     @Override
     public void simulationChanged(Simulation simulation) {
-        SimulationStatistics simulationStatistics = simulation.getSimulationStatistics();
-        IWorldMap map = simulation.getMap();
-
         simulationStatistics.updateDailySimulationStats(map.getAnimalsList(), map.getDeadAnimals(),
                 map.getMapPlants().size(), map.freePlacesOnMap());
     }

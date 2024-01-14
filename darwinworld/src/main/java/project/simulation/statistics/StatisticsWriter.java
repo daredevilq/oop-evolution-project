@@ -16,13 +16,9 @@ public class StatisticsWriter {
     private final List<String[]> buffer = new ArrayList<>();
     private final File file;
 
-    public StatisticsWriter(Simulation simulation) throws IOException {
-        this.file = new File("darwinworld/statistics/simulationStatistics" + simulation.toString() + ".csv");
+    public StatisticsWriter(String simulationUUID) {
+        this.file = new File("darwinworld/statistics/simulationStatistics" + simulationUUID + ".csv");
 
-        Path parentDirectory = file.toPath().getParent();
-        if (parentDirectory != null && !Files.exists(parentDirectory)) {
-            Files.createDirectories(parentDirectory);
-        }
 
         buffer.add(new String[]{"Day number", "Alive animals count", "Plants number", "Dead animals count",
                 "Free places on map", "Average living animals energy", "Average dead animals lifespan",
@@ -43,7 +39,6 @@ public class StatisticsWriter {
 
     public void writeToFile(SimulationStatistics simulationStatistics) {
         try (CSVWriter writer = new CSVWriter(new FileWriter(file, true))) {
-            writeStats(simulationStatistics);
             writer.writeAll(buffer);
             writer.flush();
         } catch (IOException e) {

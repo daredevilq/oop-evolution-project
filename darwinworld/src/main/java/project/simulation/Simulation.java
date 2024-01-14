@@ -5,8 +5,11 @@ import project.simulation.config.Modifications;
 import project.simulation.maps.IWorldMap;
 import project.simulation.observer.SaveStatistics;
 import project.simulation.observer.SubscribersManager;
+import project.simulation.observer.UpdateStatsInFile;
 import project.simulation.statistics.SimulationStatistics;
+import project.simulation.statistics.StatisticsWriter;
 
+import java.io.IOException;
 import java.util.*;
 
 public class Simulation implements Runnable{
@@ -18,17 +21,25 @@ public class Simulation implements Runnable{
     private volatile boolean isRunning = false;
     private boolean storeStatistics = false;
     private double simulationSpeed = 1.0;
-    public Simulation(IWorldMap map, Modifications modifications) {
+    private final StatisticsWriter statisticsWriter;
+    public Simulation(IWorldMap map, Modifications modifications)  {
         this.modifications = modifications;
         this.simulationStatistics = new SimulationStatistics();
         this.map = map;
         this.uuid = UUID.randomUUID();
         this.subscribersManager = new SubscribersManager();
-        subscribersManager.addSubscriber(new SaveStatistics());
+        subscribersManager.addSubscriber(new SaveStatistics(simulationStatistics, map));
+
+        this.statisticsWriter = new StatisticsWriter(toString());
+        subscribersManager.addSubscriber(new UpdateStatsInFile(simulationStatistics, statisticsWriter));
     }
 
     public SimulationStatistics getSimulationStatistics() {
         return simulationStatistics;
+    }
+
+    public StatisticsWriter getStatisticsWriter() {
+        return statisticsWriter;
     }
 
     public IWorldMap getMap() {
