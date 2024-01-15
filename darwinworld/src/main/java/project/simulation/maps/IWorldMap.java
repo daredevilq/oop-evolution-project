@@ -6,6 +6,7 @@ import project.simulation.config.Modifications;
 import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
+import project.simulation.worldelements.IWorldElement;
 
 import java.util.HashSet;
 import java.util.List;
@@ -49,7 +50,7 @@ public interface IWorldMap {
 
     boolean isOccupied(Vector2D currentPosition);
 
-    Object objectAt(Vector2D currentPosition);
+    IWorldElement objectAt(Vector2D currentPosition);
 
     void updateDailyAnimalStats();
 

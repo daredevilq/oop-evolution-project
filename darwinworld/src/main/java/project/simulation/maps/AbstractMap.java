@@ -10,6 +10,7 @@ import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.AnimalComparator;
 import project.simulation.worldelements.Grass;
+import project.simulation.worldelements.IWorldElement;
 
 import javax.imageio.plugins.tiff.GeoTIFFTagSet;
 import java.util.*;
@@ -124,8 +125,10 @@ public abstract class AbstractMap implements IWorldMap {
                 .toList();
 
         animalsList.removeIf(newDeadAnimals::contains);
-        //animalsList.removeIf(animal -> newDeadAnimals.contains(animal)); to jest to samo co wyzej
-        this.deadAnimals.addAll(newDeadAnimals);
+        for (Animal deadAnimal : newDeadAnimals){
+            deadAnimal.setAlive(false);
+            this.deadAnimals.add(deadAnimal);
+        }
     }
 
     @Override
@@ -173,7 +176,7 @@ public abstract class AbstractMap implements IWorldMap {
         return animalsList.stream().anyMatch(animal -> animal.getPosition().equals(position)) || mapPlants.containsKey(position);
     }
 
-    public Object objectAt(Vector2D position){
+    public IWorldElement objectAt(Vector2D position){
       for (Animal animal : animalsList){
           if (animal.getPosition().equals(position)){
               return animal;
