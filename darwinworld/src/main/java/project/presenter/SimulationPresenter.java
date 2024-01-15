@@ -157,12 +157,8 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     public void saveStatsToFile() {
         if (this.simulation.isStoreStatistics()){
-            try {
-                StatisticsWriter statisticsWriter = new StatisticsWriter(this.simulation);
-                statisticsWriter.writeToFile(simulationStatistics);
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
+            StatisticsWriter statisticsWriter = simulation.getStatisticsWriter();
+            statisticsWriter.writeToFile(simulationStatistics);
         }
     }
 
