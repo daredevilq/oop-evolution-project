@@ -1,0 +1,12 @@
+.spinner {
+    -fx-pref-width: 110;
+}
+
+.choosing-settings .label{
+        -fx-pref-width: 140;
+        -fx-alignment: CENTER_RIGHT;
+}
+
+.choosing-settings .combo-box{
+    -fx-pref-width: 180;
+}

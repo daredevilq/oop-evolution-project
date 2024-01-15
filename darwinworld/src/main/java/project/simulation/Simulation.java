@@ -66,9 +66,10 @@ public class Simulation implements Runnable{
 
 
         while (isRunning){
+            map.deleteDeadAnimals();
             subscribersManager.notifySubscribers(this);
 
-            map.deleteDeadAnimals();
+
             map.moveAnimals();
             map.eatPlants();
             map.breeding(modifications);

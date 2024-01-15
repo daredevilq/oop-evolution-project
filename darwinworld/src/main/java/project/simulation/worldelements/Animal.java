@@ -24,6 +24,7 @@ public class Animal implements IWorldElement{
     private int eatenPlants;
     private int childrenCounter;
     private List<Animal> childrenList = new ArrayList<>();
+    private boolean isAlive;
 
 
     public Animal(Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
@@ -35,13 +36,16 @@ public class Animal implements IWorldElement{
         this.age = 0;
         this.childrenCounter = 0;
         this.eatenPlants = 0;
+        this.isAlive = true;
     }
 
     public Vector2D getPosition() {
         return position;
     }
 
-
+    public int getEatenPlants() {
+        return eatenPlants;
+    }
     public MapDirection getDirection() {
         return direction;
     }
@@ -74,6 +78,13 @@ public class Animal implements IWorldElement{
         this.childrenList = childrenList;
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void setAlive(boolean alive) {
+        isAlive = alive;
+    }
 
 
     public int computeNumberOfDescendants() {
@@ -157,10 +168,6 @@ public class Animal implements IWorldElement{
         this.age += 1;
     }
 
-//    @Override
-//    public String toString() {
-//        return "(" + this.position.toString() + " Energia: " + this.energy + " Genom: " + this.genotype.toString() + " GenomIndex: "+ this.currentGeneIndex + " Orientation: "+ this.direction.toString() + ")";
-//    }
     @Override
     public String toString(){
             return "Z";
