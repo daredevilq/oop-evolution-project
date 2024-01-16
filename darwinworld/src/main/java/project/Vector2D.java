@@ -44,22 +44,6 @@ public class Vector2D {
         return x >= other.x && y >= other.y;
     }
 
-    public Vector2D upperRight(Vector2D other) {
-        return new Vector2D(Math.max(x, other.x), Math.max(y, other.y));
-    }
-
-    public Vector2D upperLeft(Vector2D other) {
-        return new Vector2D(Math.min(x, other.x), Math.max(y, other.y));
-    }
-
-    public Vector2D lowerLeft(Vector2D other) {
-        return new Vector2D(Math.min(x, other.x), Math.min(y, other.y));
-    }
-
-    public Vector2D lowerRight(Vector2D other) {
-        return new Vector2D(Math.max(x, other.x), Math.min(y, other.y));
-    }
-
     public Vector2D add(Vector2D other) {
         return new Vector2D(x + other.x, y + other.y);
     }
@@ -71,7 +55,7 @@ public class Vector2D {
     public Vector2D opposite() {return new Vector2D(-x, -y); }
 
     public static Vector2D randomVector(int minX, int maxX, int minY, int maxY) {
-        return new Vector2D(RandomGen.randInt(minX, maxX), RandomGen.randInt(minY, maxY));
+        return new Vector2D(RandomGenerator.randInt(minX, maxX), RandomGenerator.randInt(minY, maxY));
     }
 
 }

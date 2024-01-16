@@ -2,7 +2,6 @@ package project.presenter;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import project.gui.SimulationApp;
 import project.simulation.Simulation;
@@ -14,9 +13,9 @@ import project.simulation.maps.IWorldMap;
 
 public class InitPresenter {
     @FXML
-    private CheckBox saveStatistics;
+    private Spinner<Integer> mapWidth;
     @FXML
-    private VBox Title;
+    private Spinner<Integer> mapHeight;
     @FXML
     private Spinner<Integer> readyToBreedEnergy;
     @FXML
@@ -34,23 +33,22 @@ public class InitPresenter {
     @FXML
     private Spinner<Integer> moveEnergy;
     @FXML
-    private Spinner<Integer> genomSize;
-    @FXML
-    private ComboBox<BreedingType> animalBreedingType;
-    @FXML
-    private Spinner<Integer> mapWidth;
-    @FXML
-    private Spinner<Integer> mapHeight;
-    @FXML
-    private ComboBox<AnimalBehaviorType> animalBehaviorType;
-    @FXML
-    private ComboBox<VegetationDynamicsType> vegetation;
-    @FXML
-    private ComboBox<MutationType> mutationType;
+    private Spinner<Integer> genomeSize;
+
     @FXML
     private ComboBox<MapType> mapType;
     @FXML
-    private Button startSimulationButton;
+    private ComboBox<MutationType> mutationType;
+    @FXML
+    private ComboBox<VegetationDynamicsType> vegetation;
+    @FXML
+    private ComboBox<AnimalBehaviorType> animalBehaviorType;
+    @FXML
+    private ComboBox<BreedingType> animalBreedingType;
+
+    @FXML
+    private CheckBox saveStatistics;
+
 
     @FXML
     private void initialize() {
@@ -84,13 +82,44 @@ public class InitPresenter {
         }
     }
 
+    @FXML
+    private void setAdvisedConfiguration() {
+        mapWidth.getValueFactory().setValue(15);
+        mapHeight.getValueFactory().setValue(15);
+        startPlants.getValueFactory().setValue(25);
+        grassEnergy.getValueFactory().setValue(5);
+        readyToBreedEnergy.getValueFactory().setValue(70);
+        plantsPerDay.getValueFactory().setValue(8);
+        animalNumber.getValueFactory().setValue(10);
+        startEnergy.getValueFactory().setValue(120);
+        animalsBreedEnergy.getValueFactory().setValue(50);
+        moveEnergy.getValueFactory().setValue(1);
+        genomeSize.getValueFactory().setValue(10);
+
+
+        mapType.setValue(MapType.EARTH);
+        mutationType.setValue(MutationType.RANDOMNESS);
+        vegetation.setValue(VegetationDynamicsType.EQUATOR);
+        animalBehaviorType.setValue(AnimalBehaviorType.PREDESTINATION);
+        animalBreedingType.setValue(BreedingType.DEFAULT);
+    }
+
     private boolean inputDataValidation(){
-        return mapType.getValue() != null && vegetation.getValue() != null && animalBehaviorType.getValue() != null && animalBreedingType.getValue() != null &&  mutationType.getValue() != null;
+        return mapType.getValue() != null && vegetation.getValue() != null && animalBehaviorType.getValue() != null &&
+                animalBreedingType.getValue() != null &&  mutationType.getValue() != null;
     }
 
     private Simulation createSimulation() {
-        Modifications modifications = new Modifications(vegetation.getValue().createVegetationClass(), animalBehaviorType.getValue().createAnimalBehaviorClass(), animalBreedingType.getValue().createBreedingClass(), mutationType.getValue().createAnimalMutationClass());
-        MapSettings mapSettings = new MapSettings(mapWidth.getValue(), mapHeight.getValue(), startEnergy.getValue(), readyToBreedEnergy.getValue(), moveEnergy.getValue(), grassEnergy.getValue(), genomSize.getValue(), animalNumber.getValue(), startPlants.getValue(), animalsBreedEnergy.getValue(), plantsPerDay.getValue(), 0.2);
+        Modifications modifications = new Modifications(vegetation.getValue().createVegetationClass(),
+                animalBehaviorType.getValue().createAnimalBehaviorClass(),
+                animalBreedingType.getValue().createBreedingClass(),
+                mutationType.getValue().createAnimalMutationClass());
+
+        MapSettings mapSettings = new MapSettings(mapWidth.getValue(), mapHeight.getValue(), startEnergy.getValue(),
+                readyToBreedEnergy.getValue(), moveEnergy.getValue(), grassEnergy.getValue(), genomeSize.getValue(),
+                animalNumber.getValue(), startPlants.getValue(), animalsBreedEnergy.getValue(),
+                plantsPerDay.getValue(), 0.2);
+
         IWorldMap map = mapType.getValue().createMapClass(mapSettings, modifications, new MapInit());
         Simulation simulation = new Simulation(map, modifications);
         simulation.setStoreStatistics(saveStatistics.isSelected());

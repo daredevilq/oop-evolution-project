@@ -1,12 +1,21 @@
 .spinner {
-    -fx-pref-width: 110;
+    -fx-pref-width: 130;
+    -fx-alignment: CENTER_LEFT;
 }
 
-.choosing-settings .label{
+.choosing-settings .label {
         -fx-pref-width: 140;
         -fx-alignment: CENTER_RIGHT;
 }
 
-.choosing-settings .combo-box{
+.combo-box {
     -fx-pref-width: 180;
+}
+
+/*.check-box {*/
+/*    -fx-padding: 15;*/
+/*}*/
+
+.button {
+    -fx-spacing: 10;
 }

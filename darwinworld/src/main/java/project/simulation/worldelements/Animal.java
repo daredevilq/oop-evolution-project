@@ -1,10 +1,7 @@
 package project.simulation.worldelements;
 
 import project.MapDirection;
-import project.RandomGen;
 import project.Vector2D;
-import project.simulation.config.MapSettings;
-import project.simulation.config.Modifications;
 import project.simulation.maps.IWorldMap;
 import project.simulation.maps.animalBehavior.AnimalBehavior;
 import project.simulation.maps.animalMutations.AnimalMutation;
