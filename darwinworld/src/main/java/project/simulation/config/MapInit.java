@@ -1,9 +1,8 @@
 package project.simulation.config;
 
 import project.MapDirection;
-import project.RandomGen;
+import project.RandomGenerator;
 import project.Vector2D;
-import project.simulation.fetures.MapAreaType;
 import project.simulation.maps.Boundary;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
@@ -18,8 +17,9 @@ public class MapInit {
 
         //umieszczenie losowo poczatkowej ilosci zwierzat
         for (int i = 0; i < mapSettings.startAnimals(); i++) {
-            Vector2D position = RandomGen.randomFreePlace(boundary.lowerLeftCorner(), boundary.upperRightCorner());
-            Animal animal = new Animal(position, MapDirection.NORTHEAST.rotate((int) (Math.random() * 8)), mapSettings.startEnergy(), RandomGen.randIntList(0, 7, mapSettings.genomeSize()));
+            Vector2D position = randomFreePlace(boundary.lowerLeftCorner(), boundary.upperRightCorner());
+            Animal animal = new Animal(position, MapDirection.NORTHEAST.rotate((int) (Math.random() * 8)),
+                    mapSettings.startEnergy(), RandomGenerator.randIntList(0, 7, mapSettings.genomeSize()));
             animalList.add(animal);
         }
         return animalList;
@@ -38,5 +38,14 @@ public class MapInit {
             }
         }
         return freePlaces;
+    }
+
+    public static Vector2D randomFreePlace(Vector2D loweLeft, Vector2D upperRight){
+        int minX = loweLeft.getX();
+        int maxX = upperRight.getX();
+        int minY = loweLeft.getY();
+        int maxY = upperRight.getY();
+
+        return Vector2D.randomVector(minX, maxX, minY, maxY);
     }
 }

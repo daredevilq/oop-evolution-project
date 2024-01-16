@@ -7,82 +7,83 @@
 <?import javafx.scene.control.Separator?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="800.0" minWidth="1000.0"
+            minHeight="800.0" minWidth="1100.0"
             fx:controller="project.presenter.SimulationPresenter">
     <top>
-        <HBox>
-            <Button text="Run Simulation" onAction="#onSimulationStartClicked" fx:id="startStopButton"/>
-            <Button text="x0.5" onAction="#changeSpeed" fx:id="speedButtonx05"/>
-            <Button text="x1" onAction="#changeSpeed" fx:id="speedButtonx1"/>
-            <Button text="x2" onAction="#changeSpeed" fx:id="speedButtonx2"/>
-            <Button fx:id="resetTrackerButton" text="Reset Tracker" onAction="#resetTracker"/>
+        <HBox style="-fx-spacing: 10; -fx-padding: 10;">
+            <Button text="Run Simulation" onAction="#onSimulationStartClicked" fx:id="startStopButton"
+                    style="-fx-font-size: 16"/>
+            <Button text="x0.5" onAction="#changeSpeed" />
+            <Button text="x1" onAction="#changeSpeed" />
+            <Button text="x2" onAction="#changeSpeed" />
+            <Button text="Reset Tracker" onAction="#resetTracker"/>
         </HBox>
-
     </top>
+
 
     <left>
         <VBox>
             <HBox>
-                <Label fx:id="dayNum"></Label>
+                <Label fx:id="dayNum" />
             </HBox>
             <HBox>
-                <Label fx:id="aliveAnimalsCount"></Label>
+                <Label fx:id="aliveAnimalsCount" />
             </HBox>
             <HBox>
-                <Label fx:id="plantsNumber"></Label>
+                <Label fx:id="plantsNumber" />
             </HBox>
             <HBox>
-                <Label fx:id="deadAnimalsCount"></Label>
+                <Label fx:id="deadAnimalsCount" />
             </HBox>
             <HBox>
-                <Label fx:id="freePlacesOnMap"></Label>
+                <Label fx:id="freePlacesOnMap" />
             </HBox>
             <HBox>
-                <Label fx:id="averageLivingAnimalsEnergy"></Label>
+                <Label fx:id="averageLivingAnimalsEnergy" />
             </HBox>
             <HBox>
-                <Label fx:id="averageDeadAnimalsLifespan"></Label>
+                <Label fx:id="averageDeadAnimalsLifespan" />
             </HBox>
             <HBox>
-                <Label fx:id="averageChildrenNumberForLivingAnimals"></Label>
+                <Label fx:id="averageChildrenNumberForLivingAnimals" />
             </HBox>
             <HBox>
-                <Label fx:id="theMostPopularGenotype"></Label>
+                <Label fx:id="theMostPopularGenotype" />
             </HBox>
 
             <Separator prefHeight="20.0" />
+            <Label style="-fx-font-size: 16px;">
+                Stop simulation and click on animal to tack
+            </Label>
 
             <HBox>
-                <Label fx:id="animalTitle"></Label>
+                <Label fx:id="animalTitle" />
             </HBox>
             <HBox>
-                <Label fx:id="animalGenome"></Label>
+                <Label fx:id="animalGenome" />
             </HBox>
             <HBox>
-                <Label fx:id="genomActivatedPart"></Label>
+                <Label fx:id="genomeActivatedPart" />
             </HBox>
             <HBox>
-                <Label fx:id="animalEnergy"></Label>
+                <Label fx:id="animalEnergy" />
             </HBox>
             <HBox>
-                <Label fx:id="eatenPlants"></Label>
+                <Label fx:id="eatenPlants" />
             </HBox>
             <HBox>
-                <Label fx:id="childrenCounter"></Label>
+                <Label fx:id="childrenCounter" />
             </HBox>
             <HBox>
-                <Label fx:id="descendantsCounter"></Label>
+                <Label fx:id="descendantsCounter" />
             </HBox>
             <HBox>
-                <Label fx:id="aliveDays"></Label>
-            </HBox>
-            <HBox>
-                <Label fx:id="deadDay"></Label>
+                <Label fx:id="aliveDays" />
             </HBox>
         </VBox>
     </left>
     <center>
-        <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true"/>
+        <GridPane fx:id="mapGrid" alignment="CENTER" gridLinesVisible="true" />
     </center>
 
 </BorderPane>

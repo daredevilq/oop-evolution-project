@@ -46,7 +46,6 @@ public interface IWorldMap {
     void removeFreePlace(Vector2D randomPosition);
 
     void addAnimal(Animal animal);
-    void addPlant(Grass grass);
 
     boolean isOccupied(Vector2D currentPosition);
 

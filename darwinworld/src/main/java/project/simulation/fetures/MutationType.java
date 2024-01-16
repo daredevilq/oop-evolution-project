@@ -1,11 +1,5 @@
 package project.simulation.fetures;
 
-import project.RandomGen;
-import project.simulation.config.MapInit;
-import project.simulation.config.MapSettings;
-import project.simulation.config.Modifications;
-import project.simulation.maps.EarthMap;
-import project.simulation.maps.IWorldMap;
 import project.simulation.maps.animalMutations.AnimalMutation;
 import project.simulation.maps.animalMutations.DefaultMutation;
 

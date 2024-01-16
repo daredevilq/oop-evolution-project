@@ -9,7 +9,7 @@
 <?import java.lang.String?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            minHeight="800.0" minWidth="1000.0"
+            minHeight="800.0" minWidth="800.0"
             fx:controller="project.presenter.InitPresenter">
     <stylesheets>
         <String fx:value="/style.css" />
@@ -26,35 +26,35 @@
         <VBox alignment="CENTER" spacing="20" styleClass="choosing-settings">
             <HBox alignment="CENTER">
                 <Label text="Map Height:  " />
-                <Spinner fx:id="mapHeight" initialValue="15" min="0" max="30" editable="true"/>
+                <Spinner fx:id="mapHeight" initialValue="15" min="5" max="30" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Map Width:  " />
-                <Spinner fx:id="mapWidth" initialValue="15"  min="0" max="30" editable="true"/>
+                <Spinner fx:id="mapWidth" initialValue="15"  min="5" max="30" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Initial Plants Number:  " />
-                <Spinner fx:id="startPlants" initialValue="20" min="0" max="50" editable="true"/>
+                <Spinner fx:id="startPlants" initialValue="25" min="0" max="50" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Grass Energy:  " />
-                <Spinner fx:id="grassEnergy" initialValue="3" min="0" max="50" editable="true"/>
+                <Spinner fx:id="grassEnergy" initialValue="5" min="1" max="20" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Ready To Breed Energy:  " />
-                <Spinner fx:id="readyToBreedEnergy" initialValue="70" min="0" max="100" editable="true"/>
+                <Spinner fx:id="readyToBreedEnergy" initialValue="70" min="0" max="120" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Plants Per Day:  " />
-                <Spinner fx:id="plantsPerDay" initialValue="5" min="0" max="50" editable="true"/>
+                <Spinner fx:id="plantsPerDay" initialValue="8" min="0" max="20" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Animals Init Number:  " />
-                <Spinner fx:id="animalNumber" initialValue="10" min="0" max="50" editable="true"/>
+                <Spinner fx:id="animalNumber" initialValue="10" min="3" max="20" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Animals Start Energy Init:  " />
-                <Spinner fx:id="startEnergy" initialValue="120" min="0" max="200" editable="true"/>
+                <Spinner fx:id="startEnergy" initialValue="120" min="50" max="200" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Breed Energy:  " />
@@ -62,24 +62,42 @@
             </HBox>
             <HBox alignment="CENTER">
                 <Label text="Move Energy:  " />
-                <Spinner fx:id="moveEnergy" initialValue="0" min="0" max="20" editable="true"/>
+                <Spinner fx:id="moveEnergy" initialValue="1" min="0" max="20" editable="true"/>
             </HBox>
             <HBox alignment="CENTER">
-                <Label text="Genom Size:  " />
-                <Spinner fx:id="genomSize" initialValue="10" min="0" max="50" editable="true"/>
+                <Label text="Genome Size:  " />
+                <Spinner fx:id="genomeSize" initialValue="10" min="3" max="20" editable="true"/>
             </HBox>
-            <ComboBox fx:id="mapType" promptText="Map Type" />
-            <ComboBox fx:id="mutationType" promptText="Mutation Type" />
-            <ComboBox fx:id="vegetation" promptText="Vegetation Dynamics Type" />
-            <ComboBox fx:id="animalBehaviorType" promptText="Animal Behavior Type" />
-            <ComboBox fx:id="animalBreedingType" promptText="Breeding Type" />
+
+
+            <HBox alignment="CENTER">
+                <Label text="Map Type:  " />
+                <ComboBox fx:id="mapType" promptText="Map Type" />
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label text="Mutation Type:  " />
+                <ComboBox fx:id="mutationType" promptText="Mutation Type" />
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label text="Vegetation Type:  " />
+                <ComboBox fx:id="vegetation" promptText="Vegetation Type" />
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label text="Animal Behavior Type:  " />
+                <ComboBox fx:id="animalBehaviorType" promptText="Animal Behavior Type" />
+            </HBox>
+            <HBox alignment="CENTER">
+                <Label text="Breeding Type:  " />
+                <ComboBox fx:id="animalBreedingType" promptText="Breeding Type" />
+            </HBox>
         </VBox>
     </center>
     <bottom>
-        <HBox alignment="CENTER">
-            <Button fx:id="startSimulationButton"  text="Create new Simulation" onAction="#startSimulation"
-                    style="-fx-font-size: 16px;" />
-            <CheckBox fx:id="saveStatistics" text="Save Statistics to CSV" />
+        <HBox alignment="CENTER" style="-fx-spacing: 10; -fx-padding: 10;">
+            <Button text="Advised configuration" onAction="#setAdvisedConfiguration" style="-fx-font-size: 14px;" />
+            <Button text="Create new Simulation" onAction="#startSimulation"
+                    style="-fx-font-size: 16px; -fx-background-color: #8cbb8c" />
+            <CheckBox fx:id="saveStatistics" text="Save Statistics to CSV" style="-fx-font-size: 14px;" />
         </HBox>
     </bottom>
 

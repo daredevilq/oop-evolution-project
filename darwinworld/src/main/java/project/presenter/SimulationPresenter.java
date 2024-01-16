@@ -20,22 +20,20 @@ import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.IWorldElement;
 import project.simulation.worldelements.WorldElementBox;
 
-import java.io.IOException;
+import static java.lang.Math.min;
 
+
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.CornerRadii;
+import javafx.scene.paint.Color;
+import javafx.geometry.Insets;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
-    private static final int MAP_CONST =  600;
+    private static final int MAP_CONST =  700;
     @FXML
     private Button startStopButton;
-    @FXML
-    private Button speedButtonx05;
-    @FXML
-    private Button speedButtonx1;
-    @FXML
-    private Button speedButtonx2;
-    @FXML
-    private Button resetTrackerButton;
 
     @FXML
     private Label dayNum;
@@ -62,7 +60,7 @@ public class SimulationPresenter implements SimulationChangeListener {
     @FXML
     private Label animalGenome;
     @FXML
-    private Label genomActivatedPart;
+    private Label genomeActivatedPart;
     @FXML
     private Label animalEnergy;
     @FXML
@@ -73,8 +71,6 @@ public class SimulationPresenter implements SimulationChangeListener {
     private Label descendantsCounter;
     @FXML
     private Label aliveDays;
-    @FXML
-    private Label deadDay;
 
     @FXML
     private GridPane mapGrid;
@@ -104,7 +100,9 @@ public class SimulationPresenter implements SimulationChangeListener {
         for (int x = minX - 1; x <= maxX; x++) {
             for (int y = maxY + 1; y >= minY; y--) {
                 Label label = new Label("");
+
                 StackPane cellPane = new StackPane();
+
                 int finalX = x;
                 int finalY = y;
                 cellPane.setOnMouseClicked(event ->{
@@ -123,7 +121,9 @@ public class SimulationPresenter implements SimulationChangeListener {
                     IWorldElement element = map.objectAt(new Vector2D(x, y));
                     if (element != null) {
                         try {
-                            WorldElementBox elementBox = new WorldElementBox(element, (int) (0.8*cellWidth));
+                            WorldElementBox elementBox = new WorldElementBox(element,
+                                    (int) (0.8*(min(cellWidth,cellHeight))));
+
                             cellPane.getChildren().add(elementBox);
                             mapGrid.add(cellPane, x - minX + 1, maxY - y + 1);
                             continue;
@@ -185,9 +185,10 @@ public class SimulationPresenter implements SimulationChangeListener {
         }
     }
 
+    @FXML
     public void onSimulationStartClicked(ActionEvent actionEvent) {
         if (! simulation.isRunning()) {
-            simulation.startSimulation();
+            simulation.setRunning(true);
             startStopButton.setText("Stop Simulation");
             Task<Void> task = new Task<>() {
                 @Override
@@ -196,11 +197,11 @@ public class SimulationPresenter implements SimulationChangeListener {
                     return null;
                 }
             };
-            task.setOnSucceeded(event -> simulation.stopSimulation());
+            task.setOnSucceeded(event -> simulation.setRunning(false));
             new Thread(task).start();
         }
         else {
-            simulation.stopSimulation();
+            simulation.setRunning(false);
             startStopButton.setText("Start Simulation");
         }
     }
@@ -210,15 +211,15 @@ public class SimulationPresenter implements SimulationChangeListener {
         Button clickedButton = (Button) event.getSource();
         String buttonText = clickedButton.getText();
 
-        double multipier;
+        double multiplier;
         switch (buttonText) {
-            case "x0.5" -> multipier = 2.0; // 1 second
-            case "x1" -> multipier = 1.0; // 0.5 second
-            case "x2" -> multipier = 0.5; // 0.25 second
-            default -> multipier = 1.0;
+            case "x0.5" -> multiplier = 2.0; // 1 second
+            case "x1" -> multiplier = 1.0; // 0.5 second
+            case "x2" -> multiplier = 0.5; // 0.25 second
+            default -> multiplier = 1.0;
         }
 
-        this.simulation.setSimulationSpeed(multipier);
+        this.simulation.setSimulationSpeed(multiplier);
     }
 
     private void setTrackedAnimal(int x, int y){
@@ -236,7 +237,7 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     private void colorCell(StackPane cell, int x, int y){
         if (trackedAnimal !=null && trackedAnimal.getPosition().getX() == x && trackedAnimal.getPosition().getY() == y){
-            cell.setStyle("-fx-background-color: #0d3cef; " +
+            cell.setStyle("-fx-background-color: #a0b0ee; " +
                     "-fx-border-color: black; -fx-border-width: 1;");
         }
 
@@ -248,22 +249,22 @@ public class SimulationPresenter implements SimulationChangeListener {
                     "-fx-border-color: black; -fx-border-width: 1;");
     }
 
-    public void resetTracker(ActionEvent event) {
+    @FXML
+    private void resetTracker(ActionEvent event) {
         trackedAnimal = null;
         drawMap();
 
         animalTitle.setText("");
         animalGenome.setText("");
-        genomActivatedPart.setText("");
+        genomeActivatedPart.setText("");
         animalEnergy.setText("");
         eatenPlants.setText("");
         childrenCounter.setText("");
         descendantsCounter.setText("");
         aliveDays.setText("");
-        //deadDay.setText("");
     }
 
-    public void updateTrackedAnimalStats() {
+    private void updateTrackedAnimalStats() {
         if (trackedAnimal != null && !trackedAnimal.isAlive()){
             resetTracker(null);
         }
@@ -271,13 +272,12 @@ public class SimulationPresenter implements SimulationChangeListener {
         if (trackedAnimal != null) {
             animalTitle.setText("Tracked animal");
             animalGenome.setText("Genome: " + trackedAnimal.getGenotype());
-            genomActivatedPart.setText("Genome activated part: " + trackedAnimal.getCurrentGeneIndex());
+            genomeActivatedPart.setText("Genome activated part: " + trackedAnimal.getCurrentGeneIndex());
             animalEnergy.setText("Energy: " + trackedAnimal.getEnergy());
             eatenPlants.setText("Eaten plants: " + trackedAnimal.getEatenPlants());
             childrenCounter.setText("Children number: " + trackedAnimal.getChildrenList().size());
             descendantsCounter.setText("Descendants number: " + trackedAnimal.computeNumberOfDescendants());
             aliveDays.setText("Alive days: " + trackedAnimal.getAge());
-            //deadDay.setText("Dead day: " + trackedAnimal.getDeadDay());
         }
     }
 

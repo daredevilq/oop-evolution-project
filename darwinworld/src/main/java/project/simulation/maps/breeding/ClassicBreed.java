@@ -1,7 +1,7 @@
 package project.simulation.maps.breeding;
 
 import project.MapDirection;
-import project.RandomGen;
+import project.RandomGenerator;
 import project.Vector2D;
 import project.simulation.maps.animalMutations.AnimalMutation;
 import project.simulation.worldelements.Animal;
@@ -35,7 +35,7 @@ public class ClassicBreed implements Breeding {
                 if (parent1.getEnergy() >= readyToBreedEnergy && parent2.getEnergy() >= readyToBreedEnergy) {
 
                     List<Integer> childGenotype = parent1.reproduce(parent2, mutation); // tworzymy genotyp dziecka
-                    Animal child = new Animal(parent1.getPosition(), MapDirection.NORTHEAST.rotate(RandomGen.randInt(0, 7)), 2 * breadEnergy, childGenotype);
+                    Animal child = new Animal(parent1.getPosition(), MapDirection.NORTHEAST.rotate(RandomGenerator.randInt(0, 7)), 2 * breadEnergy, childGenotype);
                     animals.add(child);
 
                     double energyRatio = (double) parent1.getEnergy() / (parent1.getEnergy() + parent2.getEnergy());

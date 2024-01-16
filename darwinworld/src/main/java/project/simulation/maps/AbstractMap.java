@@ -32,7 +32,7 @@ public abstract class AbstractMap implements IWorldMap {
         this.modifications = modifications;
         this.boundary = new Boundary(new Vector2D(0, 0), new Vector2D(mapSettings.width()-1, mapSettings.height()-1));
 
-        this.jungleBoundary = Boundary.computeJungleBounds(mapSettings, boundary);
+        this.jungleBoundary = Boundary.computeJungleBounds(mapSettings.height(), mapSettings.JUNGLE_MAP_RATIO(), boundary);
         animalsList = mapInitialize.randomlyPlaceAnimals(mapSettings, boundary);
 
 
@@ -81,13 +81,15 @@ public abstract class AbstractMap implements IWorldMap {
 
     @Override
     public int freePlacesOnMap(){
-        int animalsNotOnPlant = 0;
+        Set<Vector2D> animalsPositionsNotOnGrass = new HashSet<>();
         for (Animal animal: animalsList) {
-            if (freePlaces.contains(animal.getPosition())){
-                animalsNotOnPlant++;
+            Vector2D position = animal.getPosition();
+            if (freePlaces.contains(position)) {
+                animalsPositionsNotOnGrass.add(position);
             }
         }
-        return freePlaces.size() - animalsNotOnPlant;
+//        return freePlaces.size() - animalsNotOnPlant;
+        return freePlaces.size() - animalsPositionsNotOnGrass.size();
     }
 
     @Override
@@ -96,7 +98,6 @@ public abstract class AbstractMap implements IWorldMap {
 
         for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona i dodaje do wolnych miejsc
             mapPlants.remove(grass.getPosition());
-            MapAreaType type = (grass.getPosition().precedes(jungleBoundary.upperRightCorner()) && grass.getPosition().follows(jungleBoundary.lowerLeftCorner())) ? MapAreaType.JUNGLE : MapAreaType.NORMAL;
             freePlaces.add(grass.getPosition());
         }
 
@@ -161,9 +162,6 @@ public abstract class AbstractMap implements IWorldMap {
         animalsList.add(animal);
     }
 
-    public void addPlant(Grass grass){
-        mapPlants.put(grass.getPosition(), grass);
-    }
 
     @Override
     public void updateDailyAnimalStats(){

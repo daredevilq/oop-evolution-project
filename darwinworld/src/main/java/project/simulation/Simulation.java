@@ -9,7 +9,6 @@ import project.simulation.observer.UpdateStatsInFile;
 import project.simulation.statistics.SimulationStatistics;
 import project.simulation.statistics.StatisticsWriter;
 
-import java.io.IOException;
 import java.util.*;
 
 public class Simulation implements Runnable{
@@ -61,13 +60,18 @@ public class Simulation implements Runnable{
         this.simulationSpeed = simulationSpeed;
     }
 
+    public void setRunning(boolean running) {
+        isRunning = running;
+    }
+
+    public void setStoreStatistics(boolean storeStatistics) {
+        this.storeStatistics = storeStatistics;
+    }
+
 
     public void run() throws IllegalStateException {
-
-
         while (isRunning){
             map.deleteDeadAnimals();
-            subscribersManager.notifySubscribers(this);
 
 
             map.moveAnimals();
@@ -77,6 +81,7 @@ public class Simulation implements Runnable{
 
             map.updateDailyAnimalStats();
 
+            subscribersManager.notifySubscribers(this);
 
             try {
                 int sleepDuration = (int) (500 * this.simulationSpeed);
@@ -84,18 +89,8 @@ public class Simulation implements Runnable{
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
+
         }
-    }
-    public void setStoreStatistics(boolean storeStatistics) {
-        this.storeStatistics = storeStatistics;
-    }
-
-    public void stopSimulation(){
-        isRunning = false;
-    }
-
-    public void startSimulation(){
-        isRunning = true;
     }
 
     @Override

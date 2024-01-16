@@ -9,17 +9,19 @@ import project.simulation.maps.animalBehavior.Default;
 import project.simulation.maps.animalMutations.DefaultMutation;
 import project.simulation.maps.breeding.ClassicBreed;
 import project.simulation.maps.spawningPlants.SpawnPlantWithForestedEquators;
+import project.simulation.maps.spawningPlants.SpawnPlantWithMovingJungle;
 import project.simulation.worldelements.Animal;
+import project.simulation.worldelements.Grass;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class AbstractMapTest {
 
     @Test
-    public void eatPlantsTest(){
+    public void testEatPlant(){
         //given
         int grassEnergy = 3;
         int grassNumber = 10;
@@ -39,7 +41,7 @@ public class AbstractMapTest {
     }
 
     @Test
-    public void eatPlantsTest2(){
+    public void testCheckEatingAllPlants(){
         //given
         int grassEnergy = 3;
         int grassNumber = 10;
@@ -66,12 +68,8 @@ public class AbstractMapTest {
         assertTrue(outcome);
     }
 
-    //energia , wiek, ilosc dzieci
-
     @Test
-    public void eatPlantsTest3(){
-        //stronger animal has more energy
-        //checking if stronger animal will eat the plant
+    public void testEatingPlantByAnimalWithHigherEnergy(){
         //given
         int grassEnergy = 3;
         int grassNumber = 1;
@@ -91,22 +89,19 @@ public class AbstractMapTest {
         map.eatPlants();
 
         //then
-        System.out.println(strongerAnimal.getEnergy());
-        System.out.println(weakerAnimal.getEnergy());
-
         assertEquals(23,  strongerAnimal.getEnergy());
         assertEquals(10,  weakerAnimal.getEnergy());
+        assertEquals(1, strongerAnimal.getEatenPlants());
+        assertEquals(0, weakerAnimal.getEatenPlants());
     }
 
     @Test
-    public void eatPlantsTest4(){
-        //stronger animal is older
-        //checking if stronger animal will eat the plant
+    public void testEatingPlantByOlderAnimal(){
         //given
         int grassEnergy = 3;
         int grassNumber = 1;
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 3, 0,10, 10, 10,5, 0.2);
+        MapSettings mapSettings = new MapSettings(10, 10, grassNumber, 10, grassEnergy, 3, 0,0, 10, 10,5, 0.2);
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
 
         Vector2D grassPosition = map.getMapPlants().keySet().iterator().next();
@@ -125,9 +120,89 @@ public class AbstractMapTest {
         //then
         assertEquals(10,  weakerAnimal.getEnergy());
         assertEquals(13, strongerAnimal.getEnergy());
-
+        assertEquals(1, strongerAnimal.getEatenPlants());
+        assertEquals(0, weakerAnimal.getEatenPlants());
+        assertEquals(9 , map.getMapPlants().size());
     }
 
+    @Test
+    public void testObjectAt() {
+        Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
+        MapSettings mapSettings = new MapSettings(10, 10, 0, 10, 10, 3, 0,0, 2, 10,5, 0.2);
+        IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
 
+        List<Grass> grasses = new ArrayList<>(map.getMapPlants().values());
+        Grass grass1 = grasses.get(0);
+        Grass grass2 = grasses.get(1);
 
+        Animal animal = new Animal(grass1.getPosition(), MapDirection.NORTH, 11, List.of(1,2,3,4,5,6,7,0));
+        map.addAnimal(animal);
+
+        assertEquals(grass2, map.objectAt(grass2.getPosition()));
+        assertEquals(animal, map.objectAt(grass1.getPosition()));
+    }
+
+    @Test
+    public void testIsOccupied() {
+        Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
+        MapSettings mapSettings = new MapSettings(10, 10, 0, 10, 10, 3, 0,0, 2, 10,5, 0.2);
+        IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
+
+        Animal animal = new Animal(new Vector2D(1, 1), MapDirection.NORTH, 11, List.of(1,2,3,4,5,6,7,0));
+        map.addAnimal(animal);
+
+        assertTrue(map.isOccupied(new Vector2D(1, 1)));
+        assertFalse(map.isOccupied(new Vector2D(0, 0)));
+    }
+
+    @Test
+    public void testDeleteDeadAnimals() {
+        Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
+        MapSettings mapSettings = new MapSettings(10, 10, 0, 10, 10, 3, 0,0, 2, 10,5, 0.2);
+        IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
+
+        Animal animal1 = new Animal(new Vector2D(1, 1), MapDirection.NORTH, 11, List.of(1,2,3,4,5,6,7,0));
+        Animal animal2 = new Animal(new Vector2D(1, 1), MapDirection.NORTH, -1, List.of(1,2,3,4,5,6,7,0));
+        Animal animal3 = new Animal(new Vector2D(1, 1), MapDirection.NORTH, 0, List.of(1,2,3,4,5,6,7,0));
+        map.addAnimal(animal1);
+        map.addAnimal(animal2);
+        map.addAnimal(animal3);
+
+        map.deleteDeadAnimals();
+
+        assertEquals(1, map.getAnimalsList().size());
+        assertEquals(2, map.getDeadAnimals().size());
+    }
+
+    @Test
+    public void testMoveAnimals() {
+        Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
+        MapSettings mapSettings = new MapSettings(10, 10, 0, 10, 10, 3, 0,0, 2, 10,5, 0.2);
+        IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
+
+        Animal animal1 = new Animal(new Vector2D(1, 1), MapDirection.NORTH, 11, List.of(1,2,3,4,5,6,7,0));
+        Animal animal2 = new Animal(new Vector2D(1, 1), MapDirection.NORTH, 9, List.of(1,2,3,4,5,6,7,0));
+        Animal animal3 = new Animal(new Vector2D(1, 1), MapDirection.NORTH, 7, List.of(1,2,3,4,5,6,7,0));
+        map.addAnimal(animal1);
+        map.addAnimal(animal2);
+        map.addAnimal(animal3);
+
+        map.moveAnimals();
+
+        assertEquals(new Vector2D(2,2), animal1.getPosition());
+        assertEquals(new Vector2D(1, 1), animal2.getPosition());
+        assertEquals(new Vector2D(1, 1), animal3.getPosition());
+        assertEquals(1, animal1.getEnergy());
+    }
+
+    @Test
+    public void testFreePlaces() {
+        Modifications modifications = new Modifications(new SpawnPlantWithMovingJungle(),new Default(), new ClassicBreed(), new DefaultMutation());
+        MapSettings mapSettings = new MapSettings(5, 5, 0, 10, 10, 3, 0,0, 10, 10,5, 0.2);
+        IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
+
+        assertEquals(15, map.freePlacesOnMap());
+        map.spawnPlants();
+        assertEquals(10, map.freePlacesOnMap());
+    }
 }
