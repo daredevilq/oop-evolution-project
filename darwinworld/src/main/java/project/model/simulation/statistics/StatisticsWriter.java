@@ -12,8 +12,7 @@ public class StatisticsWriter {
     private final File file;
 
     public StatisticsWriter(String simulationUUID) {
-        this.file = new File("darwinworld/statistics/simulationStatistics" + simulationUUID + ".csv");
-
+        this.file = new File("./statistics/simulationStatistics" + simulationUUID + ".csv");
 
         buffer.add(new String[]{"Day number", "Alive animals count", "Plants number", "Dead animals count",
                 "Free places on map", "Average living animals energy", "Average dead animals lifespan",
