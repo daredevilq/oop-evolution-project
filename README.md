@@ -47,3 +47,14 @@ cd .\darwinworld\
 - Java 17
 - Gradle,
 - JavaFX
+
+
+
+https://github.com/daredevilq/oop-evolution-project/assets/110993908/557c0102-a23c-4564-9337-11d2f4f559c5
+
+
+
+https://github.com/daredevilq/oop-evolution-project/assets/110993908/9ffc6877-fb69-4d1c-95ac-ff92f5722cbe
+
+
+
