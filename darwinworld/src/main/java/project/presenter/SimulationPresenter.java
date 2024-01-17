@@ -9,16 +9,16 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.layout.*;
-import project.Vector2D;
-import project.simulation.Simulation;
-import project.simulation.maps.IWorldMap;
+import project.model.simulation.worldelements.Vector2D;
+import project.model.simulation.Simulation;
+import project.model.simulation.maps.IWorldMap;
 import javafx.scene.control.Label;
-import project.simulation.observer.SimulationChangeListener;
-import project.simulation.statistics.SimulationStatistics;
-import project.simulation.statistics.StatisticsWriter;
-import project.simulation.worldelements.Animal;
-import project.simulation.worldelements.IWorldElement;
-import project.simulation.worldelements.WorldElementBox;
+import project.model.simulation.observer.SimulationChangeListener;
+import project.model.simulation.statistics.SimulationStatistics;
+import project.model.simulation.statistics.StatisticsWriter;
+import project.model.simulation.worldelements.Animal;
+import project.model.simulation.worldelements.IWorldElement;
+import project.gui.WorldElementBox;
 
 import static java.lang.Math.min;
 

@@ -4,12 +4,16 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import project.gui.SimulationApp;
-import project.simulation.Simulation;
-import project.simulation.config.MapInit;
-import project.simulation.config.MapSettings;
-import project.simulation.config.Modifications;
-import project.simulation.fetures.*;
-import project.simulation.maps.IWorldMap;
+import project.model.simulation.Simulation;
+import project.model.simulation.config.MapInit;
+import project.model.simulation.config.MapSettings;
+import project.model.simulation.config.Modifications;
+import project.model.simulation.fetures.animalBehavior.AnimalBehaviorType;
+import project.model.simulation.fetures.animalMutations.MutationType;
+import project.model.simulation.fetures.breeding.BreedingType;
+import project.model.simulation.fetures.spawningPlants.VegetationDynamicsType;
+import project.model.simulation.maps.IWorldMap;
+import project.model.simulation.maps.MapType;
 
 public class InitPresenter {
     @FXML
