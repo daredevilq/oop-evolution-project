@@ -10,13 +10,13 @@ import project.simulation.maps.spawningPlants.SpawnPlantWithForestedEquators;
 import project.simulation.maps.spawningPlants.SpawningPlants;
 
 public record Modifications(
-    SpawningPlants spawningPlants,
+        SpawningPlants spawningPlants,
 
-    AnimalBehavior animalBehavior,
+        AnimalBehavior animalBehavior,
 
-    Breeding breeding,
+        Breeding breeding,
 
-    AnimalMutation animalMutation
+        AnimalMutation animalMutation
 ) {
 
 }

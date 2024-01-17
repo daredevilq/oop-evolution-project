@@ -12,7 +12,6 @@ import project.simulation.Simulation;
 
 
 public class SimulationApp extends Application {
-
     private final Simulation simulation;
 
     public SimulationApp(Simulation simulation) {
@@ -26,7 +25,6 @@ public class SimulationApp extends Application {
         loader.setLocation(getClass().getClassLoader().getResource("simulation.fxml"));
         BorderPane viewRoot = loader.load();
         SimulationPresenter presenter = loader.getController();
-
 
 
         presenter.setSimulation(simulation);

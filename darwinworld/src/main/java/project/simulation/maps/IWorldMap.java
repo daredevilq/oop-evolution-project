@@ -3,7 +3,6 @@ package project.simulation.maps;
 import project.Vector2D;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
-import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.Grass;
 import project.simulation.worldelements.IWorldElement;
@@ -14,8 +13,6 @@ import java.util.Map;
 import java.util.Set;
 
 public interface IWorldMap {
-
-
 
     MapSettings getMapSettings();
 
@@ -40,8 +37,6 @@ public interface IWorldMap {
     Set<Vector2D> getFreePlaces();
 
     int freePlacesOnMap();
-
-//    void computeFreePlaces();
 
     void removeFreePlace(Vector2D randomPosition);
 

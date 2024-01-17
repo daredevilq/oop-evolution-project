@@ -28,10 +28,6 @@ public enum MapDirection {
         return values[(this.ordinal() + angleNum) % values.length];
     }
 
-    public int getAngle() {
-        return this.ordinal() * 45;
-    }
-
     public Vector2D toUnitVector() {
         return switch (this) {
             case NORTH     -> new Vector2D(0, 1);

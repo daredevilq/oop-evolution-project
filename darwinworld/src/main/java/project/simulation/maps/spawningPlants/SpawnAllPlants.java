@@ -12,9 +12,7 @@ public abstract class SpawnAllPlants implements SpawningPlants {
 
     @Override
     public void spawnAllPlants(IWorldMap map, Map<Vector2D, Grass> mapPlants, int plantsToSpawnNumber, int grassEnergy) {
-
         for (int i = 0; i < plantsToSpawnNumber; i++) {
-
             Vector2D position = spawnPlant(map, mapPlants);
             Grass grass = new Grass(position, grassEnergy);
             mapPlants.put(position, grass);
@@ -23,6 +21,7 @@ public abstract class SpawnAllPlants implements SpawningPlants {
 
     @Override
     public abstract Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlants);
+
     @Override
     public abstract boolean isPreferredGrowPlace(Vector2D position, IWorldMap map);
 

@@ -7,26 +7,21 @@ import project.simulation.config.Modifications;
 
 public class EarthMap extends AbstractMap {
 
-
     public EarthMap(MapSettings mapSettings, Modifications modifications, MapInit mapInitialize) {
         super(mapSettings, modifications, mapInitialize);
     }
 
     @Override
     public Vector2D getNextPosition(Vector2D newPosition) {
-
         int x = newPosition.getX();
         int y = newPosition.getY();
-
         int minX = getBoundary().lowerLeftCorner().getX();
         int maxX = getBoundary().upperRightCorner().getX();
         int minY = getBoundary().lowerLeftCorner().getY();
         int maxY = getBoundary().upperRightCorner().getY();
-
         int mapWidth = maxX - minX + 1;
         int mapHeight = maxY - minY + 1;
 
-        //Mapa jest zakrzywiona horyzontalnie
         if (x > maxX)
             x %= mapWidth;
         else if (x < minX)
@@ -36,11 +31,9 @@ public class EarthMap extends AbstractMap {
     }
 
     @Override
-    public boolean canMoveTo(Vector2D position){
-//        return position.follows(this.getBoundary().lowerLeftCorner()) && position.precedes(this.getBoundary().upperRightCorner());
+    public boolean canMoveTo(Vector2D position) {
         int minY = getBoundary().lowerLeftCorner().getY();
         int maxY = getBoundary().upperRightCorner().getY();
-
         int positionY = position.getY();
         return positionY <= maxY && position.getY() >= minY;
     }

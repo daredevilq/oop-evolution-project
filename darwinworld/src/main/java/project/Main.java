@@ -13,10 +13,8 @@ import project.simulation.maps.spawningPlants.SpawnPlantWithMovingJungle;
 
 public class Main {
     public static void main(String[] args) {
-
         Modifications modifications = new Modifications(new SpawnPlantWithMovingJungle(),new Default(), new ClassicBreed(), new DefaultMutation());
         MapSettings mapSettings = new MapSettings(20, 20, 2000, 2, 1, 7, 5, 1,1, 5, 5,0.2);
-
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
         Simulation simulation = new Simulation(map, modifications);
 

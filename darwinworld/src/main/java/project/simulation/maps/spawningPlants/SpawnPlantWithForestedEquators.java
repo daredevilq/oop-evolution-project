@@ -11,10 +11,9 @@ import java.util.Map;
 
 public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
 
-
     @Override
     public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlants) {
-        if (RandomGenerator.random()<=0.8){
+        if (RandomGenerator.random() <= 0.8) {
             List<Vector2D> jungleAreas = map.getFreePlaces().stream()
                     .filter(entry -> isPreferredGrowPlace(entry, map))
                     .toList();
@@ -22,9 +21,7 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
             if (!jungleAreas.isEmpty()) {
                 return pickRandomVectorFromList(jungleAreas, map);
             }
-
         }
-
 
         List<Vector2D> nonJungleAreas = map.getFreePlaces().stream()
                 .filter(entry -> !isPreferredGrowPlace(entry, map))
@@ -33,8 +30,7 @@ public class SpawnPlantWithForestedEquators extends SpawnAllPlants {
         if (!nonJungleAreas.isEmpty()) {
             return pickRandomVectorFromList(nonJungleAreas, map);
         }
-
-        return new Vector2D(0,0); // losowy wektor
+        return new Vector2D(0, 0); // losowy wektor
     }
 
     @Override

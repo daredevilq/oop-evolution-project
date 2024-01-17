@@ -10,12 +10,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
-
+public class SpawnPlantWithMovingJungle extends SpawnAllPlants {
     @Override
     public Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlant) {
-
-        if (RandomGenerator.random()<=0.8){
+        if (RandomGenerator.random() <= 0.8) {
             List<Vector2D> adjacentFreeAreas = map.getFreePlaces().stream()
                     .filter(entry -> isPreferredGrowPlace(entry, map))
                     .toList();
@@ -30,8 +28,7 @@ public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
         if (!freeAreas.isEmpty()) {
             return pickRandomVectorFromList(freeAreas, map);
         }
-
-        return new Vector2D(0,0); // dowolny wektor
+        return new Vector2D(0, 0);
     }
 
     @Override

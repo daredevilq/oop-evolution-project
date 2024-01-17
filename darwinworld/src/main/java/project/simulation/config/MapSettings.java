@@ -14,10 +14,7 @@ public record MapSettings(
         int startAnimals,
         int startPlants,
         int breedEnergy,
-//        int minMutations,
-//        int maxMutations,
         int plantsPerDay,
         double JUNGLE_MAP_RATIO
-
-        ) {
+) {
 }

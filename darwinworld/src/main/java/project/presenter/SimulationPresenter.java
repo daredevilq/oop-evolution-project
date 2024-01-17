@@ -24,7 +24,7 @@ import static java.lang.Math.min;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
-    private static final int MAP_CONST =  700;
+    private static final int MAP_CONST = 700;
     @FXML
     private Button startStopButton;
 
@@ -111,7 +111,7 @@ public class SimulationPresenter implements SimulationChangeListener {
 
                 int finalX = x;
                 int finalY = y;
-                cellPane.setOnMouseClicked(event ->{
+                cellPane.setOnMouseClicked(event -> {
                     if (!simulation.isRunning())
                         setTrackedAnimal(finalX, finalY);
                 });
@@ -128,7 +128,7 @@ public class SimulationPresenter implements SimulationChangeListener {
                     if (element != null) {
                         try {
                             WorldElementBox elementBox = new WorldElementBox(element,
-                                    (int) (0.7*(min(cellWidth,cellHeight))));
+                                    (int) (0.7 * (min(cellWidth, cellHeight))));
 
                             cellPane.getChildren().add(elementBox);
                             mapGrid.add(cellPane, x - minX + 1, maxY - y + 1);
@@ -163,17 +163,16 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
 
-
-    public void updateStats(){
+    public void updateStats() {
         updateTrackedAnimalStats();
-        dayNum.setText("Day number: "+  simulationStatistics.getDayNum());
-        aliveAnimalsCount.setText("Animals number: "+  simulationStatistics.getAliveAnimalsCount());
-        plantsNumber.setText("Plants number: "+ simulationStatistics.getPlantsNumber());
-        deadAnimalsCount.setText("Dead animas number: "+ simulationStatistics.getDeadAnimalsCount());
-        freePlacesOnMap.setText("Free places on map: "+ simulationStatistics.getFreePlacesOnMap());
+        dayNum.setText("Day number: " + simulationStatistics.getDayNum());
+        aliveAnimalsCount.setText("Animals number: " + simulationStatistics.getAliveAnimalsCount());
+        plantsNumber.setText("Plants number: " + simulationStatistics.getPlantsNumber());
+        deadAnimalsCount.setText("Dead animas number: " + simulationStatistics.getDeadAnimalsCount());
+        freePlacesOnMap.setText("Free places on map: " + simulationStatistics.getFreePlacesOnMap());
         averageLivingAnimalsEnergy.setText("Average animals energy: " + Math.round(simulationStatistics.getAverageLivingAnimalsEnergy()));
-        averageDeadAnimalsLifespan.setText("Average lifespan: "+ Math.round(simulationStatistics.getAverageDeadAnimalsLifespan()) );
-        averageChildrenNumberForLivingAnimals.setText("Average children number: "+ Math.round(simulationStatistics.getAverageChildrenNumberForLivingAnimals()));
+        averageDeadAnimalsLifespan.setText("Average lifespan: " + Math.round(simulationStatistics.getAverageDeadAnimalsLifespan()));
+        averageChildrenNumberForLivingAnimals.setText("Average children number: " + Math.round(simulationStatistics.getAverageChildrenNumberForLivingAnimals()));
         theMostPopularGenotype.setText("The most popular genotype: " + (simulationStatistics.getTheMostPopularGenotype()));
     }
 
@@ -184,7 +183,7 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
     public void saveStatsToFile() {
-        if (this.simulation.isStoreStatistics()){
+        if (this.simulation.isStoreStatistics()) {
             StatisticsWriter statisticsWriter = simulation.getStatisticsWriter();
             statisticsWriter.writeToFile(simulationStatistics);
         }
@@ -192,7 +191,7 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     @FXML
     public void onSimulationStartClicked(ActionEvent actionEvent) {
-        if (! simulation.isRunning()) {
+        if (!simulation.isRunning()) {
             simulation.setRunning(true);
             startStopButton.setText("Stop Simulation");
             Task<Void> task = new Task<>() {
@@ -204,8 +203,7 @@ public class SimulationPresenter implements SimulationChangeListener {
             };
             task.setOnSucceeded(event -> simulation.setRunning(false));
             new Thread(task).start();
-        }
-        else {
+        } else {
             simulation.setRunning(false);
             startStopButton.setText("Start Simulation");
         }
@@ -227,8 +225,8 @@ public class SimulationPresenter implements SimulationChangeListener {
         this.simulation.setSimulationSpeed(multiplier);
     }
 
-    private void setTrackedAnimal(int x, int y){
-        for(Animal animal: map.getAnimalsList()){
+    private void setTrackedAnimal(int x, int y) {
+        for (Animal animal : map.getAnimalsList()) {
             if (animal.getPosition().getX() == x && animal.getPosition().getY() == y) {
 
                 trackedAnimal = animal;
@@ -250,8 +248,8 @@ public class SimulationPresenter implements SimulationChangeListener {
 
         else if (showMostPopularGenotype.isSelected() && (element instanceof Animal animal) &&
                 animal.getGenotype().equals(simulationStatistics.getTheMostPopularGenotype()))
-                cell.setStyle("-fx-background-color: #9c63b7; " +
-                        "-fx-border-color: black; -fx-border-width: 1;");
+            cell.setStyle("-fx-background-color: #9c63b7; " +
+                    "-fx-border-color: black; -fx-border-width: 1;");
 
         else if (showPreferredGrowPlace.isSelected() &&
                 map.getModifications().spawningPlants().isPreferredGrowPlace(position, map))
@@ -278,7 +276,7 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
     private void updateTrackedAnimalStats() {
-        if (trackedAnimal != null && !trackedAnimal.isAlive()){
+        if (trackedAnimal != null && !trackedAnimal.isAlive()) {
             resetTracker(null);
         }
 
@@ -295,7 +293,7 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
     @FXML
-    private void refreshMap(){
+    private void refreshMap() {
         drawMap();
     }
 

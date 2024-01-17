@@ -100,11 +100,10 @@ public class Animal implements IWorldElement{
     public void move(IWorldMap map, AnimalBehavior animalBehavior){
         int currentGeneIndex = genotype.getCurrentGeneIndex();
         List<Integer> gens = genotype.getGenotype();
-
         this.direction = this.direction.rotate(gens.get(currentGeneIndex));
         Vector2D currPosition = this.position;
-
         Vector2D newPosition = currPosition.add(direction.toUnitVector());
+
         if (map.canMoveTo(newPosition)) {
             newPosition = map.getNextPosition(newPosition);
             this.position = newPosition;
@@ -131,6 +130,18 @@ public class Animal implements IWorldElement{
     public void updateDailyStatsOnAnimal(){
         this.energy -= 1;
         this.age += 1;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public void setEatenPlants(int eatenPlants) {
+        this.eatenPlants = eatenPlants;
+    }
+
+    public void setChildrenCounter(int childrenCounter) {
+        this.childrenCounter = childrenCounter;
     }
 
     @Override

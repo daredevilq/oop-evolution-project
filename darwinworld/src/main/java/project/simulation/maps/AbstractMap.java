@@ -6,15 +6,11 @@ import project.simulation.EatPlants;
 import project.simulation.config.MapInit;
 import project.simulation.config.MapSettings;
 import project.simulation.config.Modifications;
-import project.simulation.fetures.MapAreaType;
 import project.simulation.worldelements.Animal;
-import project.simulation.worldelements.AnimalComparator;
 import project.simulation.worldelements.Grass;
 import project.simulation.worldelements.IWorldElement;
-
-import javax.imageio.plugins.tiff.GeoTIFFTagSet;
 import java.util.*;
-import java.util.stream.Collectors;
+
 
 public abstract class AbstractMap implements IWorldMap {
     private final MapSettings mapSettings;
@@ -27,28 +23,18 @@ public abstract class AbstractMap implements IWorldMap {
     private Set<Vector2D> freePlaces;
     private MapVisualizer mapVisualizer;
     public AbstractMap(MapSettings mapSettings,Modifications modifications, MapInit mapInitialize) {
-
         this.mapSettings = mapSettings;
         this.modifications = modifications;
         this.boundary = new Boundary(new Vector2D(0, 0), new Vector2D(mapSettings.width()-1, mapSettings.height()-1));
-
         this.jungleBoundary = Boundary.computeJungleBounds(mapSettings.height(), mapSettings.JUNGLE_MAP_RATIO(), boundary);
         animalsList = mapInitialize.randomlyPlaceAnimals(mapSettings, boundary);
-
-
         freePlaces = mapInitialize.computeFreePlacesForPlants(mapPlants, mapSettings.width(), mapSettings.height());
         modifications.spawningPlants().spawnAllPlants(this, mapPlants, mapSettings.startPlants(), mapSettings.grassEnergy());
-
-
         mapVisualizer = new MapVisualizer(this);
-
     }
-
-
 
     @Override
     public Map<Vector2D, Grass> getMapPlants() {
-
         return Collections.unmodifiableMap(mapPlants);
     }
     public List<Animal> getAnimalsList() {
@@ -93,19 +79,16 @@ public abstract class AbstractMap implements IWorldMap {
                 animalsPositionsNotOnGrass.add(position);
             }
         }
-//        return freePlaces.size() - animalsNotOnPlant;
         return freePlaces.size() - animalsPositionsNotOnGrass.size();
     }
 
     @Override
     public void eatPlants(){
         List<Grass> grassToRemove = EatPlants.eatPlants(mapPlants, animalsList);
-
-        for (Grass grass : grassToRemove){ // usun trawe z mapPlant po gdy zostala zjedzona i dodaje do wolnych miejsc
+        for (Grass grass : grassToRemove){
             mapPlants.remove(grass.getPosition());
             freePlaces.add(grass.getPosition());
         }
-
     }
     @Override
     public void moveAnimals() {
@@ -154,11 +137,6 @@ public abstract class AbstractMap implements IWorldMap {
       this.animalsList = modification.breeding().breed(animalsList, mapSettings.breedEnergy(), mapSettings.readyToBreedEnergy(),modification.animalMutation());
     }
 
-
-
-
-
-
     public void removeFreePlace(Vector2D position){
         freePlaces.remove(position);
     }
@@ -191,5 +169,4 @@ public abstract class AbstractMap implements IWorldMap {
     public String toString() {
         return mapVisualizer.draw(this.boundary.lowerLeftCorner(), this.boundary.upperRightCorner());
     }
-
 }

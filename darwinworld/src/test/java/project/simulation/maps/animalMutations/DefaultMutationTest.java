@@ -13,8 +13,6 @@ class DefaultMutationTest {
     @Test
     void testMutate() {
         List<Integer> childGenotype = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
-
-
         AnimalMutation mutation = new DefaultMutation();
         mutation.mutate(childGenotype);
 

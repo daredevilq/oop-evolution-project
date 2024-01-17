@@ -102,11 +102,10 @@ public class SimulationStatistics {
 
     private List<Integer> calculateTheMostPopularGenotype(List<Animal> animalList) {
         Map<List<Integer>, Integer> countGenotypes = new HashMap<>();
-
         int mostCommonGenotypeCounter = 0;
         List<Integer> mostCommonGenotype = new ArrayList<>();
-
         int count;
+
         for (Animal animal : animalList) {
             List<Integer> genotype = animal.getGenotype();
 

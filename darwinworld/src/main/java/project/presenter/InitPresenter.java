@@ -34,7 +34,6 @@ public class InitPresenter {
     private Spinner<Integer> moveEnergy;
     @FXML
     private Spinner<Integer> genomeSize;
-
     @FXML
     private ComboBox<MapType> mapType;
     @FXML
@@ -45,7 +44,6 @@ public class InitPresenter {
     private ComboBox<AnimalBehaviorType> animalBehaviorType;
     @FXML
     private ComboBox<BreedingType> animalBreedingType;
-
     @FXML
     private CheckBox saveStatistics;
 
@@ -59,16 +57,12 @@ public class InitPresenter {
         animalBreedingType.getItems().addAll(BreedingType.values());
     }
 
-
-
-    // Metoda do ustawiania obiektu klasy Stage
     @FXML
     private void startSimulation() {
 
         if (inputDataValidation()) {
             try {
                 Simulation simulation = createSimulation();
-                //przekazujemy symulacje do SimulationApp
                 SimulationApp simulationApp = new SimulationApp(simulation);
                 Stage secondStage = new Stage();
 
@@ -95,8 +89,6 @@ public class InitPresenter {
         animalsBreedEnergy.getValueFactory().setValue(50);
         moveEnergy.getValueFactory().setValue(1);
         genomeSize.getValueFactory().setValue(10);
-
-
         mapType.setValue(MapType.EARTH);
         mutationType.setValue(MutationType.RANDOMNESS);
         vegetation.setValue(VegetationDynamicsType.EQUATOR);
@@ -104,9 +96,9 @@ public class InitPresenter {
         animalBreedingType.setValue(BreedingType.DEFAULT);
     }
 
-    private boolean inputDataValidation(){
+    private boolean inputDataValidation() {
         return mapType.getValue() != null && vegetation.getValue() != null && animalBehaviorType.getValue() != null &&
-                animalBreedingType.getValue() != null &&  mutationType.getValue() != null;
+                animalBreedingType.getValue() != null && mutationType.getValue() != null;
     }
 
     private Simulation createSimulation() {

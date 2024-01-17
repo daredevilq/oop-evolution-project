@@ -11,7 +11,8 @@ public enum BreedingType {
             case DEFAULT -> "Default breeding";
         };
     }
-    public Breeding createBreedingClass(){
+
+    public Breeding createBreedingClass() {
         return switch (this) {
             case DEFAULT -> new ClassicBreed();
         };

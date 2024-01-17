@@ -11,11 +11,11 @@ import static project.simulation.worldelements.Genotype.MIN_GENE_NUM;
 public class DefaultMutation implements AnimalMutation{
     @Override
     public void mutate(List<Integer> childGenotype) {
-        int numberOfMutations = RandomGenerator.randInt(childGenotype.size()); // Losowa liczba mutacji
+        int numberOfMutations = RandomGenerator.randInt(childGenotype.size());
 
         for (int i = 0; i < numberOfMutations; i++) {
-            int mutationIndex = RandomGenerator.randInt(childGenotype.size() - 1); // Losowy indeks do mutacji
-            int newGeneValue = RandomGenerator.randInt(MIN_GENE_NUM, MAX_GENE_NUM); // Losowa nowa wartość genu
+            int mutationIndex = RandomGenerator.randInt(childGenotype.size() - 1);
+            int newGeneValue = RandomGenerator.randInt(MIN_GENE_NUM, MAX_GENE_NUM);
             childGenotype.set(mutationIndex, newGeneValue);
         }
     }

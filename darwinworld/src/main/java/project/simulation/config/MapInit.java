@@ -11,11 +11,9 @@ import java.util.*;
 
 public class MapInit {
 
-    public List<Animal> randomlyPlaceAnimals (MapSettings mapSettings, Boundary boundary) {
-
+    public List<Animal> randomlyPlaceAnimals(MapSettings mapSettings, Boundary boundary) {
         List<Animal> animalList = new ArrayList<>();
 
-        //umieszczenie losowo poczatkowej ilosci zwierzat
         for (int i = 0; i < mapSettings.startAnimals(); i++) {
             Vector2D position = randomFreePlace(boundary.lowerLeftCorner(), boundary.upperRightCorner());
             Animal animal = new Animal(position, MapDirection.NORTHEAST.rotate((int) (Math.random() * 8)),
@@ -26,13 +24,12 @@ public class MapInit {
     }
 
 
-    public Set<Vector2D> computeFreePlacesForPlants(Map<Vector2D, Grass> mapPlants, int width, int height){
+    public Set<Vector2D> computeFreePlacesForPlants(Map<Vector2D, Grass> mapPlants, int width, int height) {
         Set<Vector2D> freePlaces = new HashSet<>();
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                Vector2D position = new Vector2D(i,j);
-                if (!mapPlants.containsKey(position)){
-                    //MapAreaType type = (position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner())) ? MapAreaType.JUNGLE : MapAreaType.NORMAL;
+                Vector2D position = new Vector2D(i, j);
+                if (!mapPlants.containsKey(position)) {
                     freePlaces.add(position);
                 }
             }
@@ -40,7 +37,7 @@ public class MapInit {
         return freePlaces;
     }
 
-    public static Vector2D randomFreePlace(Vector2D loweLeft, Vector2D upperRight){
+    public static Vector2D randomFreePlace(Vector2D loweLeft, Vector2D upperRight) {
         int minX = loweLeft.getX();
         int maxX = upperRight.getX();
         int minY = loweLeft.getY();

@@ -11,6 +11,5 @@ public class AnimalComparator implements Comparator<Animal> {
                 .thenComparing(Comparator.comparingInt(Animal::getChildrenCounter).reversed())
                 .thenComparingDouble(animal -> -Math.random())
                 .compare(animal1, animal2);
-
     }
 }

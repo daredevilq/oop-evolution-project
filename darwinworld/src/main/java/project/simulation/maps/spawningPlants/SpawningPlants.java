@@ -11,9 +11,9 @@ import java.util.Map;
 
 public interface SpawningPlants {
 
-    void spawnAllPlants(IWorldMap map,Map <Vector2D, Grass> mapPlants, int plantsToSpawnNumber, int grassEnergy);
+    void spawnAllPlants(IWorldMap map, Map<Vector2D, Grass> mapPlants, int plantsToSpawnNumber, int grassEnergy);
 
-    Vector2D spawnPlant(IWorldMap map, Map <Vector2D, Grass> mapPlants) ;
+    Vector2D spawnPlant(IWorldMap map, Map<Vector2D, Grass> mapPlants);
 
     boolean isPreferredGrowPlace(Vector2D position, IWorldMap map);
 }

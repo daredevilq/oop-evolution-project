@@ -10,7 +10,6 @@ public class Genotype {
 
     public static final int MAX_GENE_NUM = 7;
 
-
     private final List<Integer> genotype;
 
     private int currentGeneIndex;

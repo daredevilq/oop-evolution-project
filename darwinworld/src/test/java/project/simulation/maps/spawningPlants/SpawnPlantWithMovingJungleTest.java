@@ -29,4 +29,5 @@ public class SpawnPlantWithMovingJungleTest {
         assertEquals(plantsToSpawnNumber, map.getMapPlants().size());
 
     }
+
 }

@@ -24,27 +24,33 @@ public class AnimalTest {
 
     @Test
     public void testReproduce(){
+        //given
         List<Integer> genotype1 = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
         List<Integer> genotype2 = new ArrayList<>(List.of(2,2,2,4,5,1,1,1));
         Animal animal1 = new Animal(new Vector2D(0, 0), MapDirection.NORTH, 100,genotype1);
         Animal animal2 = new Animal(new Vector2D(0, 0), MapDirection.NORTH, 50,genotype2);
         AnimalMutation mutation = new DefaultMutation();
+
+        //when
         List<Integer> childGenotype = Reproduction.reproduce(animal1, animal2, mutation);
 
+        //then
         assertEquals(genotype1.size(), childGenotype.size());
     }
 
     @Test
     public void testMove(){
+        //given
         List<Integer> genotype = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
         Animal animal = new Animal(new Vector2D(0, 0), MapDirection.NORTH, 100,genotype);
-
         Modifications modifications = new Modifications(new SpawnPlantWithForestedEquators(),new Default(), new ClassicBreed(), new DefaultMutation());
         MapSettings mapSettings = new MapSettings(10, 10, 20, 10, 1, 8, 0,10, 10, 10,5, 0.2);
-
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());
+
+        //when
         animal.move(map, modifications.animalBehavior());
 
+        //then
         assertEquals(new Vector2D(1, 1), animal.getPosition());
         assertEquals(MapDirection.NORTHEAST, animal.getDirection());
         assertEquals(99, animal.getEnergy());

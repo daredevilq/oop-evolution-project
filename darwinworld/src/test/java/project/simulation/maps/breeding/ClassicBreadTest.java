@@ -17,18 +17,19 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ClassicBreadTest {
     @Test
     public void testCreateAnimalMap(){
+        //given
         List<Integer> genotype1 = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
         List<Integer> genotype2 = new ArrayList<>(List.of(2,2,2,4,5,1,1,1));
         Animal animal1 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 100, genotype1);
         Animal animal2 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 50, genotype2);
         Animal animal3 = new Animal(new Vector2D(3, 4), MapDirection.NORTH, 100, genotype1);
-
         List<Animal> animalList = List.of(animal1, animal2, animal3);
         ClassicBreed classicBreed = new ClassicBreed();
 
+        //when
         Map<Vector2D, List<Animal>> map = classicBreed.createAnimalMap(animalList);
 
-
+        //then
         assertNotNull(map);
         assertEquals(2, map.size());
 
@@ -41,6 +42,7 @@ public class ClassicBreadTest {
 
     @Test
     public void testBreeding(){
+        //given
         List<Integer> genotype1 = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
         List<Integer> genotype2 = new ArrayList<>(List.of(2,2,2,4,5,1,1,1));
         Animal animal1 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 90, genotype1);
@@ -50,16 +52,19 @@ public class ClassicBreadTest {
         List<Animal> animalList = List.of(animal1, animal2, animal3);
         ClassicBreed classicBreed = new ClassicBreed();
         AnimalMutation mutation = new DefaultMutation();
+
+        //when
         List<Animal> animals = classicBreed.breed(animalList,  20,30, mutation);
 
+        //then
         assertEquals(4, animals.size());
-
         assertEquals(70, animal1.getEnergy());
         assertEquals(10, animal2.getEnergy());
     }
 
     @Test
     public void testBreedingWithTreeAnimalsOnOnePLace(){
+        //given
         List<Integer> genotype1 = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
         List<Integer> genotype2 = new ArrayList<>(List.of(2,2,2,4,5,1,1,1));
         Animal animal1 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 90, genotype1);
@@ -69,10 +74,12 @@ public class ClassicBreadTest {
         List<Animal> animalList = List.of(animal1, animal2, animal3);
         ClassicBreed classicBreed = new ClassicBreed();
         AnimalMutation mutation = new DefaultMutation();
+
+        //when
         List<Animal> animals = classicBreed.breed(animalList,  20,20, mutation);
 
+        //then
         assertEquals(4, animals.size());
-
         assertEquals(1, animal3.getChildrenCounter());
         assertEquals(0, animal2.getChildrenCounter());
         assertEquals(1, animal1.getChildrenCounter());
@@ -80,6 +87,7 @@ public class ClassicBreadTest {
 
     @Test
     public void testBreedingWithFiveAnimalsOnOnePLaceWithDifferentStats(){
+        //given
         List<Integer> genotype1 = new ArrayList<>(List.of(1,2,3,4,5,6,7,0));
         List<Integer> genotype2 = new ArrayList<>(List.of(2,2,2,4,5,1,1,1));
         Animal animal1 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 90, genotype1);
@@ -87,9 +95,9 @@ public class ClassicBreadTest {
         Animal animal3 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 100, genotype1);
         Animal animal4 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 99, genotype2);
         Animal animal5 = new Animal(new Vector2D(1, 2), MapDirection.NORTH, 100, genotype1);
-
         List<Animal> animalList = List.of(animal1, animal2, animal3, animal4, animal5);
 
+        //when
         animal3.updateDailyStatsOnAnimal();
         animal5.updateDailyStatsOnAnimal();
 
@@ -97,8 +105,8 @@ public class ClassicBreadTest {
         AnimalMutation mutation = new DefaultMutation();
         List<Animal> animals = classicBreed.breed(animalList,  20,20, mutation);
 
+        //then
         assertEquals(6, animals.size());
-
         assertEquals(1, animal3.getChildrenCounter());
         assertEquals(0, animal4.getChildrenCounter());
         assertEquals(1, animal5.getChildrenCounter());

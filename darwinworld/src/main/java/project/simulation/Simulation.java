@@ -28,7 +28,6 @@ public class Simulation implements Runnable{
         this.uuid = UUID.randomUUID();
         this.subscribersManager = new SubscribersManager();
         subscribersManager.addSubscriber(new SaveStatistics(simulationStatistics, map));
-
         this.statisticsWriter = new StatisticsWriter(toString());
         subscribersManager.addSubscriber(new UpdateStatsInFile(simulationStatistics, statisticsWriter));
     }
@@ -68,19 +67,14 @@ public class Simulation implements Runnable{
         this.storeStatistics = storeStatistics;
     }
 
-
     public void run() throws IllegalStateException {
         while (isRunning){
             map.deleteDeadAnimals();
-
-
             map.moveAnimals();
             map.eatPlants();
             map.breeding(modifications);
             map.spawnPlants();
-
             map.updateDailyAnimalStats();
-
             subscribersManager.notifySubscribers(this);
 
             try {
@@ -89,10 +83,8 @@ public class Simulation implements Runnable{
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-
         }
     }
-
     @Override
     public String toString() {
         return uuid.toString();

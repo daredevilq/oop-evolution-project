@@ -14,7 +14,8 @@ public enum AnimalBehaviorType {
             case MADNESS -> "Madness";
         };
     }
-    public AnimalBehavior createAnimalBehaviorClass(){
+
+    public AnimalBehavior createAnimalBehaviorClass() {
         return switch (this) {
             case PREDESTINATION -> new Default();
             case MADNESS -> new Madness();

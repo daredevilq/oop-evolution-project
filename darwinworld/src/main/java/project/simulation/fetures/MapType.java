@@ -15,13 +15,12 @@ public enum MapType {
     public String toString() {
         return switch (this) {
             case EARTH -> "Earth";
-
         };
     }
-    public IWorldMap createMapClass(MapSettings mapSettings, Modifications modifications, MapInit mapInitialize){
+
+    public IWorldMap createMapClass(MapSettings mapSettings, Modifications modifications, MapInit mapInitialize) {
         return switch (this) {
-            case EARTH -> new EarthMap(mapSettings,  modifications,  mapInitialize);
+            case EARTH -> new EarthMap(mapSettings, modifications, mapInitialize);
         };
     }
-
 }

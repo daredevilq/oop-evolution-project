@@ -20,7 +20,8 @@ public enum VegetationDynamicsType {
             case CRAWLING_JUNGLE -> "Moving jungle";
         };
     }
-    public SpawningPlants createVegetationClass(){
+
+    public SpawningPlants createVegetationClass() {
         return switch (this) {
             case EQUATOR -> new SpawnPlantWithForestedEquators();
             case CRAWLING_JUNGLE -> new SpawnPlantWithMovingJungle();

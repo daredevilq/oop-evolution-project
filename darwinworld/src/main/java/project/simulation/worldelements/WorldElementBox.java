@@ -6,7 +6,6 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +15,6 @@ public class WorldElementBox extends StackPane {
     public WorldElementBox(IWorldElement worldElement, int size) throws IllegalArgumentException {
         String filepath = worldElement.getResourceName();
         Image image = getCachedImage(filepath);
-
         ImageView imageView = new ImageView(image);
         imageView.setFitWidth(size);
         imageView.setFitHeight(size);
@@ -28,7 +26,6 @@ public class WorldElementBox extends StackPane {
         } else {
             this.getChildren().add(imageView);
         }
-
         this.setAlignment(Pos.CENTER);
     }
 
@@ -44,7 +41,6 @@ public class WorldElementBox extends StackPane {
 
     private VBox setAnimalHealthBar(Animal animal, ImageView imageView) {
         ProgressBar healthBar = new ProgressBar();
-
         double energy = animal.getEnergy();
 
         if (energy < 30) {
@@ -56,10 +52,8 @@ public class WorldElementBox extends StackPane {
         }
 
         healthBar.setProgress(animal.getEnergy());
-
         VBox vbox = new VBox(imageView, healthBar);
         vbox.setAlignment(Pos.CENTER);
-
         return vbox;
     }
 }
