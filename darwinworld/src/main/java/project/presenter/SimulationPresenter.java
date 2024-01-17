@@ -7,10 +7,10 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.*;
 import project.Vector2D;
 import project.simulation.Simulation;
-import project.simulation.maps.Boundary;
 import project.simulation.maps.IWorldMap;
 import javafx.scene.control.Label;
 import project.simulation.observer.SimulationChangeListener;
@@ -21,13 +21,6 @@ import project.simulation.worldelements.IWorldElement;
 import project.simulation.worldelements.WorldElementBox;
 
 import static java.lang.Math.min;
-
-
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
-import javafx.geometry.Insets;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
@@ -71,6 +64,11 @@ public class SimulationPresenter implements SimulationChangeListener {
     private Label descendantsCounter;
     @FXML
     private Label aliveDays;
+    @FXML
+    private CheckBox showMostPopularGenotype;
+    @FXML
+    private CheckBox showPreferredGrowPlace;
+
 
     @FXML
     private GridPane mapGrid;
@@ -80,23 +78,31 @@ public class SimulationPresenter implements SimulationChangeListener {
 
     private Animal trackedAnimal;
 
+
+    private int minX;
+    private int minY;
+    private int maxX;
+    private int maxY;
+    private int cellWidth;
+    private int cellHeight;
+
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
         this.map = simulation.getMap();
         this.simulationStatistics = simulation.getSimulationStatistics();
+
+        minX = map.getBoundary().lowerLeftCorner().getX();
+        minY = map.getBoundary().lowerLeftCorner().getY();
+        maxX = map.getBoundary().upperRightCorner().getX();
+        maxY = map.getBoundary().upperRightCorner().getY();
+
+        cellWidth = (int) (MAP_CONST / (maxX - minX + 2));
+        cellHeight = (int) (MAP_CONST / (maxY - minY + 2));
         drawMap();
     }
 
     public void drawMap() {
         clearGrid();
-        Boundary bounds = map.getBoundary();
-        int minX = bounds.lowerLeftCorner().getX();
-        int minY = bounds.lowerLeftCorner().getY();
-        int maxX = bounds.upperRightCorner().getX();
-        int maxY = bounds.upperRightCorner().getY();
-
-        int cellWidth = (int) (MAP_CONST / (maxX - minX + 2));
-        int cellHeight = (int) (MAP_CONST / (maxY - minY + 2));
         for (int x = minX - 1; x <= maxX; x++) {
             for (int y = maxY + 1; y >= minY; y--) {
                 Label label = new Label("");
@@ -122,7 +128,7 @@ public class SimulationPresenter implements SimulationChangeListener {
                     if (element != null) {
                         try {
                             WorldElementBox elementBox = new WorldElementBox(element,
-                                    (int) (0.8*(min(cellWidth,cellHeight))));
+                                    (int) (0.7*(min(cellWidth,cellHeight))));
 
                             cellPane.getChildren().add(elementBox);
                             mapGrid.add(cellPane, x - minX + 1, maxY - y + 1);
@@ -149,7 +155,6 @@ public class SimulationPresenter implements SimulationChangeListener {
             mapGrid.getRowConstraints().add(new RowConstraints(cellHeight));
         }
     }
-
 
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));
@@ -235,14 +240,22 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
 
-    private void colorCell(StackPane cell, int x, int y){
-        if (trackedAnimal !=null && trackedAnimal.getPosition().getX() == x && trackedAnimal.getPosition().getY() == y){
+    private void colorCell(StackPane cell, int x, int y) {
+        Vector2D position = new Vector2D(x, y);
+        IWorldElement element = this.map.objectAt(position);
+
+        if (trackedAnimal != null && trackedAnimal.getPosition().equals(position))
             cell.setStyle("-fx-background-color: #a0b0ee; " +
                     "-fx-border-color: black; -fx-border-width: 1;");
-        }
 
-        else if (map.isJungleArea(new Vector2D(x,y)))
-            cell.setStyle("-fx-background-color: #679f65; " +
+        else if (showMostPopularGenotype.isSelected() && (element instanceof Animal animal) &&
+                animal.getGenotype().equals(simulationStatistics.getTheMostPopularGenotype()))
+                cell.setStyle("-fx-background-color: #9c63b7; " +
+                        "-fx-border-color: black; -fx-border-width: 1;");
+
+        else if (showPreferredGrowPlace.isSelected() &&
+                map.getModifications().spawningPlants().isPreferredGrowPlace(position, map))
+            cell.setStyle("-fx-background-color: #4c794c; " +
                     "-fx-border-color: black; -fx-border-width: 1;");
         else
             cell.setStyle("-fx-background-color: #bde5b4; " +
@@ -279,6 +292,11 @@ public class SimulationPresenter implements SimulationChangeListener {
             descendantsCounter.setText("Descendants number: " + trackedAnimal.computeNumberOfDescendants());
             aliveDays.setText("Alive days: " + trackedAnimal.getAge());
         }
+    }
+
+    @FXML
+    private void refreshMap(){
+        drawMap();
     }
 
 }

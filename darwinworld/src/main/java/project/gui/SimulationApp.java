@@ -34,7 +34,12 @@ public class SimulationApp extends Application {
 
         configureStage(primaryStage, viewRoot);
         primaryStage.show();
-        primaryStage.setOnCloseRequest(event -> presenter.saveStatsToFile());
+        primaryStage.setOnCloseRequest(event -> {
+            presenter.saveStatsToFile();
+            simulation.setRunning(false);
+            primaryStage.close();
+        });
+
     }
 
     private void configureStage(Stage primaryStage, BorderPane viewRoot) {

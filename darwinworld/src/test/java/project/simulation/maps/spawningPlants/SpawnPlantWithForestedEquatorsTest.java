@@ -20,7 +20,7 @@ class SpawnPlantWithForestedEquatorsTest {
         SpawningPlants spawningPlants = new SpawnPlantWithForestedEquators();
         int plantsToSpawnNumber = 500;
         Modifications modifications = new Modifications(spawningPlants,new Default(), new ClassicBreed(), new DefaultMutation());
-        MapSettings mapSettings = new MapSettings(1000, 1000, 20, 10, 1, 8, 0,0, plantsToSpawnNumber, 10,5, 0.2);
+        MapSettings mapSettings = new MapSettings(500, 500, 20, 10, 1, 8, 0,0, plantsToSpawnNumber, 10,5, 0.2);
 
         //when
         IWorldMap map = new EarthMap(mapSettings,modifications,new MapInit());

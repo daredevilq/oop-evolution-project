@@ -6,6 +6,7 @@ import project.Vector2D;
 import project.simulation.maps.IWorldMap;
 import project.simulation.worldelements.Grass;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,7 @@ public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
 
         if (RandomGenerator.random()<=0.8){
             List<Vector2D> adjacentFreeAreas = map.getFreePlaces().stream()
-                    .filter(entry -> adjacentToPlant(entry, mapPlant))
+                    .filter(entry -> isPreferredGrowPlace(entry, map))
                     .toList();
 
             if (!adjacentFreeAreas.isEmpty()) {
@@ -30,15 +31,18 @@ public class SpawnPlantWithMovingJungle extends SpawnAllPlants{
             return pickRandomVectorFromList(freeAreas, map);
         }
 
-        // !!!!!!!!!!!!!!!!!!!!!!!!
-        return new Vector2D(0,0); // jak jest zapelnione to zwroc dowolna pozycje??
-//        return generateVectorInBoundaries(map, map.getBoundary());
+        return new Vector2D(0,0); // dowolny wektor
     }
 
-    private boolean adjacentToPlant(Vector2D position,  Map<Vector2D, Grass> mapPlant){
+    @Override
+    public boolean isPreferredGrowPlace(Vector2D position, IWorldMap map) {
+        Map<Vector2D, Grass> mapPlants = map.getMapPlants();
+        if (mapPlants.containsKey(position))
+            return false;
+
         for (MapDirection direction : MapDirection.values()) {
             Vector2D adjacentPosition = position.add(direction.toUnitVector());
-            if (mapPlant.containsKey(adjacentPosition)) {
+            if (map.getMapPlants().containsKey(adjacentPosition)) {
                 return true;
             }
         }

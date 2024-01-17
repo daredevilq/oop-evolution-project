@@ -4,8 +4,8 @@ import project.RandomGenerator;
 
 import java.util.List;
 
-import static project.simulation.worldelements.Animal.MAX_GENE_NUM;
-import static project.simulation.worldelements.Animal.MIN_GENE_NUM;
+import static project.simulation.worldelements.Genotype.MAX_GENE_NUM;
+import static project.simulation.worldelements.Genotype.MIN_GENE_NUM;
 
 
 public class DefaultMutation implements AnimalMutation{
