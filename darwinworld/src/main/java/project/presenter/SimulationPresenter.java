@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.layout.*;
 import project.Vector2D;
 import project.simulation.Simulation;
@@ -71,6 +72,11 @@ public class SimulationPresenter implements SimulationChangeListener {
     private Label descendantsCounter;
     @FXML
     private Label aliveDays;
+    @FXML
+    private CheckBox showMostPopularGenotype;
+    @FXML
+    private CheckBox showPreferredGrowPlace;
+
 
     @FXML
     private GridPane mapGrid;
@@ -79,6 +85,7 @@ public class SimulationPresenter implements SimulationChangeListener {
     private SimulationStatistics simulationStatistics;
 
     private Animal trackedAnimal;
+
 
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
@@ -122,7 +129,7 @@ public class SimulationPresenter implements SimulationChangeListener {
                     if (element != null) {
                         try {
                             WorldElementBox elementBox = new WorldElementBox(element,
-                                    (int) (0.8*(min(cellWidth,cellHeight))));
+                                    (int) (0.7*(min(cellWidth,cellHeight))));
 
                             cellPane.getChildren().add(elementBox);
                             mapGrid.add(cellPane, x - minX + 1, maxY - y + 1);
@@ -235,14 +242,22 @@ public class SimulationPresenter implements SimulationChangeListener {
     }
 
 
-    private void colorCell(StackPane cell, int x, int y){
-        if (trackedAnimal !=null && trackedAnimal.getPosition().getX() == x && trackedAnimal.getPosition().getY() == y){
+    private void colorCell(StackPane cell, int x, int y) {
+        Vector2D position = new Vector2D(x, y);
+        IWorldElement element = this.map.objectAt(position);
+
+        if (trackedAnimal != null && trackedAnimal.getPosition().equals(position))
             cell.setStyle("-fx-background-color: #a0b0ee; " +
                     "-fx-border-color: black; -fx-border-width: 1;");
-        }
 
-        else if (map.isJungleArea(new Vector2D(x,y)))
-            cell.setStyle("-fx-background-color: #679f65; " +
+        else if (showMostPopularGenotype.isSelected() && (element instanceof Animal animal) &&
+                animal.getGenotype().equals(simulationStatistics.getTheMostPopularGenotype()))
+                cell.setStyle("-fx-background-color: #9c63b7; " +
+                        "-fx-border-color: black; -fx-border-width: 1;");
+
+        else if (showPreferredGrowPlace.isSelected() &&
+                map.getModifications().spawningPlants().isPreferredGrowPlace(position, map))
+            cell.setStyle("-fx-background-color: #4c794c; " +
                     "-fx-border-color: black; -fx-border-width: 1;");
         else
             cell.setStyle("-fx-background-color: #bde5b4; " +
@@ -279,6 +294,11 @@ public class SimulationPresenter implements SimulationChangeListener {
             descendantsCounter.setText("Descendants number: " + trackedAnimal.computeNumberOfDescendants());
             aliveDays.setText("Alive days: " + trackedAnimal.getAge());
         }
+    }
+
+    @FXML
+    private void refreshMap(){
+        drawMap();
     }
 
 }

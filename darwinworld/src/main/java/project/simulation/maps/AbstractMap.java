@@ -80,6 +80,11 @@ public abstract class AbstractMap implements IWorldMap {
     }
 
     @Override
+    public Modifications getModifications() {
+        return modifications;
+    }
+
+    @Override
     public int freePlacesOnMap(){
         Set<Vector2D> animalsPositionsNotOnGrass = new HashSet<>();
         for (Animal animal: animalsList) {
@@ -169,7 +174,7 @@ public abstract class AbstractMap implements IWorldMap {
             animal.updateDailyStatsOnAnimal();
         }
     }
-    //pomocnicze metody dla MapVisualizer
+
     public boolean isOccupied(Vector2D position){
         return animalsList.stream().anyMatch(animal -> animal.getPosition().equals(position)) || mapPlants.containsKey(position);
     }
@@ -187,8 +192,4 @@ public abstract class AbstractMap implements IWorldMap {
         return mapVisualizer.draw(this.boundary.lowerLeftCorner(), this.boundary.upperRightCorner());
     }
 
-    @Override
-    public boolean isJungleArea(Vector2D position) {
-        return position.precedes(jungleBoundary.upperRightCorner()) && position.follows(jungleBoundary.lowerLeftCorner());
-    }
 }

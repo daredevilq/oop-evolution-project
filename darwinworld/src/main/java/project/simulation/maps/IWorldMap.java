@@ -52,6 +52,6 @@ public interface IWorldMap {
     IWorldElement objectAt(Vector2D currentPosition);
 
     void updateDailyAnimalStats();
+    Modifications getModifications();
 
-    boolean isJungleArea(Vector2D position);
 }
