@@ -9,14 +9,10 @@ import project.simulation.maps.animalMutations.AnimalMutation;
 import java.util.*;
 
 public class Animal implements IWorldElement{
-    public static final int MIN_GENE_NUM = 0;
-    public static final int MAX_GENE_NUM = 7;
-
+    private final Genotype genotype;
     private Vector2D position;
     private MapDirection direction;
     private int energy;
-    private final List<Integer> genotype;
-    private int currentGeneIndex;
     private int age;
     private int eatenPlants;
     private int childrenCounter;
@@ -24,12 +20,11 @@ public class Animal implements IWorldElement{
     private boolean isAlive;
 
 
-    public Animal(Vector2D position, MapDirection direction, int energy, List<Integer> genotype) {
+    public Animal(Vector2D position, MapDirection direction, int energy, List<Integer> gens) {
         this.position = position;
         this.direction = direction;
         this.energy = energy;
-        this.genotype = genotype;
-        this.currentGeneIndex = 0;
+        this.genotype = new Genotype(gens);
         this.age = 0;
         this.childrenCounter = 0;
         this.eatenPlants = 0;
@@ -52,11 +47,11 @@ public class Animal implements IWorldElement{
     }
 
     public List<Integer> getGenotype() {
-        return genotype;
+        return genotype.getGenotype();
     }
 
     public int getCurrentGeneIndex() {
-        return currentGeneIndex;
+        return genotype.getCurrentGeneIndex();
     }
 
     public int getAge() {
@@ -103,7 +98,10 @@ public class Animal implements IWorldElement{
     }
 
     public void move(IWorldMap map, AnimalBehavior animalBehavior){
-        this.direction = this.direction.rotate(genotype.get(currentGeneIndex));
+        int currentGeneIndex = genotype.getCurrentGeneIndex();
+        List<Integer> gens = genotype.getGenotype();
+
+        this.direction = this.direction.rotate(gens.get(currentGeneIndex));
         Vector2D currPosition = this.position;
 
         Vector2D newPosition = currPosition.add(direction.toUnitVector());
@@ -116,7 +114,7 @@ public class Animal implements IWorldElement{
 
         }
         this.energy -= map.getMapSettings().moveEnergy();
-        this.currentGeneIndex = animalBehavior.SetGeneIndex(currentGeneIndex, genotype.size());
+        genotype.setCurrentGeneIndex(animalBehavior.SetGeneIndex(currentGeneIndex, gens.size()));
     }
 
     public void eatPlant(int energy){
@@ -128,36 +126,6 @@ public class Animal implements IWorldElement{
         this.energy -= energyLost;
         this.childrenList.add(child);
         this.childrenCounter = childrenList.size();
-    }
-
-
-    public List<Integer> reproduce(Animal partner, AnimalMutation mutation) {
-        int genotypeSize = genotype.size();
-
-        double energyRatio = (double) this.getEnergy() / (this.getEnergy() + partner.getEnergy());
-
-        boolean takeLeft = new Random().nextBoolean();
-
-        List<Integer> childGenotype = new ArrayList<>();
-        int splitIndex = (int) (energyRatio * genotypeSize);
-
-        if (takeLeft) {
-            // Bierz lewą stronę genotypu od silniejszego osobnika
-            childGenotype.addAll(this.genotype.subList(0, splitIndex));
-
-            // Bierz prawą stronę genotypu od słabszego osobnika
-            childGenotype.addAll(partner.genotype.subList(splitIndex, genotype.size()));
-        } else {
-            // Bierz lewą stronę genotypu od słabszego osobnika
-            childGenotype.addAll(partner.genotype.subList(0, genotypeSize - splitIndex));
-
-            // Bierz prawą stronę genotypu od silniejszego osobnika
-            childGenotype.addAll(this.genotype.subList(genotypeSize - splitIndex, genotypeSize));
-        }
-
-        //mutate(childGenotype);
-        mutation.mutate(childGenotype);
-        return childGenotype;
     }
 
     public void updateDailyStatsOnAnimal(){

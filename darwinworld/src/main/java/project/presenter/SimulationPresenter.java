@@ -11,7 +11,6 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.layout.*;
 import project.Vector2D;
 import project.simulation.Simulation;
-import project.simulation.maps.Boundary;
 import project.simulation.maps.IWorldMap;
 import javafx.scene.control.Label;
 import project.simulation.observer.SimulationChangeListener;
@@ -22,13 +21,6 @@ import project.simulation.worldelements.IWorldElement;
 import project.simulation.worldelements.WorldElementBox;
 
 import static java.lang.Math.min;
-
-
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.CornerRadii;
-import javafx.scene.paint.Color;
-import javafx.geometry.Insets;
 
 public class SimulationPresenter implements SimulationChangeListener {
 
@@ -87,23 +79,30 @@ public class SimulationPresenter implements SimulationChangeListener {
     private Animal trackedAnimal;
 
 
+    private int minX;
+    private int minY;
+    private int maxX;
+    private int maxY;
+    private int cellWidth;
+    private int cellHeight;
+
     public void setSimulation(Simulation simulation) {
         this.simulation = simulation;
         this.map = simulation.getMap();
         this.simulationStatistics = simulation.getSimulationStatistics();
+
+        minX = map.getBoundary().lowerLeftCorner().getX();
+        minY = map.getBoundary().lowerLeftCorner().getY();
+        maxX = map.getBoundary().upperRightCorner().getX();
+        maxY = map.getBoundary().upperRightCorner().getY();
+
+        cellWidth = (int) (MAP_CONST / (maxX - minX + 2));
+        cellHeight = (int) (MAP_CONST / (maxY - minY + 2));
         drawMap();
     }
 
     public void drawMap() {
         clearGrid();
-        Boundary bounds = map.getBoundary();
-        int minX = bounds.lowerLeftCorner().getX();
-        int minY = bounds.lowerLeftCorner().getY();
-        int maxX = bounds.upperRightCorner().getX();
-        int maxY = bounds.upperRightCorner().getY();
-
-        int cellWidth = (int) (MAP_CONST / (maxX - minX + 2));
-        int cellHeight = (int) (MAP_CONST / (maxY - minY + 2));
         for (int x = minX - 1; x <= maxX; x++) {
             for (int y = maxY + 1; y >= minY; y--) {
                 Label label = new Label("");
@@ -156,7 +155,6 @@ public class SimulationPresenter implements SimulationChangeListener {
             mapGrid.getRowConstraints().add(new RowConstraints(cellHeight));
         }
     }
-
 
     private void clearGrid() {
         mapGrid.getChildren().retainAll(mapGrid.getChildren().get(0));

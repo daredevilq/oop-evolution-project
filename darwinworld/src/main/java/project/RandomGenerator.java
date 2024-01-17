@@ -2,6 +2,7 @@ package project;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class RandomGenerator {
 
@@ -23,5 +24,9 @@ public class RandomGenerator {
             list.add(randInt(minVal, maxVal));
         }
         return list;
+    }
+
+    public static boolean randomBoolean() {
+        return new Random().nextBoolean();
     }
 }

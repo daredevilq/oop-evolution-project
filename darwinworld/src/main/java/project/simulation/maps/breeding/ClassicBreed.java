@@ -6,6 +6,7 @@ import project.Vector2D;
 import project.simulation.maps.animalMutations.AnimalMutation;
 import project.simulation.worldelements.Animal;
 import project.simulation.worldelements.AnimalComparator;
+import project.simulation.worldelements.Reproduction;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -34,7 +35,8 @@ public class ClassicBreed implements Breeding {
 
                 if (parent1.getEnergy() >= readyToBreedEnergy && parent2.getEnergy() >= readyToBreedEnergy) {
 
-                    List<Integer> childGenotype = parent1.reproduce(parent2, mutation); // tworzymy genotyp dziecka
+//                    List<Integer> childGenotype = parent1.reproduce(parent2, mutation); // tworzymy genotyp dziecka
+                    List<Integer> childGenotype = Reproduction.reproduce(parent1, parent2, mutation);
                     Animal child = new Animal(parent1.getPosition(), MapDirection.NORTHEAST.rotate(RandomGenerator.randInt(0, 7)), 2 * breadEnergy, childGenotype);
                     animals.add(child);
 

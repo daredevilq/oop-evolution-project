@@ -29,7 +29,7 @@ public class AnimalTest {
         Animal animal1 = new Animal(new Vector2D(0, 0), MapDirection.NORTH, 100,genotype1);
         Animal animal2 = new Animal(new Vector2D(0, 0), MapDirection.NORTH, 50,genotype2);
         AnimalMutation mutation = new DefaultMutation();
-        List<Integer> childGenotype = animal1.reproduce(animal2, mutation);
+        List<Integer> childGenotype = Reproduction.reproduce(animal1, animal2, mutation);
 
         assertEquals(genotype1.size(), childGenotype.size());
     }
